@@ -13,6 +13,9 @@ O Kortex é um orquestrador **open-source** projetado pela **Nexo-Fortis**. Noss
 
 ## 🚀 Começando
 
+**🚨 NUNCA PROGRAMOU NA VIDA? [Comece por aqui! Leia o nosso Tutorial Zero-to-Hero para Iniciantes.](docs/TUTORIAL-INICIANTE.md)**
+
+
 Para instalar e configurar seu ambiente de elite:
 
 ```bash
