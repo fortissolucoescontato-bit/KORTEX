@@ -1,0 +1,36 @@
+linters-settings:
+  govet:
+    check-shadowing: true
+  revive:
+    min-confidence: 0.8
+  gocyclo:
+    min-complexity: 15
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+
+linters:
+  enable:
+    - gofmt
+    - govet
+    - errcheck
+    - staticcheck
+    - revive
+    - gocyclo
+    - goconst
+    - unconvert
+    - misspell
+    - nakedret
+    - exportloopref
+    - gocritic
+
+run:
+  timeout: 5m
+  tests: true
+  skip-dirs:
+    - vendor
+    - node_modules

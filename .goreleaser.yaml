@@ -1,0 +1,65 @@
+version: 2
+
+project_name: kortex
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - main: ./cmd/kortex
+    binary: kortex
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+
+brews:
+  - repository:
+      owner: fortissolucoescontato-bit
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Formula
+    name: kortex
+    homepage: "https://github.com/fortissolucoescontato-bit/kortex"
+    description: "Kortex Stack — One command to configure any AI coding agent on any OS."
+    license: "MIT"
+    commit_msg_template: "chore: update kortex formula to {{ .Tag }}"
+
+scoops:
+  - repository:
+      owner: fortissolucoescontato-bit
+      name: scoop-bucket
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    name: kortex
+    homepage: "https://github.com/fortissolucoescontato-bit/kortex"
+    description: "Kortex Stack — One command to configure any AI coding agent on any OS."
+    license: MIT
+    commit_msg_template: "chore: update kortex to {{ .Tag }}"
