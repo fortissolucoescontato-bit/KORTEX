@@ -66,24 +66,21 @@ Return result inline only. Do not write any files or call `mem_save`.
 
 ## D. Return Envelope
 
-Every phase MUST return a structured envelope to the orchestrator:
+Every phase MUST return a structured envelope to the orchestrator. Localize the display labels to the user's language (default: Portuguese), but keep the intent of the keys for the orchestrator.
 
-- `status`: `success`, `partial`, or `blocked`
-- `executive_summary`: 1-3 sentence summary of what was done
-- `detailed_report`: (optional) full phase output, or omit if already inline
-- `artifacts`: list of artifact keys/paths written
-- `next_recommended`: the next SDD phase to run, or "none"
-- `risks`: risks discovered, or "None"
-- `skill_resolution`: how skills were loaded — `injected` (received Project Standards from orchestrator), `fallback-registry` (self-loaded from registry), `fallback-path` (loaded via SKILL: Load path), or `none` (no skills loaded)
-
-Example:
+Example (Portuguese):
 
 ```markdown
-**Status**: success
-**Summary**: Proposal created for `{change-name}`. Defined scope, approach, and rollback plan.
-**Artifacts**: Engram `sdd/{change-name}/proposal` | `openspec/changes/{change-name}/proposal.md`
-**Next**: sdd-spec or sdd-design
-**Risks**: None
-**Skill Resolution**: injected — 3 skills (react-19, typescript, tailwind-4)
-(other values: `fallback-registry`, `fallback-path`, or `none — no registry found`)
+**Status**: sucesso
+**Resumo**: Proposta criada para `{change-name}`. Escopo, abordagem e plano de rollback definidos.
+**Artefatos**: Engram `sdd/{change-name}/proposal` | `openspec/changes/{change-name}/proposal.md`
+**Próximo**: sdd-spec ou sdd-design
+**Riscos**: Nenhum
+**Resolução de Skills**: injected — 3 skills (react-19, typescript, tailwind-4)
 ```
+
+## E. Language Policy
+
+- **Output Language**: ALWAYS respond in the language the user is communicating (default: Portuguese).
+- **Artifact Language**: The content of specifications, designs, proposals, and tasks MUST be written in the user's language.
+- **Technical Terms**: Keep standard technical terms (e.g., "Middleware", "Frontend", "Endpoint") if they are commonly used in the local tech community, but ensure the surrounding context is localized.

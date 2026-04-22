@@ -87,35 +87,35 @@ Follow **Section C** from `skills/_shared/sdd-phase-common.md`.
 Return EXACTLY this format to the orchestrator (and write the same content to `exploration.md` if saving):
 
 ```markdown
-## Exploration: {topic}
+## Exploração: {topic}
 
-### Current State
-{How the system works today relevant to this topic}
+### Estado Atual
+{Como o sistema funciona hoje em relação a este tópico}
 
-### Affected Areas
-- `path/to/file.ext` — {why it's affected}
-- `path/to/other.ext` — {why it's affected}
+### Áreas Afetadas
+- `caminho/do/arquivo.ext` — {por que foi afetado}
+- `caminho/do/outro.ext` — {por que foi afetado}
 
-### Approaches
-1. **{Approach name}** — {brief description}
-   - Pros: {list}
-   - Cons: {list}
-   - Effort: {Low/Medium/High}
+### Abordagens
+1. **{Nome da abordagem}** — {breve descrição}
+   - Prós: {lista}
+   - Contras: {lista}
+   - Esforço: {Baixo/Médio/Alto}
 
-2. **{Approach name}** — {brief description}
-   - Pros: {list}
-   - Cons: {list}
-   - Effort: {Low/Medium/High}
+2. **{Nome da abordagem}** — {breve descrição}
+   - Prós: {lista}
+   - Contras: {lista}
+   - Esforço: {Baixo/Médio/Alto}
 
-### Recommendation
-{Your recommended approach and why}
+### Recomendação
+{Sua abordagem recomendada e o porquê}
 
-### Risks
-- {Risk 1}
-- {Risk 2}
+### Riscos
+- {Risco 1}
+- {Risco 2}
 
-### Ready for Proposal
-{Yes/No — and what the orchestrator should tell the user}
+### Pronto para Proposta
+{Sim/Não — e o que o orquestrador deve dizer ao usuário}
 ```
 
 ## Rules
