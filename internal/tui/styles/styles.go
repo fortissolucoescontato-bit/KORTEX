@@ -23,7 +23,7 @@ var (
 )
 
 // Cursor is the prefix used for the currently focused item.
-const Cursor = "⚡ "
+const Cursor = "🧠 "
 
 // Tagline returns the welcome screen tagline.
 func Tagline() string {
