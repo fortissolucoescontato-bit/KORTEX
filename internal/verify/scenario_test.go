@@ -69,7 +69,7 @@ func TestScenarioNotReadyWhenAnyCheckFails(t *testing.T) {
 		t.Fatalf("RenderReport() missing failed check line: %q", rendered)
 	}
 
-	if !strings.Contains(rendered, "verification issues") {
+	if !strings.Contains(rendered, "problemas de verificação") {
 		t.Fatalf("RenderReport() missing failure final note: %q", rendered)
 	}
 }

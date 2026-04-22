@@ -20,7 +20,7 @@ func TestRenderReviewShowsSkillNames(t *testing.T) {
 		Persona: model.PersonaKortex,
 		Preset:  model.PresetFullKortex,
 		Components: []planner.ComponentAction{
-			{ID: model.ComponentSkills, Action: "selected"},
+			{ID: model.ComponentSkills, Action: "selecionado"},
 		},
 		Skills: []model.SkillID{"sdd-apply", "sdd-spec", "go-testing"},
 	}
@@ -66,7 +66,7 @@ func TestRenderReviewShowsStrictTDDEnabled(t *testing.T) {
 		Persona: model.PersonaKortex,
 		Preset:  model.PresetFullKortex,
 		Components: []planner.ComponentAction{
-			{ID: model.ComponentSDD, Action: "selected"},
+			{ID: model.ComponentSDD, Action: "selecionado"},
 		},
 		HasSDD:    true,
 		StrictTDD: true,
@@ -77,8 +77,8 @@ func TestRenderReviewShowsStrictTDDEnabled(t *testing.T) {
 	if !strings.Contains(out, "Strict TDD") {
 		t.Errorf("RenderReview missing 'Strict TDD'; output:\n%s", out)
 	}
-	if !strings.Contains(out, "Enabled") {
-		t.Errorf("RenderReview missing 'Enabled' for StrictTDD=true; output:\n%s", out)
+	if !strings.Contains(out, "Ativado") {
+		t.Errorf("RenderReview missing 'Ativado' for StrictTDD=true; output:\n%s", out)
 	}
 }
 
@@ -92,7 +92,7 @@ func TestRenderReviewShowsStrictTDDDisabled(t *testing.T) {
 		Persona: model.PersonaKortex,
 		Preset:  model.PresetFullKortex,
 		Components: []planner.ComponentAction{
-			{ID: model.ComponentSDD, Action: "selected"},
+			{ID: model.ComponentSDD, Action: "selecionado"},
 		},
 		HasSDD:    true,
 		StrictTDD: false,
@@ -103,8 +103,8 @@ func TestRenderReviewShowsStrictTDDDisabled(t *testing.T) {
 	if !strings.Contains(out, "Strict TDD") {
 		t.Errorf("RenderReview missing 'Strict TDD'; output:\n%s", out)
 	}
-	if !strings.Contains(out, "Disabled") {
-		t.Errorf("RenderReview missing 'Disabled' for StrictTDD=false; output:\n%s", out)
+	if !strings.Contains(out, "Desativado") {
+		t.Errorf("RenderReview missing 'Desativado' for StrictTDD=false; output:\n%s", out)
 	}
 }
 
@@ -137,10 +137,10 @@ func TestRenderReviewClarifiesCustomPersonaAndPreset(t *testing.T) {
 
 	out := RenderReview(payload, 0)
 
-	if !strings.Contains(out, "keep existing persona unmanaged") {
+	if !strings.Contains(out, "manter persona atual (não gerenciada)") {
 		t.Fatalf("RenderReview missing custom persona clarification; output:\n%s", out)
 	}
-	if !strings.Contains(out, "choose components and skills manually") {
+	if !strings.Contains(out, "escolher componentes e skills manualmente") {
 		t.Fatalf("RenderReview missing custom preset clarification; output:\n%s", out)
 	}
 	if strings.Contains(out, "Persona  custom") {

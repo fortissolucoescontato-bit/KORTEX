@@ -154,7 +154,7 @@ func renderCompleteFailed(data CompletePayload) string {
 	b.WriteString(styles.UnselectedStyle.Render("  3. Execute o kortex novamente para tentar de novo"))
 	b.WriteString("\n\n")
 
-	b.WriteString(styles.HelpStyle.Render("Press Enter to exit."))
+	b.WriteString(styles.HelpStyle.Render("Pressione Enter para sair."))
 
 	return b.String()
 }

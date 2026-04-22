@@ -127,7 +127,7 @@ func ReadManifest(path string) (Manifest, error) {
 
 	var manifest Manifest
 	if err := json.Unmarshal(content, &manifest); err != nil {
-		return Manifest{}, fmt.Errorf("falha ao processar manifesto %q (unmarshal): %w", err)
+		return Manifest{}, fmt.Errorf("falha ao processar manifesto %q (unmarshal): %w", path, err)
 	}
 
 	return manifest, nil

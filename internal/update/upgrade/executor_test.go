@@ -646,8 +646,8 @@ func TestExecute_ForcedSnapshotFailureSurfacesWarningEndToEnd(t *testing.T) {
 	if report.BackupWarning == "" {
 		t.Errorf("BackupWarning is empty — failure must be surfaced explicitly")
 	}
-	if !strings.Contains(report.BackupWarning, "pre-upgrade backup failed") {
-		t.Errorf("BackupWarning = %q, want it to mention 'pre-upgrade backup failed'", report.BackupWarning)
+	if !strings.Contains(report.BackupWarning, "falha no backup pré-upgrade") {
+		t.Errorf("BackupWarning = %q, want it to mention 'falha no backup pré-upgrade'", report.BackupWarning)
 	}
 	if !strings.Contains(report.BackupWarning, "simulated snapshot failure") {
 		t.Errorf("BackupWarning = %q, want it to include the root cause", report.BackupWarning)
@@ -661,12 +661,12 @@ func TestExecute_ForcedSnapshotFailureSurfacesWarningEndToEnd(t *testing.T) {
 		t.Errorf("Result status = %q, want UpgradeSucceeded — upgrade proceeds without backup", report.Results[0].Status)
 	}
 
-	// RenderUpgradeReport must include the WARNING line in its output.
+	// RenderUpgradeReport must include the AVISO line in its output.
 	rendered := RenderUpgradeReport(report)
-	if !strings.Contains(rendered, "WARNING:") {
-		t.Errorf("RenderUpgradeReport output must contain 'WARNING:' when BackupWarning is set;\ngot:\n%s", rendered)
+	if !strings.Contains(rendered, "AVISO:") {
+		t.Errorf("RenderUpgradeReport output must contain 'AVISO:' when BackupWarning is set;\ngot:\n%s", rendered)
 	}
-	if !strings.Contains(rendered, "pre-upgrade backup failed") {
+	if !strings.Contains(rendered, "falha no backup pré-upgrade") {
 		t.Errorf("RenderUpgradeReport output must include the backup failure message;\ngot:\n%s", rendered)
 	}
 }
@@ -730,8 +730,8 @@ func TestExecute_UpgradeBackupManifestHasUpgradeMetadata(t *testing.T) {
 	if manifest.Source != backup.BackupSourceUpgrade {
 		t.Errorf("manifest.Source = %q, want %q", manifest.Source, backup.BackupSourceUpgrade)
 	}
-	if manifest.Description != "pre-upgrade snapshot" {
-		t.Errorf("manifest.Description = %q, want %q", manifest.Description, "pre-upgrade snapshot")
+	if manifest.Description != "snapshot pré-upgrade" {
+		t.Errorf("manifest.Description = %q, want %q", manifest.Description, "snapshot pré-upgrade")
 	}
 	if manifest.CreatedByVersion != "3.0.0" {
 		t.Errorf("manifest.CreatedByVersion = %q, want 3.0.0", manifest.CreatedByVersion)

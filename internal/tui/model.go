@@ -9,7 +9,10 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/textarea"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/glamour"
+	"github.com/fortissolucoescontato-bit/kortex/docs"
 	"github.com/fortissolucoescontato-bit/kortex/internal/agentbuilder"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
 	"github.com/fortissolucoescontato-bit/kortex/internal/catalog"
@@ -219,6 +222,7 @@ const (
 	ScreenAgentBuilderPreview
 	ScreenAgentBuilderInstalling
 	ScreenAgentBuilderComplete
+	ScreenTutorial
 )
 
 type Model struct {
@@ -390,6 +394,10 @@ type Model struct {
 
 	// AgentBuilder holds the transient state for the agent-builder TUI flow.
 	AgentBuilder AgentBuilderState
+
+	// Tutorial viewport state
+	TutorialViewport viewport.Model
+	TutorialReady    bool
 }
 
 func NewModel(detection system.DetectionResult, version string) Model {
@@ -569,6 +577,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			var taCmd tea.Cmd
 			m.AgentBuilder.Textarea, taCmd = m.AgentBuilder.Textarea.Update(msg)
 			return m, taCmd
+		}
+		if m.Screen == ScreenTutorial {
+			if msg.String() == "esc" || msg.String() == "q" {
+				return m.handleKeyPress(msg)
+			}
+			var cmd tea.Cmd
+			m.TutorialViewport, cmd = m.TutorialViewport.Update(msg)
+			return m, cmd
 		}
 		return m.handleKeyPress(msg)
 	}
@@ -761,6 +777,11 @@ func (m Model) View() string {
 		return screens.RenderABInstalling(engineName, m.SpinnerFrame, m.AgentBuilder.InstallErr)
 	case ScreenAgentBuilderComplete:
 		return screens.RenderABComplete(m.AgentBuilder.Generated, m.AgentBuilder.InstallResults)
+	case ScreenTutorial:
+		if !m.TutorialReady {
+			return "Loading tutorial..."
+		}
+		return m.TutorialViewport.View() + "\n  \033[90m↑/↓: rolar • esc/q: voltar\033[0m"
 	default:
 		return ""
 	}
@@ -1050,25 +1071,36 @@ func (m Model) confirmSelection() (tea.Model, tea.Cmd) {
 		case 0:
 			m.setScreen(ScreenDetection)
 		case 1:
+			content, err := docs.ReadTutorial()
+			if err == nil {
+				rendered, err := glamour.Render(content, "dark")
+				if err == nil {
+					m.TutorialViewport = viewport.New(m.Width, m.Height-4)
+					m.TutorialViewport.SetContent(rendered)
+					m.TutorialReady = true
+					m.setScreen(ScreenTutorial)
+				}
+			}
+		case 2:
 			m = m.withResetOperationState()
 			m.setScreen(ScreenUpgrade)
 			// Start spinner for update check waiting state.
 			if !m.UpdateCheckDone {
 				return m, tickCmd()
 			}
-		case 2:
+		case 3:
 			m = m.withResetOperationState()
 			m.setScreen(ScreenSync)
-		case 3:
+		case 4:
 			m = m.withResetOperationState()
 			m.setScreen(ScreenUpgradeSync)
 			// Start spinner for update check waiting state.
 			if !m.UpdateCheckDone {
 				return m, tickCmd()
 			}
-		case 4:
-			m.setScreen(ScreenModelConfig)
 		case 5:
+			m.setScreen(ScreenModelConfig)
+		case 6:
 			// "Create your own Agent" — blocked when no engines are available.
 			if !m.hasAgentBuilderEngines() {
 				return m, nil
@@ -1083,7 +1115,7 @@ func (m Model) confirmSelection() (tea.Model, tea.Cmd) {
 			m.AgentBuilder.Textarea = ta
 			m.setScreen(ScreenAgentBuilderEngine)
 		default:
-			next := 6
+			next := 7
 			if m.hasDetectedOpenCode() {
 				if m.Cursor == next {
 					m.setScreen(ScreenProfiles)

@@ -213,9 +213,9 @@ func TestKortexLanguageInstructionsDoNotBiasEnglishSessions(t *testing.T) {
 			}
 
 			for _, required := range []string{
-				"Match the user's current language.",
-				"Do not switch languages unless the user does, asks you to, or you are quoting/translating content.",
-				"In English conversations, keep the full reply in natural English with the same warm energy.",
+				"ALWAYS speak in Portuguese (Brazil) to the user",
+				"regardless of their input language",
+				"Use English only for technical code symbols or when explicitly asked for translation purposes",
 			} {
 				if !strings.Contains(content, required) {
 					t.Fatalf("%s missing language guardrail %q", path, required)
@@ -242,9 +242,9 @@ func TestKortexLanguageInstructionsDoNotBiasEnglishSessions(t *testing.T) {
 			}
 
 			for _, required := range []string{
-				"Always match the user's current language.",
-				"Do not drift into another language because of persona wording, examples, or stylistic momentum.",
-				"If the conversation is in English, keep the full response in English unless the user explicitly asks for another language or you are translating/quoting.",
+				"ALWAYS speak in Portuguese (Brazil) to the user",
+				"regardless of their input language",
+				"Use English only for technical code symbols or when explicitly asked for translation purposes",
 			} {
 				if !strings.Contains(content, required) {
 					t.Fatalf("%s missing output-style guardrail %q", path, required)

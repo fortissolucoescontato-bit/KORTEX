@@ -16,7 +16,7 @@ func TestRenderUninstallResultIncludesManualCleanup(t *testing.T) {
 		},
 	}, nil, "", nil, model.EngramUninstallScopeGlobal, false, 0, nil)
 
-	if !strings.Contains(out, "Manual cleanup required") {
+	if !strings.Contains(out, "Limpeza manual necessária") {
 		t.Fatalf("RenderUninstallResult() should include manual cleanup heading; got:\n%s", out)
 	}
 	if !strings.Contains(out, "/tmp/skills") {
@@ -37,7 +37,7 @@ func TestRenderUninstallConfirmIncludesSelectedProfiles(t *testing.T) {
 		0,
 	)
 
-	if !strings.Contains(out, "Profiles to remove") {
+	if !strings.Contains(out, "Perfis a serem removidos") {
 		t.Fatalf("RenderUninstallConfirm() should include profile section; got:\n%s", out)
 	}
 	if !strings.Contains(out, "cheap") {
@@ -58,10 +58,10 @@ func TestRenderUninstallConfirmIncludesEngramProjectScopeDetails(t *testing.T) {
 		0,
 	)
 
-	if !strings.Contains(out, "Engram cleanup scope") {
+	if !strings.Contains(out, "Escopo de limpeza do Engram") {
 		t.Fatalf("RenderUninstallConfirm() should include Engram cleanup scope heading; got:\n%s", out)
 	}
-	if !strings.Contains(out, "Project-only") {
+	if !strings.Contains(out, "Apenas Projeto") {
 		t.Fatalf("RenderUninstallConfirm() should include project-only scope label; got:\n%s", out)
 	}
 	if !strings.Contains(out, ".engram/") {
@@ -72,7 +72,7 @@ func TestRenderUninstallConfirmIncludesEngramProjectScopeDetails(t *testing.T) {
 func TestRenderUninstallResultIncludesSelectedProfiles(t *testing.T) {
 	out := RenderUninstallResult(componentuninstall.Result{}, nil, model.UninstallModePartial, []string{"cheap", "fast"}, model.EngramUninstallScopeGlobal, false, 0, nil)
 
-	if !strings.Contains(out, "Profiles removed") {
+	if !strings.Contains(out, "Perfis removidos") {
 		t.Fatalf("RenderUninstallResult() should include profile summary heading; got:\n%s", out)
 	}
 	if !strings.Contains(out, "cheap") || !strings.Contains(out, "fast") {
@@ -85,7 +85,7 @@ func TestRenderUninstallResultIncludesEngramScopeSummary(t *testing.T) {
 		RemovedDirectories: []string{"/tmp/workspace/.engram"},
 	}, nil, model.UninstallModePartial, nil, model.EngramUninstallScopeProject, true, 0, nil)
 
-	if !strings.Contains(out, "Engram scope: Project-only") {
+	if !strings.Contains(out, "Escopo Engram: Apenas Projeto") {
 		t.Fatalf("RenderUninstallResult() should include Engram project scope summary; got:\n%s", out)
 	}
 }

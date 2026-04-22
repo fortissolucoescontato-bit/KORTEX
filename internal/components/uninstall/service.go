@@ -13,7 +13,7 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/assets"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/filemerge"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-cli"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/sdd"
 	"github.com/fortissolucoescontato-bit/kortex/internal/model"
 	"github.com/fortissolucoescontato-bit/kortex/internal/state"

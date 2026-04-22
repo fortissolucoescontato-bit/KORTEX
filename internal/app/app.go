@@ -266,9 +266,9 @@ func tuiExecute(
 			}
 			_ = mgr.SetInstalledAgents(agentIDs)
 
-			for agent, assignments := range selection.ModelAssignments {
-				for phase, mState := range assignments {
-					_ = mgr.SetAssignment(string(agent), phase, mState.ProviderID, mState.ModelID)
+			for phase, mState := range selection.ModelAssignments {
+				for _, a := range agentIDs {
+					_ = mgr.SetAssignment(a, phase, mState.ProviderID, mState.ModelID)
 				}
 			}
 		}
@@ -396,17 +396,14 @@ func loadPersistedAssignments(homeDir string, selection *model.Selection) {
 		}
 
 		if selection.ModelAssignments == nil {
-			selection.ModelAssignments = make(map[model.AgentID]map[string]model.ModelAssignment)
+			selection.ModelAssignments = make(map[string]model.ModelAssignment)
 		}
-
-		agentAssignments := make(map[string]model.ModelAssignment)
 		for phase, mState := range dbAssignments {
-			agentAssignments[phase] = model.ModelAssignment{
+			selection.ModelAssignments[phase] = model.ModelAssignment{
 				ProviderID: mState.ProviderID,
 				ModelID:    mState.ModelID,
 			}
 		}
-		selection.ModelAssignments[agent] = agentAssignments
 	}
 }
 
@@ -420,9 +417,9 @@ func persistAssignments(homeDir string, selection model.Selection) {
 	}
 	defer mgr.Close()
 
-	for agent, assignments := range selection.ModelAssignments {
-		for phase, mState := range assignments {
-			_ = mgr.SetAssignment(string(agent), phase, mState.ProviderID, mState.ModelID)
+	for phase, mState := range selection.ModelAssignments {
+		for _, a := range selection.Agents {
+			_ = mgr.SetAssignment(string(a), phase, mState.ProviderID, mState.ModelID)
 		}
 	}
 }

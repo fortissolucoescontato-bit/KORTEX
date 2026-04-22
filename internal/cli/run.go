@@ -16,7 +16,7 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/assets"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/engram"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex"
+	kortex "github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-cli"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/mcp"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/permissions"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/persona"
@@ -152,9 +152,10 @@ func RunInstall(args []string, detection system.DetectionResult) (InstallResult,
 		}
 		_ = mgr.SetInstalledAgents(agentIDs)
 
-		for agent, assignments := range input.Selection.ModelAssignments {
-			for phase, mState := range assignments {
-				_ = mgr.SetAssignment(string(agent), phase, mState.ProviderID, mState.ModelID)
+		for phase, mState := range input.Selection.ModelAssignments {
+			// ModelAssignments is map[string]ModelAssignment; store as generic agent mapping
+			for _, a := range agentIDs {
+				_ = mgr.SetAssignment(a, phase, mState.ProviderID, mState.ModelID)
 			}
 		}
 	}

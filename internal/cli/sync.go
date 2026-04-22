@@ -13,7 +13,7 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/engram"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-cli"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/mcp"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/permissions"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/sdd"
@@ -697,20 +697,37 @@ func RunSync(args []string) (SyncResult, error) {
 		mgr, err := state.NewManager(homeDir)
 		if err == nil {
 			defer mgr.Close()
-			for _, agent := range selection.Agents {
-				dbAssignments, err := mgr.GetAssignments(string(agent))
+			// Load assignments for all selected agents + "claude" and "kiro" which
+			// store global SDD model preferences.
+			agentsToLoad := []string{"claude", "kiro"}
+			for _, a := range selection.Agents {
+				agentsToLoad = append(agentsToLoad, string(a))
+			}
+
+			for _, agent := range agentsToLoad {
+				dbAssignments, err := mgr.GetAssignments(agent)
 				if err == nil && len(dbAssignments) > 0 {
-					if selection.ModelAssignments == nil {
-						selection.ModelAssignments = make(map[model.AgentID]map[string]model.ModelAssignment)
-					}
-					agentAssignments := make(map[string]model.ModelAssignment)
 					for phase, mState := range dbAssignments {
-						agentAssignments[phase] = model.ModelAssignment{
-							ProviderID: mState.ProviderID,
-							ModelID:    mState.ModelID,
+						if agent == "claude" {
+							if selection.ClaudeModelAssignments == nil {
+								selection.ClaudeModelAssignments = make(map[string]model.ClaudeModelAlias)
+							}
+							selection.ClaudeModelAssignments[phase] = model.ClaudeModelAlias(mState.ModelID)
+						} else if agent == "kiro" {
+							if selection.KiroModelAssignments == nil {
+								selection.KiroModelAssignments = make(map[string]model.ClaudeModelAlias)
+							}
+							selection.KiroModelAssignments[phase] = model.ClaudeModelAlias(mState.ModelID)
+						} else {
+							if selection.ModelAssignments == nil {
+								selection.ModelAssignments = make(map[string]model.ModelAssignment)
+							}
+							selection.ModelAssignments[phase] = model.ModelAssignment{
+								ProviderID: mState.ProviderID,
+								ModelID:    mState.ModelID,
+							}
 						}
 					}
-					selection.ModelAssignments[agent] = agentAssignments
 				}
 			}
 		}

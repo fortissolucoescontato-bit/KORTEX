@@ -29,6 +29,7 @@ func WelcomeOptions(updateResults []update.UpdateResult, updateCheckDone bool, s
 
 	opts := []string{
 		"Iniciar instalação",
+		"📖 Ler Tutorial (Iniciantes)",
 		upgradeLabel,
 		"Sincronizar configurações",
 		"Atualizar + Sincronizar",

@@ -1,8 +1,6 @@
 package state
 
 import (
-	"fmt"
-
 	"github.com/fortissolucoescontato-bit/kortex/internal/storage"
 )
 
@@ -101,4 +99,92 @@ func (m *Manager) SetAssignment(agentID, phase, providerID, modelID string) erro
 		agentID, phase, providerID, modelID,
 	)
 	return err
+}
+
+// InstallState is a compatibility struct for legacy tests.
+type InstallState struct {
+	InstalledAgents        []string
+	ClaudeModelAssignments map[string]string
+	KiroModelAssignments   map[string]string
+	ModelAssignments       map[string]ModelAssignmentState
+}
+
+// Write is a compatibility helper for legacy tests.
+func Write(homeDir string, s InstallState) error {
+	mgr, err := NewManager(homeDir)
+	if err != nil {
+		return err
+	}
+	defer mgr.Close()
+
+	if err := mgr.SetInstalledAgents(s.InstalledAgents); err != nil {
+		return err
+	}
+
+	// Legacy Claude assignments
+	for phase, modelID := range s.ClaudeModelAssignments {
+		if err := mgr.SetAssignment("claude", phase, "anthropic", modelID); err != nil {
+			return err
+		}
+	}
+
+	// Legacy Kiro assignments
+	for phase, modelID := range s.KiroModelAssignments {
+		if err := mgr.SetAssignment("kiro", phase, "anthropic", modelID); err != nil {
+			return err
+		}
+	}
+
+	// Generic model assignments (assumed for opencode in legacy tests)
+	for phase, mState := range s.ModelAssignments {
+		if err := mgr.SetAssignment("opencode", phase, mState.ProviderID, mState.ModelID); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Read is a compatibility helper for legacy tests.
+func Read(homeDir string) (InstallState, error) {
+	mgr, err := NewManager(homeDir)
+	if err != nil {
+		return InstallState{}, err
+	}
+	defer mgr.Close()
+
+	agents, err := mgr.GetInstalledAgents()
+	if err != nil {
+		return InstallState{}, err
+	}
+
+	claude, err := mgr.GetAssignments("claude")
+	if err != nil {
+		return InstallState{}, err
+	}
+	claudeMap := make(map[string]string)
+	for phase, mState := range claude {
+		claudeMap[phase] = mState.ModelID
+	}
+
+	kiro, err := mgr.GetAssignments("kiro")
+	if err != nil {
+		return InstallState{}, err
+	}
+	kiroMap := make(map[string]string)
+	for phase, mState := range kiro {
+		kiroMap[phase] = mState.ModelID
+	}
+
+	opencode, err := mgr.GetAssignments("opencode")
+	if err != nil {
+		return InstallState{}, err
+	}
+
+	return InstallState{
+		InstalledAgents:        agents,
+		ClaudeModelAssignments: claudeMap,
+		KiroModelAssignments:   kiroMap,
+		ModelAssignments:       opencode,
+	}, nil
 }

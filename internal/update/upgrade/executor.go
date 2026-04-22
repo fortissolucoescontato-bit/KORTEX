@@ -21,7 +21,7 @@ import (
 
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-cli"
 	"github.com/fortissolucoescontato-bit/kortex/internal/system"
 	"github.com/fortissolucoescontato-bit/kortex/internal/update"
 )

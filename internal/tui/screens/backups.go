@@ -196,7 +196,7 @@ func RenderDeleteResult(manifest backup.Manifest, err error) string {
 	}
 
 	b.WriteString("\n\n")
-	b.WriteString(styles.HelpStyle.Render("enter: back to backups • esc: back"))
+	b.WriteString(styles.HelpStyle.Render("enter: voltar para backups • esc: voltar"))
 
 	return b.String()
 }

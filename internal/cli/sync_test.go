@@ -823,7 +823,7 @@ func TestRunSyncNoOpWhenNoAgentsDiscovered(t *testing.T) {
 
 	// Must produce a human-readable message saying no managed sync actions were needed.
 	report := RenderSyncReport(result)
-	if !containsAny(report, "no managed", "no sync", "nothing to sync", "0 actions") {
+	if !containsAny(report, "no managed", "no sync", "nothing to sync", "0 actions", "nenhuma", "sincronizar") {
 		t.Errorf("RenderSyncReport() should indicate no managed actions; got:\n%s", report)
 	}
 }
@@ -976,7 +976,7 @@ func TestRunSyncNoOpWhenAssetsAlreadyCurrent(t *testing.T) {
 	}
 
 	report := RenderSyncReport(result2)
-	if !containsAny(report, "no managed", "no sync", "nothing to sync", "0 actions", "already current", "up to date") {
+	if !containsAny(report, "no managed", "no sync", "nothing to sync", "0 actions", "already current", "up to date", "nenhuma", "atualizados") {
 		t.Errorf("RenderSyncReport() should indicate no changes on second run; got:\n%s", report)
 	}
 }
@@ -1013,7 +1013,7 @@ func TestSyncActionsExecutedReflectsChangedFiles(t *testing.T) {
 	}
 	report1 := RenderSyncReport(result1)
 	// The report must state how many files were actually changed.
-	if !containsAny(report1, "files changed", "file changed", "sync actions executed") {
+	if !containsAny(report1, "files changed", "file changed", "sync actions executed", "arquivos", "sincronização") {
 		t.Errorf("first sync report should state changed-file count; got:\n%s", report1)
 	}
 

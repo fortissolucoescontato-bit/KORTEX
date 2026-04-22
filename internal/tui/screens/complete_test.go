@@ -12,7 +12,7 @@ func TestRenderCompleteSuccessShowsKortexCLINotesWhenInstalled(t *testing.T) {
 		KortexCLIInstalled:        true,
 	})
 
-	if !strings.Contains(out, "KortexCLI (per project)") {
+	if !strings.Contains(out, "KortexCLI (por projeto)") {
 		t.Fatalf("missing KortexCLI section: %q", out)
 	}
 	if !strings.Contains(out, "kortex init") || !strings.Contains(out, "kortex install") {
@@ -27,7 +27,7 @@ func TestRenderCompleteSuccessHidesKortexCLINotesWhenNotInstalled(t *testing.T) 
 		KortexCLIInstalled:        false,
 	})
 
-	if strings.Contains(out, "KortexCLI (per project)") {
+	if strings.Contains(out, "KortexCLI (por projeto)") {
 		t.Fatalf("unexpected KortexCLI section: %q", out)
 	}
 }

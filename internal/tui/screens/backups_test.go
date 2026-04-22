@@ -23,8 +23,8 @@ func TestRenderBackupsShowsDisplayLabel(t *testing.T) {
 	output := RenderBackups(manifests, 0, 0, nil)
 
 	// Must include the source label from DisplayLabel.
-	if !strings.Contains(output, "install") {
-		t.Errorf("RenderBackups should show source label 'install' from DisplayLabel; got:\n%s", output)
+	if !strings.Contains(output, "instalação") {
+		t.Errorf("RenderBackups should show source label 'instalação' from DisplayLabel; got:\n%s", output)
 	}
 }
 
@@ -41,8 +41,8 @@ func TestRenderBackupsShowsFallbackLabelForOldManifest(t *testing.T) {
 
 	output := RenderBackups(manifests, 0, 0, nil)
 
-	if !strings.Contains(output, "unknown source") {
-		t.Errorf("RenderBackups should show 'unknown source' for old manifests; got:\n%s", output)
+	if !strings.Contains(output, "origem desconhecida") {
+		t.Errorf("RenderBackups should show 'origem desconhecida' for old manifests; got:\n%s", output)
 	}
 }
 
@@ -61,7 +61,7 @@ func TestRenderRestoreConfirmIncludesBackupIdentity(t *testing.T) {
 		t.Errorf("RenderRestoreConfirm should show backup ID; got:\n%s", output)
 	}
 
-	if !strings.Contains(output, "sync") {
+	if !strings.Contains(output, "sincronização") {
 		t.Errorf("RenderRestoreConfirm should show source label; got:\n%s", output)
 	}
 }
@@ -77,13 +77,13 @@ func TestRenderRestoreConfirmShowsConfirmAndCancelOptions(t *testing.T) {
 	output := RenderRestoreConfirm(manifest, 0)
 
 	// Must show a restore/confirm action.
-	if !strings.Contains(strings.ToLower(output), "restore") {
+	if !strings.Contains(strings.ToLower(output), "restaurar") {
 		t.Errorf("RenderRestoreConfirm missing restore option; got:\n%s", output)
 	}
 
 	// Must show a cancel action.
-	if !strings.Contains(strings.ToLower(output), "cancel") && !strings.Contains(strings.ToLower(output), "back") {
-		t.Errorf("RenderRestoreConfirm missing cancel/back option; got:\n%s", output)
+	if !strings.Contains(strings.ToLower(output), "cancelar") && !strings.Contains(strings.ToLower(output), "voltar") {
+		t.Errorf("RenderRestoreConfirm missing cancel/voltar option; got:\n%s", output)
 	}
 }
 
@@ -100,7 +100,7 @@ func TestRenderRestoreResultSuccessShowsSuccessMessage(t *testing.T) {
 
 	// Must include a success indicator.
 	lower := strings.ToLower(output)
-	if !strings.Contains(lower, "success") && !strings.Contains(lower, "restored") && !strings.Contains(lower, "complete") {
+	if !strings.Contains(lower, "sucesso") && !strings.Contains(lower, "restaurado") && !strings.Contains(lower, "concluída") {
 		t.Errorf("RenderRestoreResult(nil err) should show success; got:\n%s", output)
 	}
 
@@ -122,7 +122,7 @@ func TestRenderRestoreResultFailureShowsErrorMessage(t *testing.T) {
 	output := RenderRestoreResult(manifest, fmt.Errorf("%s", errText))
 
 	lower := strings.ToLower(output)
-	if !strings.Contains(lower, "fail") && !strings.Contains(lower, "error") {
+	if !strings.Contains(lower, "falha") && !strings.Contains(lower, "erro") {
 		t.Errorf("RenderRestoreResult(err) should show failure; got:\n%s", output)
 	}
 
@@ -147,39 +147,39 @@ func TestRenderBackups_WithScroll(t *testing.T) {
 	t.Run("no scroll indicators when all items visible", func(t *testing.T) {
 		// Only 5 items — all fit, no scroll needed.
 		output := RenderBackups(manifests[:5], 0, 0, nil)
-		if strings.Contains(output, "↑ more") {
-			t.Errorf("should not show ↑ more indicator when scrollOffset=0")
+		if strings.Contains(output, "↑ mais") {
+			t.Errorf("should not show ↑ mais indicator when scrollOffset=0")
 		}
-		if strings.Contains(output, "↓ more") {
-			t.Errorf("should not show ↓ more indicator when all items fit")
+		if strings.Contains(output, "↓ mais") {
+			t.Errorf("should not show ↓ mais indicator when all items fit")
 		}
 	})
 
 	t.Run("shows down indicator when more items below", func(t *testing.T) {
 		output := RenderBackups(manifests, 0, 0, nil)
-		if !strings.Contains(output, "↓ more") {
-			t.Errorf("should show ↓ more indicator when list exceeds BackupMaxVisible; got:\n%s", output)
+		if !strings.Contains(output, "↓ mais") {
+			t.Errorf("should show ↓ mais indicator when list exceeds BackupMaxVisible; got:\n%s", output)
 		}
-		if strings.Contains(output, "↑ more") {
-			t.Errorf("should not show ↑ more indicator when scrollOffset=0; got:\n%s", output)
+		if strings.Contains(output, "↑ mais") {
+			t.Errorf("should not show ↑ mais indicator when scrollOffset=0; got:\n%s", output)
 		}
 	})
 
 	t.Run("shows up indicator when scrolled down", func(t *testing.T) {
 		output := RenderBackups(manifests, 5, 5, nil)
-		if !strings.Contains(output, "↑ more") {
-			t.Errorf("should show ↑ more indicator when scrolled down; got:\n%s", output)
+		if !strings.Contains(output, "↑ mais") {
+			t.Errorf("should show ↑ mais indicator when scrolled down; got:\n%s", output)
 		}
 	})
 
 	t.Run("shows both indicators when in middle of long list", func(t *testing.T) {
 		// 15 items, scrolled to offset 3, cursor at 3 — 10 items visible (3..12), more above and below.
 		output := RenderBackups(manifests, 3, 3, nil)
-		if !strings.Contains(output, "↑ more") {
-			t.Errorf("should show ↑ more indicator; got:\n%s", output)
+		if !strings.Contains(output, "↑ mais") {
+			t.Errorf("should show ↑ mais indicator; got:\n%s", output)
 		}
-		if !strings.Contains(output, "↓ more") {
-			t.Errorf("should show ↓ more indicator; got:\n%s", output)
+		if !strings.Contains(output, "↓ mais") {
+			t.Errorf("should show ↓ mais indicator; got:\n%s", output)
 		}
 	})
 }
@@ -200,11 +200,11 @@ func TestRenderDeleteConfirm(t *testing.T) {
 	}
 
 	lower := strings.ToLower(output)
-	if !strings.Contains(lower, "delete") {
-		t.Errorf("RenderDeleteConfirm should show 'delete' option; got:\n%s", output)
+	if !strings.Contains(lower, "excluir") {
+		t.Errorf("RenderDeleteConfirm should show 'excluir' option; got:\n%s", output)
 	}
-	if !strings.Contains(lower, "cancel") {
-		t.Errorf("RenderDeleteConfirm should show 'cancel' option; got:\n%s", output)
+	if !strings.Contains(lower, "cancelar") {
+		t.Errorf("RenderDeleteConfirm should show 'cancelar' option; got:\n%s", output)
 	}
 }
 
@@ -223,7 +223,7 @@ func TestRenderDeleteResult_Success(t *testing.T) {
 	}
 
 	lower := strings.ToLower(output)
-	if !strings.Contains(lower, "deleted") && !strings.Contains(lower, "success") {
+	if !strings.Contains(lower, "excluído") && !strings.Contains(lower, "sucesso") {
 		t.Errorf("RenderDeleteResult(nil err) should show success message; got:\n%s", output)
 	}
 }
@@ -239,7 +239,7 @@ func TestRenderDeleteResult_Error(t *testing.T) {
 	output := RenderDeleteResult(manifest, fmt.Errorf("%s", errText))
 
 	lower := strings.ToLower(output)
-	if !strings.Contains(lower, "fail") && !strings.Contains(lower, "error") {
+	if !strings.Contains(lower, "falha") && !strings.Contains(lower, "erro") {
 		t.Errorf("RenderDeleteResult(err) should show failure; got:\n%s", output)
 	}
 
@@ -248,10 +248,10 @@ func TestRenderDeleteResult_Error(t *testing.T) {
 	}
 }
 
-// TestRenderBackups_PinIndicator verifies that a pinned backup shows [pinned]
+// TestRenderBackups_PinIndicator verifies that a pinned backup shows [fixado]
 // in the backup list and that the help text includes "p: pin/unpin".
 func TestRenderBackups_PinIndicator(t *testing.T) {
-	t.Run("pinned backup shows [pinned] indicator", func(t *testing.T) {
+	t.Run("pinned backup shows [fixado] indicator", func(t *testing.T) {
 		manifests := []backup.Manifest{
 			{
 				ID:        "backup-pinned",
@@ -269,12 +269,12 @@ func TestRenderBackups_PinIndicator(t *testing.T) {
 
 		output := RenderBackups(manifests, 0, 0, nil)
 
-		if !strings.Contains(output, "[pinned]") {
-			t.Errorf("RenderBackups should show [pinned] for pinned backup; got:\n%s", output)
+		if !strings.Contains(output, "[fixado]") {
+			t.Errorf("RenderBackups should show [fixado] for pinned backup; got:\n%s", output)
 		}
 	})
 
-	t.Run("unpinned backup has no [pinned] indicator", func(t *testing.T) {
+	t.Run("unpinned backup has no [fixado] indicator", func(t *testing.T) {
 		manifests := []backup.Manifest{
 			{
 				ID:        "backup-only",
@@ -286,8 +286,8 @@ func TestRenderBackups_PinIndicator(t *testing.T) {
 
 		output := RenderBackups(manifests, 0, 0, nil)
 
-		if strings.Contains(output, "[pinned]") {
-			t.Errorf("RenderBackups should NOT show [pinned] for unpinned backup; got:\n%s", output)
+		if strings.Contains(output, "[fixado]") {
+			t.Errorf("RenderBackups should NOT show [fixado] for unpinned backup; got:\n%s", output)
 		}
 	})
 

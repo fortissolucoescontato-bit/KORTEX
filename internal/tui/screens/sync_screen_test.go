@@ -14,11 +14,11 @@ func TestRenderSync_ConfirmState(t *testing.T) {
 	out := RenderSync(0, nil, false /*operationRunning*/, false /*hasSyncRun*/, 0)
 
 	lower := strings.ToLower(out)
-	if !strings.Contains(lower, "sync") {
-		t.Errorf("RenderSync(confirm) should contain 'sync'; got:\n%s", out)
+	if !strings.Contains(lower, "sincroniza") {
+		t.Errorf("RenderSync(confirm) should contain 'sincronizar'; got:\n%s", out)
 	}
 	// Should show a prompt to press enter.
-	if !strings.Contains(lower, "enter") && !strings.Contains(lower, "confirm") {
+	if !strings.Contains(lower, "enter") && !strings.Contains(lower, "confirmar") {
 		t.Errorf("RenderSync(confirm) should show enter/confirm prompt; got:\n%s", out)
 	}
 }
@@ -29,8 +29,8 @@ func TestRenderSync_RunningState(t *testing.T) {
 	out := RenderSync(0, nil, true /*operationRunning*/, false, 0)
 
 	lower := strings.ToLower(out)
-	if !strings.Contains(lower, "syncing") && !strings.Contains(lower, "please wait") {
-		t.Errorf("RenderSync(running) should show 'syncing' or 'please wait'; got:\n%s", out)
+	if !strings.Contains(lower, "sincronizando") && !strings.Contains(lower, "por favor, aguarde") {
+		t.Errorf("RenderSync(running) should show 'sincronizando' or 'por favor, aguarde'; got:\n%s", out)
 	}
 }
 
@@ -44,8 +44,8 @@ func TestRenderSync_ResultWithFilesChanged(t *testing.T) {
 		t.Errorf("RenderSync(filesChanged=5) should show '5'; got:\n%s", out)
 	}
 	lower := strings.ToLower(out)
-	if !strings.Contains(lower, "sync") {
-		t.Errorf("RenderSync(result) should mention 'sync'; got:\n%s", out)
+	if !strings.Contains(lower, "sincroniza") {
+		t.Errorf("RenderSync(result) should mention 'sincronizar'; got:\n%s", out)
 	}
 }
 
@@ -56,7 +56,7 @@ func TestRenderSync_ResultWithError(t *testing.T) {
 	out := RenderSync(0, syncErr, false, true /*hasSyncRun*/, 0)
 
 	lower := strings.ToLower(out)
-	if !strings.Contains(lower, "fail") && !strings.Contains(lower, "error") {
+	if !strings.Contains(lower, "falha") && !strings.Contains(lower, "erro") {
 		t.Errorf("RenderSync(error) should show failure indicator; got:\n%s", out)
 	}
 	if !strings.Contains(out, syncErr.Error()) {
@@ -83,8 +83,8 @@ func TestRenderSync_TitleAlwaysPresent(t *testing.T) {
 	for _, s := range states {
 		t.Run(s.name, func(t *testing.T) {
 			out := RenderSync(s.filesChanged, s.syncErr, s.operationRunning, s.hasSyncRun, 0)
-			if !strings.Contains(out, "Sync") {
-				t.Errorf("RenderSync state=%q should contain 'Sync'; got:\n%s", s.name, out)
+			if !strings.Contains(out, "Sincronizar") {
+				t.Errorf("RenderSync state=%q should contain 'Sincronizar'; got:\n%s", s.name, out)
 			}
 		})
 	}
@@ -96,8 +96,8 @@ func TestRenderSync_ZeroFilesChangedWithNoError(t *testing.T) {
 	out := RenderSync(0, nil, false, true /*hasSyncRun*/, 0)
 
 	lower := strings.ToLower(out)
-	if !strings.Contains(lower, "sync complete") && !strings.Contains(lower, "complete") &&
-		!strings.Contains(lower, "no agents") {
+	if !strings.Contains(lower, "sincronização concluída") && !strings.Contains(lower, "concluída") &&
+		!strings.Contains(lower, "nenhum agente") {
 		t.Errorf("RenderSync(0 files, no error) should show completion; got:\n%s", out)
 	}
 }

@@ -13,7 +13,7 @@ func TestRenderPersonaClarifiesCustomKeepsExistingPersona(t *testing.T) {
 	if !strings.Contains(out, "custom") {
 		t.Fatalf("RenderPersona missing custom option; output:\n%s", out)
 	}
-	if !strings.Contains(out, "Keep your existing persona unmanaged") {
+	if !strings.Contains(out, "Mantém sua persona atual") {
 		t.Fatalf("RenderPersona missing custom persona clarification; output:\n%s", out)
 	}
 	if strings.Contains(out, "Bring your own persona instructions") {
@@ -24,7 +24,7 @@ func TestRenderPersonaClarifiesCustomKeepsExistingPersona(t *testing.T) {
 func TestRenderPresetClarifiesCustomManualSelection(t *testing.T) {
 	out := RenderPreset(model.PresetCustom, 3)
 
-	if !strings.Contains(out, "Choose components and skills manually") {
+	if !strings.Contains(out, "Escolher componentes manualmente") {
 		t.Fatalf("RenderPreset missing custom preset clarification; output:\n%s", out)
 	}
 	if strings.Contains(out, "Pick individual components yourself") {

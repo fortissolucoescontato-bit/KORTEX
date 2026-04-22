@@ -654,10 +654,9 @@ func TestRegistryContents(t *testing.T) {
 	expected := map[string]struct {
 		owner string
 		repo  string
-	}{
-		"kortex": {owner: "fortissolucoescontato-bit", repo: "kortex"},
-		"engram":    {owner: "fortissolucoescontato-bit", repo: "engram"},
-		"kortex":       {owner: "fortissolucoescontato-bit", repo: "carbon-guardian-angel"},
+		"kortex":                {owner: "fortissolucoescontato-bit", repo: "kortex"},
+		"engram":                {owner: "fortissolucoescontato-bit", repo: "engram"},
+		"carbon-guardian-angel": {owner: "fortissolucoescontato-bit", repo: "carbon-guardian-angel"},
 	}
 
 	for _, tool := range Tools {
