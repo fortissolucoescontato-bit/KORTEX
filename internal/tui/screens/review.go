@@ -86,17 +86,29 @@ func joinIDs[T ~string](values []T) string {
 }
 
 func reviewPersonaLabel(persona model.PersonaID) string {
-	if persona == model.PersonaCustom {
+	switch persona {
+	case model.PersonaKortex:
+		return "Elite (Analista Nexo-Fortis)"
+	case model.PersonaNeutral:
+		return "Neutro (Execução Técnica)"
+	case model.PersonaCustom:
 		return "manter persona atual (não gerenciada)"
+	default:
+		return string(persona)
 	}
-
-	return string(persona)
 }
 
 func reviewPresetLabel(preset model.PresetID) string {
-	if preset == model.PresetCustom {
+	switch preset {
+	case model.PresetFullKortex:
+		return "Ecossistema Completo"
+	case model.PresetEcosystemOnly:
+		return "Apenas Ecossistema"
+	case model.PresetMinimal:
+		return "Mínimo"
+	case model.PresetCustom:
 		return "escolher componentes e skills manualmente"
+	default:
+		return string(preset)
 	}
-
-	return string(preset)
 }

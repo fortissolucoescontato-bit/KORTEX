@@ -52,7 +52,7 @@ var skillLabels = map[model.SkillID]string{
 
 // SkillPickerOptions returns the action buttons shown after the skill checkboxes.
 func SkillPickerOptions() []string {
-	return []string{"Continue", "Back"}
+	return []string{"Continuar", "Voltar"}
 }
 
 // AllSkillsOrdered returns all skills in display order: SDD group first, then Foundation.
@@ -69,9 +69,9 @@ func SkillPickerOptionCount() int {
 func RenderSkillPicker(selectedSkills []model.SkillID, cursor int) string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("Select Skills"))
+	b.WriteString(styles.TitleStyle.Render("Selecione as Skills"))
 	b.WriteString("\n\n")
-	b.WriteString(styles.SubtextStyle.Render("Toggle skills with enter or space. All are pre-selected by default."))
+	b.WriteString(styles.SubtextStyle.Render("Alterne as skills com enter ou espaço. Todas vêm pré-selecionadas por padrão."))
 	b.WriteString("\n\n")
 
 	selectedSet := make(map[model.SkillID]struct{}, len(selectedSkills))
@@ -82,7 +82,7 @@ func RenderSkillPicker(selectedSkills []model.SkillID, cursor int) string {
 	allSkills := AllSkillsOrdered()
 
 	// ── SDD Skills group ──────────────────────────────────────────────────────
-	b.WriteString(styles.HeadingStyle.Render("SDD Skills"))
+	b.WriteString(styles.HeadingStyle.Render("Skills SDD"))
 	b.WriteString("\n")
 
 	for idx, skillID := range sddSkillIDs {
@@ -95,7 +95,7 @@ func RenderSkillPicker(selectedSkills []model.SkillID, cursor int) string {
 	b.WriteString("\n")
 
 	// ── Foundation Skills group ───────────────────────────────────────────────
-	b.WriteString(styles.HeadingStyle.Render("Foundation Skills"))
+	b.WriteString(styles.HeadingStyle.Render("Skills de Base"))
 	b.WriteString("\n")
 
 	for i, skillID := range foundationSkillIDs {
@@ -112,7 +112,7 @@ func RenderSkillPicker(selectedSkills []model.SkillID, cursor int) string {
 	actionOffset := cursor - len(allSkills)
 	b.WriteString(renderOptions(SkillPickerOptions(), actionOffset))
 	b.WriteString("\n")
-	b.WriteString(styles.HelpStyle.Render("j/k: navigate • space/enter: toggle • esc: back"))
+	b.WriteString(styles.HelpStyle.Render("j/k: navegar • espaço/enter: alternar • esc: voltar"))
 
 	return b.String()
 }

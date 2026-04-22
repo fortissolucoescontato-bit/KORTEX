@@ -16,8 +16,15 @@ func PresetOptions() []model.PresetID {
 	}
 }
 
+var presetLabels = map[model.PresetID]string{
+	model.PresetFullKortex:    "Ecossistema Completo",
+	model.PresetEcosystemOnly: "Apenas Ecossistema",
+	model.PresetMinimal:       "Mínimo",
+	model.PresetCustom:        "Personalizado",
+}
+
 var presetDescriptions = map[model.PresetID]string{
-	model.PresetFullKortex: "Completo: memória, SDD, skills, docs, persona e segurança",
+	model.PresetFullKortex:    "Completo: memória, SDD, skills, docs, persona e segurança",
 	model.PresetEcosystemOnly: "Apenas ferramentas core: memória, SDD, skills e docs (sem persona/segurança)",
 	model.PresetMinimal:       "Apenas memória persistente Engram",
 	model.PresetCustom:        "Escolher componentes manualmente; mantém persona e configurações atuais",
@@ -32,7 +39,8 @@ func RenderPreset(selected model.PresetID, cursor int) string {
 	for idx, preset := range PresetOptions() {
 		isSelected := preset == selected
 		focused := idx == cursor
-		b.WriteString(renderRadio(string(preset), isSelected, focused))
+		label := presetLabels[preset]
+		b.WriteString(renderRadio(label, isSelected, focused))
 		b.WriteString(styles.SubtextStyle.Render("    "+presetDescriptions[preset]) + "\n")
 	}
 

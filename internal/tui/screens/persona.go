@@ -11,6 +11,12 @@ func PersonaOptions() []model.PersonaID {
 	return []model.PersonaID{model.PersonaKortex, model.PersonaNeutral, model.PersonaCustom}
 }
 
+var personaLabels = map[model.PersonaID]string{
+	model.PersonaKortex:  "Elite (Analista Nexo-Fortis)",
+	model.PersonaNeutral: "Neutro (Execução Técnica)",
+	model.PersonaCustom:  "Customizado",
+}
+
 var personaDescriptions = map[model.PersonaID]string{
 	model.PersonaKortex:  "Analista de Elite Nexo-Fortis: Mentor estratégico 360°. Panorama completo com foco em aprendizado e proatividade.",
 	model.PersonaNeutral: "Persona Neutra: Tom profissional e polido para execução técnica direta.",
@@ -28,7 +34,8 @@ func RenderPersona(selected model.PersonaID, cursor int) string {
 	for idx, persona := range PersonaOptions() {
 		isSelected := persona == selected
 		focused := idx == cursor
-		b.WriteString(renderRadio(string(persona), isSelected, focused))
+		label := personaLabels[persona]
+		b.WriteString(renderRadio(label, isSelected, focused))
 		b.WriteString(styles.SubtextStyle.Render("    " + personaDescriptions[persona]))
 		b.WriteString("\n")
 	}
