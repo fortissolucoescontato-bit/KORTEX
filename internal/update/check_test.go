@@ -353,8 +353,8 @@ func TestCheckAll(t *testing.T) {
 	// engram: 0.3.2 local < 0.4.0 remote → UpdateAvailable
 	assertResult(t, results[1], "engram", UpdateAvailable, "0.3.2", "0.4.0")
 
-	// kortex: not installed
-	assertResult(t, results[2], "kortex", NotInstalled, "", "2.0.0")
+	// carbon-guardian-angel: not installed
+	assertResult(t, results[2], "carbon-guardian-angel", NotInstalled, "", "2.0.0")
 }
 
 func TestCheckAll_NetworkError(t *testing.T) {
@@ -480,13 +480,13 @@ func TestUpdateHint(t *testing.T) {
 			name:    "engram linux",
 			tool:    ToolInfo{Name: "engram"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
-			want:    "kortex upgrade (downloads pre-built binary)",
+			want:    "kortex upgrade (baixa o binário pré-compilado)",
 		},
 		{
 			name:    "engram windows",
 			tool:    ToolInfo{Name: "engram"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget"},
-			want:    "kortex upgrade (downloads pre-built binary)",
+			want:    "kortex upgrade (baixa o binário pré-compilado)",
 		},
 		{
 			name:    "kortex macOS brew",
@@ -498,7 +498,7 @@ func TestUpdateHint(t *testing.T) {
 			name:    "kortex linux",
 			tool:    ToolInfo{Name: "kortex"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
-			want:    "See https://github.com/fortissolucoescontato-bit/carbon-guardian-angel",
+			want:    "curl -fsSL https://raw.githubusercontent.com/fortissolucoescontato-bit/kortex/main/scripts/install.sh | bash",
 		},
 		{
 			name:    "unknown tool",
@@ -654,6 +654,7 @@ func TestRegistryContents(t *testing.T) {
 	expected := map[string]struct {
 		owner string
 		repo  string
+	}{
 		"kortex":                {owner: "fortissolucoescontato-bit", repo: "kortex"},
 		"engram":                {owner: "fortissolucoescontato-bit", repo: "engram"},
 		"carbon-guardian-angel": {owner: "fortissolucoescontato-bit", repo: "carbon-guardian-angel"},

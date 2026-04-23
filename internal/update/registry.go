@@ -29,4 +29,12 @@ var Tools = []ToolInfo{
 		// engram: brew on macOS/Linux-brew, binary download elsewhere.
 		InstallMethod: InstallBinary,
 	},
+	{
+		Name:          "carbon-guardian-angel",
+		Owner:         "fortissolucoescontato-bit",
+		Repo:          "carbon-guardian-angel",
+		DetectCmd:     []string{"kortex", "version"},
+		VersionPrefix: "v",
+		InstallMethod: InstallBinary,
+	},
 }

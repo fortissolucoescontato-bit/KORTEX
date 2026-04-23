@@ -847,8 +847,8 @@ func TestEngramInjectFallsBackToRelativeWhenNotFound(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, `"command": "engram"`) {
-		t.Fatalf("mcp_config.json should use relative fallback 'engram'; got:\n%s", text)
+	if !strings.Contains(text, `"command": "kortex"`) {
+		t.Fatalf("mcp_config.json should use relative fallback 'kortex'; got:\n%s", text)
 	}
 }
 

@@ -14,13 +14,13 @@ func TestRenderCLI_IncompleteCheckDoesNotClaimUpToDate(t *testing.T) {
 
 	out := RenderCLI(results)
 
-	if strings.Contains(out, "All tools are up to date!") {
+	if strings.Contains(out, "Todas as ferramentas estão atualizadas!") {
 		t.Fatalf("RenderCLI must not claim all tools are up to date when checks fail:\n%s", out)
 	}
-	if !strings.Contains(out, "Update check incomplete") {
+	if !strings.Contains(out, "Verificação incompleta") {
 		t.Fatalf("RenderCLI must mention incomplete checks:\n%s", out)
 	}
-	if !strings.Contains(out, "check failed") {
+	if !strings.Contains(out, "falha na verificação") {
 		t.Fatalf("RenderCLI must surface failed rows:\n%s", out)
 	}
 }
