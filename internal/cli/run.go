@@ -520,28 +520,14 @@ func (s componentApplyStep) Run() error {
 			} else {
 				// Linux / Windows: download the pre-built binary from GitHub Releases.
 				// No Go required — engram ships pre-built binaries.
+				fmt.Print("Baixando binário Kortex-Engram...\n")
 				binaryPath, err := engramDownloadFn(s.profile)
 				if err != nil {
 					return fmt.Errorf("download engram binary: %w", err)
 				}
-				// Add the install directory to PATH so subsequent commands
-				if err == nil {
-					for _, c := range commands {
-						if err := runCommand(c[0], c[1:]...); err != nil {
-							return fmt.Errorf("falha ao instalar Kortex-Engram: %w", err)
-						}
-					}
-				} else {
-					// No Go required — engram ships pre-built binaries.
-					fmt.Print("Baixando binário Kortex-Engram...\n")
-					binaryPath, err := engramDownloadFn(s.profile)
-					if err != nil {
-						return fmt.Errorf("download engram binary: %w", err)
-					}
-					fmt.Printf("Binário baixado para: %s\n", binaryPath)
-					// Instructions to add to PATH follow at the end of Run()
-					// so that the current session (engram setup, engram.Inject → resolveEngramCommand) can find it.
-				}
+				fmt.Printf("Binário baixado para: %s\n", binaryPath)
+				// Instructions to add to PATH follow at the end of Run()
+				// so that the current session (engram setup, engram.Inject → resolveEngramCommand) can find it.
 			}
 		}
 		setupMode := engram.ParseSetupMode(os.Getenv(engram.SetupModeEnvVar))
@@ -1063,7 +1049,7 @@ func engramHealthChecks() []verify.Check {
 		{
 			ID:          "verify:kortex-engram:binary",
 			Description: "kortex (or engram) binary on PATH (restart shell if missing)",
-			Task: func() error {
+			Run: func(context.Context) error {
 				if err := engram.VerifyInstalled(); err != nil {
 					return fmt.Errorf("%w\nIf Kortex-Engram was installed via `go install`, add it to PATH:\n  %s", err, engramPathGuidance(os.Getenv("SHELL")))
 				}
@@ -1073,7 +1059,7 @@ func engramHealthChecks() []verify.Check {
 		{
 			ID:          "verify:kortex-engram:version",
 			Description: "kortex version returns valid output",
-			Task: func() error {
+			Run: func(context.Context) error {
 				if err := engram.VerifyInstalled(); err != nil {
 					return err
 				}
@@ -1084,7 +1070,7 @@ func engramHealthChecks() []verify.Check {
 		{
 			ID:          "verify:kortex-engram:health",
 			Description: "Kortex-Engram server is running (port 7437)",
-			Task: func() error {
+			Run: func(context.Context) error {
 				ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 				defer cancel()
 				return engram.VerifyHealth(ctx, "")
