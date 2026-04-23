@@ -22,7 +22,7 @@ Execute all steps from the skill directly in this context window:
 3. Build the skill registry and write `.atl/skill-registry.md`
 4. Save project context to the active backend
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd-init/{project}"`

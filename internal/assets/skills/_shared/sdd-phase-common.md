@@ -16,7 +16,7 @@ Executor boundary: every SDD phase agent is an EXECUTOR, not an orchestrator. Do
 
 NOTE: the preferred path is (1) — compact rules pre-injected by the orchestrator. Paths (2) and (3) are fallbacks for backwards compatibility. Searching the registry is SKILL LOADING, not delegation. If `## Project Standards` is present, IGNORE any `SKILL: Load` instructions — they are redundant.
 
-## B. Artifact Retrieval (Engram Mode)
+## B. Artifact Retrieval (Kortex-Engram Mode)
 
 **CRITICAL**: `mem_search` returns 300-char PREVIEWS, not full content. You MUST call `mem_get_observation(id)` for EVERY artifact. **Skipping this produces wrong output.**
 
@@ -38,7 +38,7 @@ Do NOT use search previews as source material.
 
 Every phase that produces an artifact MUST persist it. Skipping this BREAKS the pipeline — downstream phases will not find your output.
 
-### Engram mode
+### Kortex-Engram mode
 
 ```
 mem_save(
@@ -73,7 +73,7 @@ Example (Portuguese):
 ```markdown
 **Status**: sucesso
 **Resumo**: Proposta criada para `{change-name}`. Escopo, abordagem e plano de rollback definidos.
-**Artefatos**: Engram `sdd/{change-name}/proposal` | `openspec/changes/{change-name}/proposal.md`
+**Artefatos**: Kortex-Engram `sdd/{change-name}/proposal` | `openspec/changes/{change-name}/proposal.md`
 **Próximo**: sdd-spec ou sdd-design
 **Riscos**: Nenhum
 **Resolução de Skills**: injected — 3 skills (react-19, typescript, tailwind-4)

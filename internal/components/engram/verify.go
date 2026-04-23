@@ -15,8 +15,11 @@ var (
 )
 
 func VerifyInstalled() error {
+	if _, err := lookPath("kortex"); err == nil {
+		return nil
+	}
 	if _, err := lookPath("engram"); err != nil {
-		return fmt.Errorf("engram binary not found in PATH: %w", err)
+		return fmt.Errorf("neither 'kortex' nor 'engram' binary found in PATH: %w", err)
 	}
 
 	return nil
@@ -25,15 +28,20 @@ func VerifyInstalled() error {
 // VerifyVersion runs "engram version" and returns the trimmed output.
 // Returns an error if the command fails or produces no output.
 func VerifyVersion() (string, error) {
-	cmd := execCommand("engram", "version")
+	cmdName := "kortex"
+	if _, err := lookPath(cmdName); err != nil {
+		cmdName = "engram"
+	}
+
+	cmd := execCommand(cmdName, "version")
 	out, err := cmd.Output()
 	if err != nil {
-		return "", fmt.Errorf("engram version command failed: %w", err)
+		return "", fmt.Errorf("%s version command failed: %w", cmdName, err)
 	}
 
 	version := strings.TrimSpace(string(out))
 	if version == "" {
-		return "", fmt.Errorf("engram version returned empty output")
+		return "", fmt.Errorf("%s version returned empty output", cmdName)
 	}
 
 	return version, nil

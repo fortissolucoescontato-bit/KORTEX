@@ -29,7 +29,7 @@ Execute all steps from the skill directly in this context window:
 Do NOT create or modify project files — your job is verification only, not implementation.
 Do NOT fix any issues found — only report them.
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/verify-report"`

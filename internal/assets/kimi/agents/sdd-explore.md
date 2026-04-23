@@ -25,7 +25,7 @@ Execute all steps from the skill directly in this context window:
 
 Do NOT create or modify project files — your job is investigation only, not implementation.
 
-## Engram Save (mandatory when tied to a named change)
+## Kortex-Engram Save (mandatory when tied to a named change)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/explore"` (or `"sdd/explore/{topic-slug}"` if standalone)

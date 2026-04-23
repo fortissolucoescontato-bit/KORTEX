@@ -25,7 +25,7 @@ From the orchestrator:
 
 - **engram**: Read `sdd/{change-name}/proposal`, `sdd/{change-name}/spec`, `sdd/{change-name}/design`, `sdd/{change-name}/tasks`, `sdd/{change-name}/verify-report` (all required). Record all observation IDs in the archive report for traceability. Save as `sdd/{change-name}/archive-report`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`. Perform merge and archive folder moves.
-- **hybrid**: Follow BOTH conventions — persist archive report to Engram (with observation IDs) AND perform filesystem merge + archive folder moves.
+- **hybrid**: Follow BOTH conventions — persist archive report to Kortex-Engram (with observation IDs) AND perform filesystem merge + archive folder moves.
 - **none**: Return closure summary only. Do not perform archive file operations.
 
 ## What to Do
@@ -35,7 +35,7 @@ Follow **Section A** from `skills/_shared/sdd-phase-common.md`.
 
 ### Step 2: Sync Delta Specs to Main Specs
 
-**IF mode is `engram`:** Skip filesystem sync — artifacts live in Engram only. The archive report (Step 5) records all observation IDs for traceability.
+**IF mode is `engram`:** Skip filesystem sync — artifacts live in Kortex-Engram only. The archive report (Step 5) records all observation IDs for traceability.
 
 **IF mode is `none`:** Skip — no artifacts to sync.
 
@@ -69,7 +69,7 @@ openspec/changes/{change-name}/specs/{domain}/spec.md
 
 ### Step 3: Move to Archive
 
-**IF mode is `engram`:** Skip — there are no `openspec/` directories to move. The archive report in Engram serves as the audit trail.
+**IF mode is `engram`:** Skip — there are no `openspec/` directories to move. The archive report in Kortex-Engram serves as the audit trail.
 
 **IF mode is `none`:** Skip — no filesystem operations.
 
@@ -111,7 +111,7 @@ Return to the orchestrator:
 ## Change Archived
 
 **Change**: {change-name}
-**Archived to**: `openspec/changes/archive/{YYYY-MM-DD}-{change-name}/` (openspec/hybrid) | Engram archive report (engram) | inline (none)
+**Archived to**: `openspec/changes/archive/{YYYY-MM-DD}-{change-name}/` (openspec/hybrid) | Kortex-Engram archive report (engram) | inline (none)
 
 ### Specs Synced
 | Domain | Action | Details |

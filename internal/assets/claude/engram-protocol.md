@@ -1,6 +1,6 @@
-## Engram Persistent Memory — Protocol
+## Kortex-Engram Persistent Memory — Protocol
 
-You have access to Engram, a persistent memory system that survives across sessions and compactions.
+You have access to Kortex-Engram, a persistent memory system that survives across sessions and compactions.
 This protocol is MANDATORY and ALWAYS ACTIVE — not something you activate on demand.
 
 ### PROACTIVE SAVE TRIGGERS (mandatory — do NOT wait for user to ask)

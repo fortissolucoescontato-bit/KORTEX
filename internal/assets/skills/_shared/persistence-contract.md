@@ -6,7 +6,7 @@ The orchestrator passes `artifact_store.mode` with one of: `engram | openspec | 
 
 The orchestrator ASKs the user which mode they want when `/sdd-new`, `/sdd-ff`, or `/sdd-continue` is invoked for the first time in a session. The choice is cached for the session.
 
-Default (if user doesn't specify): if Engram is available → `engram`. Otherwise → `none`.
+Default (if user doesn't specify): if Kortex-Engram is available → `engram`. Otherwise → `none`.
 
 ## Mode Roles
 
@@ -28,26 +28,26 @@ Default (if user doesn't specify): if Engram is available → `engram`. Otherwis
 
 ### `engram` mode limitation
 
-Engram uses `topic_key`-based upserts. Re-running a phase for the same change **overwrites** the previous version — no revision history is kept. The archive phase saves a summary report, not the full artifact folder. For iteration history or team collaboration, use `openspec` or `hybrid`.
+Kortex-Engram uses `topic_key`-based upserts. Re-running a phase for the same change **overwrites** the previous version — no revision history is kept. The archive phase saves a summary report, not the full artifact folder. For iteration history or team collaboration, use `openspec` or `hybrid`.
 
 ## Behavior Per Mode
 
 | Mode | Read from | Write to | Project files |
 |------|-----------|----------|---------------|
-| `engram` | Engram | Engram | Never |
+| `engram` | Kortex-Engram | Kortex-Engram | Never |
 | `openspec` | Filesystem | Filesystem | Yes |
-| `hybrid` | Engram (primary) + Filesystem (fallback) | Both | Yes |
+| `hybrid` | Kortex-Engram (primary) + Filesystem (fallback) | Both | Yes |
 | `none` | Orchestrator prompt context | Nowhere | Never |
 
 ### Hybrid Mode
 
-Persists every artifact to BOTH Engram and OpenSpec simultaneously:
-- Engram: cross-session recovery, compaction survival, deterministic search
+Persists every artifact to BOTH Kortex-Engram and OpenSpec simultaneously:
+- Kortex-Engram: cross-session recovery, compaction survival, deterministic search
 - OpenSpec: human-readable files, version-controllable artifacts
 
-Write to Engram (per `engram-convention.md`) AND to filesystem (per `openspec-convention.md`) for every artifact.
+Write to Kortex-Engram (per `engram-convention.md`) AND to filesystem (per `openspec-convention.md`) for every artifact.
 
-Read priority: Engram first; fall back to filesystem if Engram returns no results.
+Read priority: Kortex-Engram first; fall back to filesystem if Kortex-Engram returns no results.
 Write behavior: both writes MUST succeed for the operation to be complete.
 Token cost warning: hybrid consumes MORE tokens per operation. Use only when you need both cross-session persistence AND local file artifacts.
 
@@ -59,15 +59,15 @@ The orchestrator persists DAG state after each phase transition to enable SDD re
 |------|--------------|---------------|
 | `engram` | `mem_save(topic_key: "sdd/{change-name}/state")` | `mem_search("sdd/*/state")` → `mem_get_observation(id)` |
 | `openspec` | Write `openspec/changes/{change-name}/state.yaml` | Read `openspec/changes/{change-name}/state.yaml` |
-| `hybrid` | Both: `mem_save` AND write `state.yaml` | Engram first; filesystem fallback |
+| `hybrid` | Both: `mem_save` AND write `state.yaml` | Kortex-Engram first; filesystem fallback |
 | `none` | Not possible — warn user | Not possible |
 
 ## Common Rules
 
 - `none` → do NOT create or modify any project files; return results inline only
-- `engram` → do NOT write any project files; persist to Engram and return observation IDs
+- `engram` → do NOT write any project files; persist to Kortex-Engram and return observation IDs
 - `openspec` → write files ONLY to paths defined in `openspec-convention.md`
-- `hybrid` → persist to BOTH Engram AND filesystem; follow both conventions
+- `hybrid` → persist to BOTH Kortex-Engram AND filesystem; follow both conventions
 - NEVER force `openspec/` creation unless orchestrator explicitly passed `openspec` or `hybrid`
 - If unsure which mode to use, default to `none`
 

@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "engram": {
+    "kortex-engram": {
       "args": [
         "mcp",
         "--tools=agent"

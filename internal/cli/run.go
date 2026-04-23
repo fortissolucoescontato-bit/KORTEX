@@ -525,28 +525,43 @@ func (s componentApplyStep) Run() error {
 					return fmt.Errorf("download engram binary: %w", err)
 				}
 				// Add the install directory to PATH so subsequent commands
-				// (engram setup, engram.Inject → resolveEngramCommand) can find it.
-				// On Windows this also persists the change to the user registry via PowerShell.
-				binDir := filepath.Dir(binaryPath)
-				if err := system.AddToUserPath(binDir); err != nil {
-					// Non-fatal: warn but continue — the binary was downloaded successfully.
-					fmt.Fprintf(os.Stderr, "WARNING: could not add %s to PATH: %v\n", binDir, err)
+				if err == nil {
+					for _, c := range commands {
+						if err := runCommand(c[0], c[1:]...); err != nil {
+							return fmt.Errorf("falha ao instalar Kortex-Engram: %w", err)
+						}
+					}
+				} else {
+					// No Go required — engram ships pre-built binaries.
+					fmt.Print("Baixando binário Kortex-Engram...\n")
+					binaryPath, err := engramDownloadFn(s.profile)
+					if err != nil {
+						return fmt.Errorf("download engram binary: %w", err)
+					}
+					fmt.Printf("Binário baixado para: %s\n", binaryPath)
+					// Instructions to add to PATH follow at the end of Run()
+					// so that the current session (engram setup, engram.Inject → resolveEngramCommand) can find it.
 				}
 			}
 		}
 		setupMode := engram.ParseSetupMode(os.Getenv(engram.SetupModeEnvVar))
 		setupStrict := engram.ParseSetupStrict(os.Getenv(engram.SetupStrictEnvVar))
-		attemptedSlugs := make(map[string]struct{}, len(adapters))
 		for _, adapter := range adapters {
 			if engram.ShouldAttemptSetup(setupMode, adapter.Agent()) {
 				slug, _ := engram.SetupAgentSlug(adapter.Agent())
-				if _, seen := attemptedSlugs[slug]; !seen {
-					if err := runCommand("engram", "setup", slug); err != nil {
+				if slug != "" {
+					fmt.Printf("Configurando Kortex-Engram para %s...\n", adapter.Agent())
+					// Attempt to use 'kortex' first
+					cmdToRun := "kortex"
+					if _, err := cmdLookPath(cmdToRun); err != nil {
+						cmdToRun = "engram"
+					}
+					if err := runCommand(cmdToRun, "setup", slug); err != nil {
 						if setupStrict {
 							return fmt.Errorf("engram setup for %q: %w", adapter.Agent(), err)
 						}
+						fmt.Printf("Aviso: falha no setup automático do Kortex-Engram para %q. Continuando...\n", adapter.Agent())
 					}
-					attemptedSlugs[slug] = struct{}{}
 				}
 			}
 			if _, err := engram.Inject(s.homeDir, adapter); err != nil {
@@ -834,25 +849,17 @@ func componentPaths(homeDir string, selection model.Selection, adapters []agents
 	for _, adapter := range adapters {
 		switch component {
 		case model.ComponentEngram:
-			switch adapter.MCPStrategy() {
-			case model.StrategySeparateMCPFiles:
-				paths = append(paths, adapter.MCPConfigPath(homeDir, "engram"))
-			case model.StrategyMergeIntoSettings:
-				if p := adapter.SettingsPath(homeDir); p != "" {
-					paths = append(paths, p)
+			for _, adapter := range adapters {
+				paths = append(paths, adapter.MCPConfigPath(homeDir, "kortex-engram"))
+				if p := adapter.MCPConfigPath(homeDir, "kortex-engram"); p != "" {
+					paths = append(paths, filepath.Dir(p))
 				}
-			case model.StrategyMCPConfigFile:
-				if p := adapter.MCPConfigPath(homeDir, "engram"); p != "" {
-					paths = append(paths, p)
-				}
-				if adapter.Agent() == model.AgentAntigravity {
-					if p := adapter.SettingsPath(homeDir); p != "" {
-						paths = append(paths, p)
-					}
-				}
-			case model.StrategyTOMLFile:
-				if p := adapter.MCPConfigPath(homeDir, "engram"); p != "" {
-					paths = append(paths, p)
+				if p := adapter.MCPConfigPath(homeDir, "kortex-engram"); p != "" {
+					skillDir := adapter.SkillsDir(homeDir)
+					paths = append(paths,
+						filepath.Join(skillDir, "_shared", "engram-convention.md"),
+						filepath.Join(skillDir, "_shared", "kortex-convention.md"),
+					)
 				}
 			}
 			if adapter.SystemPromptStrategy() == model.StrategyMarkdownSections {
@@ -1054,27 +1061,33 @@ func hasComponent(components []model.ComponentID, target model.ComponentID) bool
 func engramHealthChecks() []verify.Check {
 	return []verify.Check{
 		{
-			ID:          "verify:engram:binary",
-			Description: "engram binary on PATH (restart shell if missing)",
-			Soft:        true,
-			Run: func(context.Context) error {
+			ID:          "verify:kortex-engram:binary",
+			Description: "kortex (or engram) binary on PATH (restart shell if missing)",
+			Task: func() error {
 				if err := engram.VerifyInstalled(); err != nil {
-					return fmt.Errorf("%w\nIf engram was installed via `go install`, add it to PATH:\n  %s", err, engramPathGuidance(os.Getenv("SHELL")))
+					return fmt.Errorf("%w\nIf Kortex-Engram was installed via `go install`, add it to PATH:\n  %s", err, engramPathGuidance(os.Getenv("SHELL")))
 				}
 				return nil
 			},
 		},
 		{
-			ID:          "verify:engram:version",
-			Description: "engram version returns valid output",
-			Soft:        true,
-			Run: func(context.Context) error {
+			ID:          "verify:kortex-engram:version",
+			Description: "kortex version returns valid output",
+			Task: func() error {
 				if err := engram.VerifyInstalled(); err != nil {
-					// Binary not on PATH — skip version check gracefully.
-					return nil
+					return err
 				}
 				_, err := engram.VerifyVersion()
 				return err
+			},
+		},
+		{
+			ID:          "verify:kortex-engram:health",
+			Description: "Kortex-Engram server is running (port 7437)",
+			Task: func() error {
+				ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+				defer cancel()
+				return engram.VerifyHealth(ctx, "")
 			},
 		},
 	}

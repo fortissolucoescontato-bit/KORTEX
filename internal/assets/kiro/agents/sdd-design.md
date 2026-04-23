@@ -30,7 +30,7 @@ Execute all steps from the skill directly in this context window:
 5. Include sequence diagrams for complex flows (Mermaid or ASCII)
 6. Persist design to active backend (engram, openspec, or hybrid)
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/design"`

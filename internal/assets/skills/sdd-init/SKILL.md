@@ -34,7 +34,7 @@ You are an EXECUTOR for this phase, not the orchestrator. Do the initialization 
 
   (See `skills/_shared/engram-convention.md` for full naming conventions.)
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Run full bootstrap.
-- If mode is `hybrid`: Read and follow BOTH convention files. Run openspec bootstrap AND persist context to Engram.
+- If mode is `hybrid`: Read and follow BOTH convention files. Run openspec bootstrap AND persist context to Kortex-Engram.
 - If mode is `none`: Return detected context without writing project files.
 
 ## What to Do
@@ -173,7 +173,7 @@ rules:
 
 **This step is MANDATORY — do NOT skip it.**
 
-Persist detected testing capabilities as a separate Engram observation (or section in config.yaml for openspec). This cache prevents re-detection on every `sdd-apply` and `sdd-verify` run.
+Persist detected testing capabilities as a separate Kortex-Engram observation (or section in config.yaml for openspec). This cache prevents re-detection on every `sdd-apply` and `sdd-verify` run.
 
 If mode is `engram` or `hybrid`:
 ```
@@ -278,16 +278,16 @@ Return:
 | Verificador de Tipos | {tool} ✅ / ❌ |
 
 ### Contexto Salvo
-O contexto do projeto foi persistido no Engram.
-- **Engram ID**: #{observation-id}
+O contexto do projeto foi persistido no Kortex-Engram.
+- **Kortex-Engram ID**: #{observation-id}
 - **Chave do Tópico**: sdd-init/{project-name}
 - **ID de Capacidades**: #{capabilities-observation-id}
 - **Chave de Capacidades**: sdd/{project-name}/testing-capabilities
 
 Nenhum arquivo de projeto foi criado.
 
-### ⚠️ Notas do Modo Engram
-O modo Engram é ideal para **desenvolvedores solo** que buscam iteração rápida. Esteja ciente:
+### ⚠️ Notas do Modo Kortex-Engram
+O modo Kortex-Engram é ideal para **desenvolvedores solo** que buscam iteração rápida. Esteja ciente:
 - **Sem histórico de iteração**: rodar uma fase novamente (ex: `sdd-spec`) sobrescreve a versão anterior. Apenas o artefato mais recente é mantido.
 - **Não compartilhável**: o engram é um banco de dados local — outros membros da equipe não verão seus artefatos SDD.
 - **Trilha de auditoria parcial**: a fase de arquivamento salva um relatório de resumo, mas não a pasta completa de artefatos.

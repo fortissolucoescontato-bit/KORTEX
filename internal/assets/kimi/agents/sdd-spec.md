@@ -22,7 +22,7 @@ Execute all steps from the skill directly in this context window:
 3. Write acceptance scenarios in Given/When/Then format for each requirement
 4. Persist spec to active backend
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/spec"`

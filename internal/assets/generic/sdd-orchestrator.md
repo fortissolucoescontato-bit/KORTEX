@@ -61,7 +61,7 @@ Meta-commands (type directly — orchestrator handles them, won't appear in auto
 
 Before executing ANY SDD command (`/sdd-new`, `/sdd-ff`, `/sdd-continue`, `/sdd-explore`, `/sdd-apply`, `/sdd-verify`, `/sdd-archive`), check if `sdd-init` has been run for this project:
 
-1. Search Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
+1. Search Kortex-Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
 2. If found → init was done, proceed normally
 3. If NOT found → run `sdd-init` FIRST (delegate to sdd-init sub-agent), THEN proceed with the requested command
 
@@ -99,7 +99,7 @@ When the user invokes `/sdd-new`, `/sdd-ff`, or `/sdd-continue` for the first ti
 - **`openspec`**: File-based. Creates `openspec/` directory with full artifact trail. Committable, shareable with team, full git history.
 - **`hybrid`**: Both — files for team sharing + engram for cross-session recovery. Higher token cost.
 
-If the user doesn't specify, detect: if engram is available → default to `engram`. Otherwise → `none`.
+If the user doesn't specify, detect: if kortex-engram is available → default to `engram`. Otherwise → `none`.
 
 Cache the artifact store choice for the session. Pass it as `artifact_store.mode` to every sub-agent launch.
 
@@ -211,7 +211,7 @@ When launching `sdd-apply` for a continuation batch (not the first batch):
 
 This prevents progress loss across batches. The sub-agent is responsible for read-merge-write, but the orchestrator MUST tell it that previous progress exists.
 
-#### Engram Topic Key Format
+#### Kortex-Engram Topic Key Format
 
 | Artifact | Topic Key |
 |----------|-----------|

@@ -34,7 +34,7 @@ Execute all steps from the skill directly in this context window:
 4. Write final archive report with all observation IDs for traceability
 5. Persist archive report to active backend
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/archive-report"`

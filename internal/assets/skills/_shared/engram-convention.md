@@ -1,10 +1,10 @@
-# Engram Artifact Convention (reference documentation)
+# Kortex-Engram Artifact Convention (reference documentation)
 
 NOTE: Critical engram calls (`mem_search`, `mem_save`, `mem_get_observation`) are inlined directly in each skill's SKILL.md. This document is supplementary reference — sub-agents do NOT need to read it to function.
 
 ## Naming Rules
 
-ALL SDD artifacts persisted to Engram MUST follow this deterministic naming:
+ALL SDD artifacts persisted to Kortex-Engram MUST follow this deterministic naming:
 
 ```
 title:     sdd/{change-name}/{artifact-type}
@@ -111,7 +111,7 @@ mem_search(query: "sdd/{change-name}/", project: "{project}")
 
 ## Project Name Resolution (engram v1.11.0+)
 
-Engram auto-detects the project name from the git remote at MCP startup. The `--project` flag and `ENGRAM_PROJECT` env var can override detection. All project names are normalized to lowercase and trimmed.
+Kortex-Engram auto-detects the project name from the git remote at MCP startup. The `--project` flag and `ENGRAM_PROJECT` env var can override detection. All project names are normalized to lowercase and trimmed.
 
 If the agent saves a memory under a project name that doesn't match existing observations, engram warns about potential name drift. Use `mem_merge_projects` (MCP tool) or `engram projects consolidate` (CLI) to merge variants.
 

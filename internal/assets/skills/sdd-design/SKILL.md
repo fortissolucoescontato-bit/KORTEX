@@ -25,7 +25,7 @@ From the orchestrator:
 
 - **engram**: Read `sdd/{change-name}/proposal` (required) and `sdd/{change-name}/spec` (optional — may not exist if running in parallel with sdd-spec). Save as `sdd/{change-name}/design`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`.
-- **hybrid**: Follow BOTH conventions — persist to Engram AND write `design.md` to filesystem. Retrieve dependencies from Engram (primary) with filesystem fallback.
+- **hybrid**: Follow BOTH conventions — persist to Kortex-Engram AND write `design.md` to filesystem. Retrieve dependencies from Kortex-Engram (primary) with filesystem fallback.
 - **none**: Return result only. Never create or modify project files.
 
 ## What to Do
@@ -136,7 +136,7 @@ Return to the orchestrator:
 ## Design Created
 
 **Change**: {change-name}
-**Location**: `openspec/changes/{change-name}/design.md` (openspec/hybrid) | Engram `sdd/{change-name}/design` (engram) | inline (none)
+**Location**: `openspec/changes/{change-name}/design.md` (openspec/hybrid) | Kortex-Engram `sdd/{change-name}/design` (engram) | inline (none)
 
 ### Summary
 - **Approach**: {one-line technical approach}

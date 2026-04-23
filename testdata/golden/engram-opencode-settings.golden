@@ -1,6 +1,6 @@
 {
   "mcp": {
-    "engram": {
+    "kortex-engram": {
       "command": [
         "engram",
         "mcp",

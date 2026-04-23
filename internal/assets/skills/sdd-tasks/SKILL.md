@@ -25,7 +25,7 @@ From the orchestrator:
 
 - **engram**: Read `sdd/{change-name}/proposal` (required), `sdd/{change-name}/spec` (required), `sdd/{change-name}/design` (required). Save as `sdd/{change-name}/tasks`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`.
-- **hybrid**: Follow BOTH conventions — persist to Engram AND write `tasks.md` to filesystem. Retrieve dependencies from Engram (primary) with filesystem fallback.
+- **hybrid**: Follow BOTH conventions — persist to Kortex-Engram AND write `tasks.md` to filesystem. Retrieve dependencies from Kortex-Engram (primary) with filesystem fallback.
 - **none**: Return result only. Never create or modify project files.
 
 ## What to Do
@@ -135,7 +135,7 @@ Return to the orchestrator:
 ## Tasks Created
 
 **Change**: {change-name}
-**Location**: `openspec/changes/{change-name}/tasks.md` (openspec/hybrid) | Engram `sdd/{change-name}/tasks` (engram) | inline (none)
+**Location**: `openspec/changes/{change-name}/tasks.md` (openspec/hybrid) | Kortex-Engram `sdd/{change-name}/tasks` (engram) | inline (none)
 
 ### Breakdown
 | Phase | Tasks | Focus |

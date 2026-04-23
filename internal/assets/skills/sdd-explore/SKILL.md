@@ -25,7 +25,7 @@ The orchestrator will give you:
 
 - **engram**: Optionally read `sdd-init/{project}` for project context. Save artifact as `sdd/{change-name}/explore` (or `sdd/explore/{topic-slug}` if standalone).
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`.
-- **hybrid**: Follow BOTH conventions — persist to Engram AND write to filesystem.
+- **hybrid**: Follow BOTH conventions — persist to Kortex-Engram AND write to filesystem.
 - **none**: Return result only.
 
 ### Retrieving Context

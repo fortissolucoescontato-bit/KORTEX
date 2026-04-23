@@ -31,7 +31,7 @@ const (
 type ComponentID string
 
 const (
-	ComponentEngram     ComponentID = "engram"
+	ComponentEngram     ComponentID = "kortex-engram"
 	ComponentSDD        ComponentID = "sdd"
 	ComponentSkills     ComponentID = "skills"
 	ComponentContext7   ComponentID = "context7"

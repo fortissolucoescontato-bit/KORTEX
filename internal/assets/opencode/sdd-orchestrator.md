@@ -60,7 +60,7 @@ Meta-commands (type directly - orchestrator handles them, won't appear in autoco
 
 Before executing ANY SDD command (`/sdd-new`, `/sdd-ff`, `/sdd-continue`, `/sdd-explore`, `/sdd-apply`, `/sdd-verify`, `/sdd-archive`), check if `sdd-init` has been run for this project:
 
-1. Search Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
+1. Search Kortex-Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
 2. If found -> init was done, proceed normally
 3. If NOT found -> run `sdd-init` FIRST (delegate to `sdd-init` sub-agent), THEN proceed with the requested command
 
@@ -90,7 +90,7 @@ When the user invokes `/sdd-new`, `/sdd-ff`, or `/sdd-continue` for the first ti
 - **`openspec`**: File-based. Creates `openspec/` with a shareable artifact trail.
 - **`hybrid`**: Both - files for team sharing + engram for cross-session recovery.
 
-If the user doesn't specify, detect: if engram is available -> default to `engram`. Otherwise -> `none`.
+If the user doesn't specify, detect: if kortex-engram is available -> default to `engram`. Otherwise -> `none`.
 
 Cache the artifact store choice for the session. Pass it as `artifact_store.mode` to every sub-agent launch.
 
@@ -183,7 +183,7 @@ When launching `sdd-apply` for a continuation batch:
 2. If found, add: `"PREVIOUS APPLY-PROGRESS EXISTS at topic_key 'sdd/{change-name}/apply-progress'. You MUST read it first via mem_search + mem_get_observation, merge your new progress with the existing progress, and save the combined result. Do NOT overwrite - MERGE."`
 3. If not found, no extra instruction is needed
 
-#### Engram Topic Key Format
+#### Kortex-Engram Topic Key Format
 
 | Artifact | Topic Key |
 |----------|-----------|

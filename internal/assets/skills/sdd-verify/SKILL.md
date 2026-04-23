@@ -27,7 +27,7 @@ From the orchestrator:
 
 - **engram**: Read `sdd/{change-name}/proposal`, `sdd/{change-name}/spec` (required for compliance matrix), `sdd/{change-name}/design`, `sdd/{change-name}/tasks` (all required). Save as `sdd/{change-name}/verify-report`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`. Save to `openspec/changes/{change-name}/verify-report.md`.
-- **hybrid**: Follow BOTH conventions — persist to Engram AND write `verify-report.md` to filesystem.
+- **hybrid**: Follow BOTH conventions — persist to Kortex-Engram AND write `verify-report.md` to filesystem.
 - **none**: Return the verification report inline only. Never write files.
 
 ## What to Do
@@ -340,5 +340,5 @@ Return to the orchestrator the same content you wrote to `verify-report.md`:
 - Apply any `rules.verify` from `openspec/config.yaml`
 - If Strict TDD is active, load `strict-tdd-verify.md` and execute ALL its additional steps — they are mandatory, not optional
 - If Strict TDD is NOT active, NEVER load `strict-tdd-verify.md` — zero tokens wasted on TDD checks
-- Use cached testing capabilities from Engram/config whenever possible — avoid re-detecting
+- Use cached testing capabilities from Kortex-Engram/config whenever possible — avoid re-detecting
 - Return envelope per **Section D** from `skills/_shared/sdd-phase-common.md`.

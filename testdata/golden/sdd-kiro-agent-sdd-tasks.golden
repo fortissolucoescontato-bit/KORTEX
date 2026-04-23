@@ -30,7 +30,7 @@ Execute all steps from the skill directly in this context window:
 5. Map tasks to files from the design's file-change table
 6. Persist tasks to active backend (engram, openspec, or hybrid)
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/tasks"`

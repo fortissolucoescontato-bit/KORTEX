@@ -23,7 +23,7 @@ Execute all steps from the skill directly in this context window:
 3. Teach each phase by doing it — produce real artifacts, not toy examples
 4. Save progress at each phase so the session is resumable
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd-onboard/{project}"`

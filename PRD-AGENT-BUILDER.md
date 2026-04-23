@@ -33,7 +33,7 @@ The Kortex AI ecosystem ships with a powerful set of pre-built skills and SDD ph
 Think of it as the "Create Agent" flow from Claude's `/agents` command, but:
 - **Cross-agent**: generates once, installs everywhere (Claude Code, OpenCode, Gemini CLI, Cursor, etc.)
 - **SDD-aware**: can optionally integrate as a new SDD phase or as support for an existing phase
-- **Ecosystem-native**: the generated agent has access to Engram (persistent memory), MCP servers, and follows the Kortex skill format
+- **Ecosystem-native**: the generated agent has access to Kortex-Engram (persistent memory), MCP servers, and follows the Kortex skill format
 - **Preview before install**: you see exactly what will be generated before it touches your filesystem
 
 **Before**: "I want an agent that reviews my CSS for accessibility... I guess I need to write a SKILL.md manually, figure out triggers, and copy it to 4 different directories."
@@ -203,7 +203,7 @@ The Agent Builder is a **top-level menu option** on the Welcome screen, alongsid
 │               accessibility compliance                       │
 │  Trigger: When reviewing React/JSX files for accessibility   │
 │  SDD: Supports "design" phase                                │
-│  Engram: ✓ (reads project patterns, saves a11y decisions)    │
+│  Kortex-Engram: ✓ (reads project patterns, saves a11y decisions)    │
 │                                                              │
 │  ── Generated Skill ──────────────────────────────────────   │
 │  │ # A11y Reviewer                                       │   │
@@ -336,7 +336,7 @@ CONSTRAINTS:
 - Trigger conditions MUST be precise enough to avoid false activations
 - If the user mentions SDD integration, include a section on how this skill
   interacts with the SDD phase it supports
-- Include Engram integration instructions (when to save decisions, when to search
+- Include Kortex-Engram integration instructions (when to save decisions, when to search
   for past context)
 - Generate a kebab-case name derived from the description
 
@@ -362,7 +362,7 @@ USER REQUEST:
 ADDITIONAL CONTEXT:
 - This skill will be installed across these agents: {agent_list}
 - SDD Integration: {standalone | new_phase_after_X | supports_phase_X}
-- The agent has access to Engram persistent memory (mem_save, mem_search, mem_context)
+- The agent has access to Kortex-Engram persistent memory (mem_save, mem_search, mem_context)
 - The agent can use MCP servers: {installed_mcp_list}
 ```
 
@@ -752,7 +752,7 @@ The custom agent **augments** an existing SDD phase. Example: an "a11y-reviewer"
    "a11y-reviewer" skill for accessibility validation of the design.
    ```
 3. The AI agent (being intelligent) reads the custom skill and incorporates its guidance into the design phase output
-4. The custom skill's Engram instructions tell the agent to save accessibility decisions to memory
+4. The custom skill's Kortex-Engram instructions tell the agent to save accessibility decisions to memory
 
 **What gets modified:**
 - The agent's system prompt (CLAUDE.md, AGENTS.md, etc.) gets a new marker section referencing the custom skill
@@ -770,13 +770,13 @@ The custom agent becomes a **new phase** in the SDD pipeline. Example: an "a11y-
    ```
 2. The custom skill follows the SDD phase contract:
    - Reads artifacts from the previous phase
-   - Writes its own artifact to Engram (topic key: `sdd/{change}/a11y-audit`)
+   - Writes its own artifact to Kortex-Engram (topic key: `sdd/{change}/a11y-audit`)
    - Returns the standard phase result: `status`, `executive_summary`, `artifacts`, `next_recommended`
 
 **What gets modified:**
 - A new SDD skill file is created following the phase skill pattern
 - The orchestrator's system prompt is updated with the modified dependency graph
-- The Engram topic key format is documented in the skill
+- The Kortex-Engram topic key format is documented in the skill
 
 ### 8.4 SDD Phase Positions
 
@@ -810,7 +810,7 @@ The user selects where in the pipeline to insert the new phase:
 | R-AB-08 | The Agent Builder MUST maintain a local registry of custom agents at `~/.config/kortex/custom-agents.json` | P0 |
 | R-AB-09 | The Agent Builder MUST allow the user to edit the generated skill before installation (open in $EDITOR) | P1 |
 | R-AB-10 | The Agent Builder MUST allow the user to regenerate the skill with the same prompt | P0 |
-| R-AB-11 | The Agent Builder MUST include Engram integration instructions in every generated skill | P0 |
+| R-AB-11 | The Agent Builder MUST include Kortex-Engram integration instructions in every generated skill | P0 |
 | R-AB-12 | The Agent Builder MUST handle generation engine errors gracefully with clear error messages | P0 |
 | R-AB-13 | The Agent Builder MUST support generation timeouts (configurable, default 120s) | P1 |
 | R-AB-14 | The generated skill MUST be a standalone SKILL.md file — no external dependencies | P0 |

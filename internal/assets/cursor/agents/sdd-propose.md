@@ -22,7 +22,7 @@ Execute all steps from the skill directly in this context window:
 2. Draft the proposal: intent, scope, approach, rollback plan, affected modules
 3. Persist to active backend (engram, openspec, or hybrid)
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/proposal"`

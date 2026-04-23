@@ -64,7 +64,7 @@ Do NOT invent custom `/sdd-*` command files. On Kimi, user-facing entrypoints ar
 
 Before executing ANY SDD command (`/sdd-new`, `/sdd-ff`, `/sdd-continue`, `/skill:sdd-init`, `/skill:sdd-explore`, `/skill:sdd-propose`, `/skill:sdd-spec`, `/skill:sdd-design`, `/skill:sdd-tasks`, `/skill:sdd-apply`, `/skill:sdd-verify`, `/skill:sdd-archive`, `/skill:sdd-onboard`), check if `sdd-init` has been run for this project:
 
-1. Search Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
+1. Search Kortex-Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
 2. If found → init was done, proceed normally
 3. If NOT found → run `sdd-init` FIRST by launching the `sdd-init` custom agent, THEN proceed with the requested command
 
@@ -124,7 +124,7 @@ Sub-agents get a fresh context with NO memory. The orchestrator controls context
 | `sdd-verify` | spec + tasks | `verify-report` |
 | `sdd-archive` | all artifacts | `archive-report` |
 
-### Engram Topic Key Format
+### Kortex-Engram Topic Key Format
 
 | Artifact | Topic Key |
 |----------|-----------|

@@ -59,11 +59,15 @@ func SetLookPathForTest(t interface {
 // an absolute path survives across environments where PATH is not fully
 // inherited (e.g. Windsurf, IDEs that launch without a login shell).
 func resolveEngramCommand() (string, bool) {
-	p, err := EngramLookPath("engram")
-	if err != nil || p == "" {
-		return "engram", false
+	// Try 'kortex' first (new branding)
+	if p, err := EngramLookPath("kortex"); err == nil && p != "" {
+		return p, true
 	}
-	return p, true
+	// Fallback to 'engram' (legacy)
+	if p, err := EngramLookPath("engram"); err == nil && p != "" {
+		return p, true
+	}
+	return "kortex", false
 }
 
 // engramServerJSON returns the MCP server config bytes, using the absolute
@@ -439,19 +443,28 @@ func existingMergedEngramCommand(raw []byte, agentID model.AgentID) (string, boo
 		if !ok {
 			return "", false
 		}
-		server = mcp["engram"]
+		server = mcp["kortex-engram"]
+		if server == nil {
+			server = mcp["engram"] // Fallback
+		}
 	case model.AgentVSCodeCopilot:
 		servers, ok := root["servers"].(map[string]any)
 		if !ok {
 			return "", false
 		}
-		server = servers["engram"]
+		server = servers["kortex-engram"]
+		if server == nil {
+			server = servers["engram"] // Fallback
+		}
 	default:
 		mcpServers, ok := root["mcpServers"].(map[string]any)
 		if !ok {
 			return "", false
 		}
-		server = mcpServers["engram"]
+		server = mcpServers["kortex-engram"]
+		if server == nil {
+			server = mcpServers["engram"] // Fallback
+		}
 	}
 
 	serverMap, ok := server.(map[string]any)
@@ -548,9 +561,10 @@ func isEngramCommand(cmd string) bool {
 	}
 	base := filepath.Base(cmd)
 	if runtime.GOOS == "windows" {
-		return strings.EqualFold(base, "engram.exe") || strings.EqualFold(base, "engram")
+		return strings.EqualFold(base, "kortex.exe") || strings.EqualFold(base, "kortex") ||
+			strings.EqualFold(base, "engram.exe") || strings.EqualFold(base, "engram")
 	}
-	return base == "engram"
+	return base == "kortex" || base == "engram"
 }
 
 // isAbsoluteEngramPath reports whether path is an absolute filesystem path

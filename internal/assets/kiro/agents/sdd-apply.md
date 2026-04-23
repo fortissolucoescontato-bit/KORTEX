@@ -33,7 +33,7 @@ Execute all steps from the skill directly in this context window:
 8. Mark each task `[x]` complete as you finish it
 9. Persist progress to active backend
 
-## Engram Save (mandatory)
+## Kortex-Engram Save (mandatory)
 
 After completing work, call `mem_save` with:
 - title: `"sdd/{change-name}/apply-progress"`

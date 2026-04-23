@@ -26,7 +26,7 @@ From the orchestrator:
 
 - **engram**: Read `sdd/{change-name}/proposal`, `sdd/{change-name}/spec`, `sdd/{change-name}/design`, `sdd/{change-name}/tasks` (all required — keep tasks ID for updates). Mark tasks complete via `mem_update(id: {tasks-observation-id}, content: "...")`. Save progress as `sdd/{change-name}/apply-progress`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`. Update `tasks.md` with `[x]` marks.
-- **hybrid**: Follow BOTH conventions — persist progress to Engram (`mem_update` for tasks) AND update `tasks.md` with `[x]` marks on filesystem.
+- **hybrid**: Follow BOTH conventions — persist progress to Kortex-Engram (`mem_update` for tasks) AND update `tasks.md` with `[x]` marks on filesystem.
 - **none**: Return progress only. Do not update project artifacts.
 
 ## What to Do

@@ -25,7 +25,7 @@ From the orchestrator:
 
 - **engram**: Read `sdd/{change-name}/proposal` (required). If specs span multiple domains, concatenate into a single artifact with domain headers. Save as `sdd/{change-name}/spec`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`.
-- **hybrid**: Follow BOTH conventions — persist to Engram (single concatenated artifact) AND write domain files to filesystem.
+- **hybrid**: Follow BOTH conventions — persist to Kortex-Engram (single concatenated artifact) AND write domain files to filesystem.
 - **none**: Return result only. Never create or modify project files.
 
 ## What to Do
@@ -53,7 +53,7 @@ If the proposal has no Capabilities section (older format), fall back to inferri
 
 **IF mode is `openspec` or `hybrid`:** If `openspec/specs/{domain}/spec.md` exists, read it to understand CURRENT behavior. Your delta specs describe CHANGES to this behavior.
 
-**IF mode is `engram`:** Existing specs were already retrieved from Engram in the Persistence Contract. Skip filesystem reads.
+**IF mode is `engram`:** Existing specs were already retrieved from Kortex-Engram in the Persistence Contract. Skip filesystem reads.
 
 **IF mode is `none`:** Skip — no existing specs to read.
 

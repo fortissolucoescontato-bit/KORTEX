@@ -62,7 +62,7 @@ Meta-commands (type directly — orchestrator handles them, will not appear in a
 
 Before executing ANY SDD command (`/sdd-new`, `/sdd-ff`, `/sdd-continue`, `/sdd-explore`, `/sdd-apply`, `/sdd-verify`, `/sdd-archive`), check if `sdd-init` has been run for this project:
 
-1. Search Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
+1. Search Kortex-Engram: `mem_search(query: "sdd-init/{project}", project: "{project}")`
 2. If found → init was done, proceed normally
 3. If NOT found → run `sdd-init` FIRST (delegate to sdd-init sub-agent), THEN proceed with the requested command
 
@@ -100,7 +100,7 @@ When the user invokes `/sdd-new`, `/sdd-ff`, or `/sdd-continue` for the first ti
 - **`openspec`**: File-based. Creates `openspec/` directory with full artifact trail. Committable, shareable with team, full git history.
 - **`hybrid`**: Both — files for team sharing + engram for cross-session recovery. Higher token cost.
 
-If the user doesn't specify, detect: if engram is available → default to `engram`. Otherwise → `none`.
+If the user doesn't specify, detect: if kortex-engram is available → default to `engram`. Otherwise → `none`.
 
 Cache the artifact store choice for the session. Pass it as `artifact_store.mode` to every sub-agent launch.
 
@@ -174,7 +174,7 @@ Since SDD phases run inline, YOU read and write all artifacts directly. Each pha
 | `sdd-verify` | spec + tasks + **apply-progress** | `verify-report` |
 | `sdd-archive` | all artifacts | `archive-report` |
 
-For phases with required dependencies, retrieve artifacts from Engram using topic keys before starting the phase. Pass artifact references (topic keys), NOT full content. Retrieve full content only when actively working on that phase — do not inline entire specs or designs into conversation context. Do NOT rely on conversation history alone — conversation context is lossy across sessions.
+For phases with required dependencies, retrieve artifacts from Kortex-Engram using topic keys before starting the phase. Pass artifact references (topic keys), NOT full content. Retrieve full content only when actively working on that phase — do not inline entire specs or designs into conversation context. Do NOT rely on conversation history alone — conversation context is lossy across sessions.
 
 #### Strict TDD Forwarding (MANDATORY)
 
@@ -205,7 +205,7 @@ When executing general (non-SDD) work:
 2. If you make important discoveries, decisions, or fix bugs, save them to engram via `mem_save`
 3. Do NOT rely solely on conversation history — persist important findings to engram for cross-session durability
 
-## Engram Topic Key Format
+## Kortex-Engram Topic Key Format
 
 | Artifact | Topic Key |
 |----------|-----------|
@@ -228,7 +228,7 @@ Retrieve full content via two steps:
 
 Convention files under `~/.gemini/antigravity/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
 
-DAG state is tracked in Engram under `sdd/{change-name}/state`. Update it after each phase completes so `/sdd-continue` knows which phase to run next.
+DAG state is tracked in Kortex-Engram under `sdd/{change-name}/state`. Update it after each phase completes so `/sdd-continue` knows which phase to run next.
 
 ## Recovery Rule
 

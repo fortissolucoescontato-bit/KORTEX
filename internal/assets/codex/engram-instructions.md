@@ -1,6 +1,6 @@
-## Engram Persistent Memory — Protocol
+## Kortex-Engram Persistent Memory — Protocol
 
-You have access to Engram, a persistent memory system that survives across sessions and compactions. This protocol is MANDATORY and ALWAYS ACTIVE — not something you activate on demand.
+You have access to Kortex-Engram, a persistent memory system that survives across sessions and compactions. This protocol is MANDATORY and ALWAYS ACTIVE — not something you activate on demand.
 
 ### WHEN TO SAVE (mandatory — not optional)
 
@@ -70,7 +70,7 @@ This is NOT optional. If you skip this, the next session starts blind.
 
 ### PASSIVE CAPTURE — automatic learning extraction
 
-When completing a task or subtask, include a "## Key Learnings:" section at the end of your response with numbered items. Engram will automatically extract and save these.
+When completing a task or subtask, include a "## Key Learnings:" section at the end of your response with numbered items. Kortex-Engram will automatically extract and save these.
 
 Example:
 ## Key Learnings:

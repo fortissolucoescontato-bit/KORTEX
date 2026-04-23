@@ -91,7 +91,7 @@ setup_fake_configs() {
     echo '# Fake CLAUDE.md' > "$HOME/.claude/CLAUDE.md"
 
     mkdir -p "$HOME/.claude/mcp"
-    echo '{"fake": true}' > "$HOME/.claude/mcp/engram.json"
+    echo '{"fake": true}' > "$HOME/.claude/mcp/kortex-engram.json"
 }
 
 # ---------------------------------------------------------------------------

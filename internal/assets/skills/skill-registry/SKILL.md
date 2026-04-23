@@ -171,7 +171,7 @@ mem_save(
 
 **Project**: {project name}
 **Location**: .atl/skill-registry.md
-**Engram**: {saved / not available}
+**Kortex-Engram**: {saved / not available}
 
 ### User Skills Found
 | Skill | Trigger |
