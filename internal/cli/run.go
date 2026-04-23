@@ -15,7 +15,7 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents/kimi"
 	"github.com/fortissolucoescontato-bit/kortex/internal/assets"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-engram"
 	kortex "github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-cli"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/mcp"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/permissions"

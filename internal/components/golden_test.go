@@ -19,7 +19,7 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents/vscode"
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents/windsurf"
 	"github.com/fortissolucoescontato-bit/kortex/internal/assets"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-engram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/mcp"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/persona"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/sdd"

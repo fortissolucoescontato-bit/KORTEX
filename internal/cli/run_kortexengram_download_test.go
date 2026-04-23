@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-engram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/system"
 )
 

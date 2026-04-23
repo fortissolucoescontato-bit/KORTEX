@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-engram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/system"
 	"github.com/fortissolucoescontato-bit/kortex/internal/update"
 )

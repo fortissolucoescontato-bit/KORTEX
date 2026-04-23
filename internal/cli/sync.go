@@ -12,7 +12,7 @@ import (
 
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-engram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-cli"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/mcp"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/permissions"
