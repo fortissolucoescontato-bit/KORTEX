@@ -76,12 +76,12 @@ test_dry_run_output_format() {
 
     output=$($BINARY install --dry-run 2>&1) || true
 
-    assert_output_contains "$output" "dry-run" "Output contains 'dry-run' marker"
-    assert_output_contains "$output" "Agents:" "Output contains 'Agents:' header"
+    assert_output_contains "$output" "Simulação" "Output contains 'Simulação' marker"
+    assert_output_contains "$output" "Agentes:" "Output contains 'Agentes:' header"
     assert_output_contains "$output" "Persona:" "Output contains 'Persona:' header"
     assert_output_contains "$output" "Preset:" "Output contains 'Preset:' header"
-    assert_output_contains "$output" "Components order:" "Output contains 'Components order:' header"
-    assert_output_contains "$output" "Platform decision:" "Output contains 'Platform decision:' header"
+    assert_output_contains "$output" "Ordem dos componentes:" "Output contains 'Ordem dos componentes:' header"
+    assert_output_contains "$output" "Decisão de plataforma:" "Output contains 'Decisão de plataforma:' header"
 }
 
 test_dry_run_platform_detection() {
@@ -89,7 +89,7 @@ test_dry_run_platform_detection() {
 
     output=$($BINARY install --dry-run 2>&1) || true
 
-    assert_output_contains "$output" "Platform decision" "Platform decision present in dry-run"
+    assert_output_contains "$output" "Decisão de plataforma" "Platform decision present in dry-run"
 }
 
 test_dry_run_detects_linux() {
@@ -187,8 +187,8 @@ test_preset_minimal_components() {
     # The component list should contain kortex-engram
     assert_output_contains "$output" "kortex-engram" "Minimal preset includes kortex-engram"
     # Should NOT contain sdd, skills, persona, etc.
-    assert_output_not_contains "$output" "Components order:.*sdd" "Minimal preset excludes sdd"
-    assert_output_not_contains "$output" "Components order:.*persona" "Minimal preset excludes persona"
+    assert_output_not_contains "$output" "Ordem dos componentes:.*sdd" "Minimal preset excludes sdd"
+    assert_output_not_contains "$output" "Ordem dos componentes:.*persona" "Minimal preset excludes persona"
 }
 
 test_preset_ecosystem_components() {
@@ -198,7 +198,7 @@ test_preset_ecosystem_components() {
 
     # ecosystem-only = kortex-engram, sdd, skills, context7, kortex
     local components_line
-    components_line=$(echo "$output" | grep "Components order:")
+    components_line=$(echo "$output" | grep "Ordem dos componentes:")
 
     assert_output_contains "$components_line" "kortex-engram" "Ecosystem includes kortex-engram"
     assert_output_contains "$components_line" "sdd" "Ecosystem includes sdd"
@@ -215,7 +215,7 @@ test_preset_full_components() {
     output=$($BINARY install --preset full-carbon --agent claude-code --dry-run 2>&1) || true
 
     local components_line
-    components_line=$(echo "$output" | grep "Components order:")
+    components_line=$(echo "$output" | grep "Ordem dos componentes:")
 
     assert_output_contains "$components_line" "kortex-engram" "Full includes kortex-engram"
     assert_output_contains "$components_line" "sdd" "Full includes sdd"
@@ -232,7 +232,7 @@ test_dry_run_full_preset_persona_before_sdd() {
     output=$($BINARY install --preset full-carbon --agent opencode --dry-run 2>&1) || true
 
     local components_line
-    components_line=$(echo "$output" | grep "Components order:")
+    components_line=$(echo "$output" | grep "Ordem dos componentes:")
 
     # Verify all are present
     assert_output_contains "$components_line" "persona" "Full preset has persona"
@@ -242,15 +242,15 @@ test_dry_run_full_preset_persona_before_sdd() {
     # Verify ordering: persona before kortex-engram, persona before sdd
     # Extract the order string and check persona comes first
     local order_str
-    order_str=$(echo "$components_line" | sed 's/.*Components order: *//')
+    order_str=$(echo "$components_line" | sed 's/.*Ordem dos componentes: *//')
 
-    local persona_idx kortex-engram_idx sdd_idx
+    local persona_idx kortex_engram_idx sdd_idx
     persona_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^persona$' | cut -d: -f1)
-    kortex-engram_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^kortex-engram$' | cut -d: -f1)
+    kortex_engram_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^kortex-engram$' | cut -d: -f1)
     sdd_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^sdd$' | cut -d: -f1)
 
-    if [ -n "$persona_idx" ] && [ -n "$kortex-engram_idx" ] && [ "$persona_idx" -lt "$kortex-engram_idx" ]; then
-        log_pass "Persona ($persona_idx) before kortex-engram ($kortex-engram_idx)"
+    if [ -n "$persona_idx" ] && [ -n "$kortex_engram_idx" ] && [ "$persona_idx" -lt "$kortex_engram_idx" ]; then
+        log_pass "Persona ($persona_idx) before kortex-engram ($kortex_engram_idx)"
     else
         log_fail "Persona must appear before kortex-engram in component order: $order_str"
     fi
@@ -268,7 +268,7 @@ test_preset_no_theme_in_any_preset() {
     for preset in minimal ecosystem-only full-carbon; do
         output=$($BINARY install --preset "$preset" --agent claude-code --dry-run 2>&1) || true
         local components_line
-        components_line=$(echo "$output" | grep "Components order:")
+        components_line=$(echo "$output" | grep "Ordem dos componentes:")
         assert_output_not_contains "$components_line" "theme" "Preset '$preset' does NOT include theme"
     done
 }
@@ -280,7 +280,7 @@ test_preset_custom_no_components() {
 
     # Custom preset without explicit components = empty
     local components_line
-    components_line=$(echo "$output" | grep "Components order:")
+    components_line=$(echo "$output" | grep "Ordem dos componentes:")
     assert_output_not_contains "$components_line" "kortex-engram" "Custom preset without components excludes kortex-engram"
     assert_output_not_contains "$components_line" "sdd" "Custom preset without components excludes sdd"
     assert_output_not_contains "$components_line" "skills" "Custom preset without components excludes skills"
@@ -292,7 +292,7 @@ test_preset_custom_explicit_components() {
     output=$($BINARY install --preset custom --agent claude-code --component kortex-engram --component sdd --component skills --dry-run 2>&1) || true
 
     local components_line
-    components_line=$(echo "$output" | grep "Components order:")
+    components_line=$(echo "$output" | grep "Ordem dos componentes:")
     assert_output_contains "$components_line" "kortex-engram" "Custom + explicit components includes kortex-engram"
     assert_output_contains "$components_line" "sdd" "Custom + explicit components includes sdd"
     assert_output_contains "$components_line" "skills" "Custom + explicit components includes skills"

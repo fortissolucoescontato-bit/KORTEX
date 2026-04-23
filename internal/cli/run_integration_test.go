@@ -548,7 +548,7 @@ func TestRunInstallLinuxDryRunPlatformDecisionRendersCorrectly(t *testing.T) {
 	}
 
 	output := RenderDryRun(result)
-	want := "os=linux distro=arch package-manager=pacman status=supported"
+	want := "os=linux distro=arch package-manager=pacman status=suportado"
 	if !strings.Contains(output, want) {
 		t.Fatalf("RenderDryRun() missing platform decision\noutput=%s\nwant contains=%s", output, want)
 	}
@@ -819,7 +819,7 @@ func TestRunInstallEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if name == "engram" && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
+		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
 			return errors.New("setup failed")
 		}
 		return nil
@@ -864,7 +864,7 @@ func TestRunInstallEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if name == "engram" && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
+		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
 			return errors.New("setup failed")
 		}
 		return nil
@@ -940,7 +940,7 @@ func TestRunInstallAntigravityCopiesGeminiSettingsAfterEngramSetup(t *testing.T)
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if name == "engram" && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
+		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
 			settingsPath := filepath.Join(home, ".gemini", "settings.json")
 			if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 				return err
@@ -992,7 +992,7 @@ func TestRunInstallDeduplicatesSharedEngramSetupSlugs(t *testing.T) {
 		if err := recorder.record(name, args...); err != nil {
 			return err
 		}
-		if name == "engram" && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
+		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
 			settingsPath := filepath.Join(home, ".gemini", "settings.json")
 			if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 				return err
@@ -1508,7 +1508,7 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 
 	// Capture all relevant output files after the first run.
 	claudeMDPath := filepath.Join(home, ".claude", "CLAUDE.md")
-	engramMCPPath := filepath.Join(home, ".claude", "mcp", "engram.json")
+	engramMCPPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
 
 	claudeMDAfterRun1, err := os.ReadFile(claudeMDPath)
 	if err != nil {

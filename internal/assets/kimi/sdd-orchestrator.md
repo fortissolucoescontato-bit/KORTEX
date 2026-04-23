@@ -141,7 +141,7 @@ Sub-agents get a fresh context with NO memory. The orchestrator controls context
 
 ### State and Conventions
 
-Convention files live under `~/.config/agents/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `persistence-contract.md`, `openspec-convention.md`, `sdd-phase-common.md`, `skill-resolver.md`.
+Convention files live under `~/.config/agents/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`, `sdd-phase-common.md`, `skill-resolver.md`.
 
 ### Recovery Rule
 

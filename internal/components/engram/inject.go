@@ -59,7 +59,11 @@ func SetLookPathForTest(t interface {
 // an absolute path survives across environments where PATH is not fully
 // inherited (e.g. Windsurf, IDEs that launch without a login shell).
 func resolveEngramCommand() (string, bool) {
-	// Try 'kortex' first (new branding)
+	// Try 'kortex-engram' first (new dedicated server name)
+	if p, err := EngramLookPath("kortex-engram"); err == nil && p != "" {
+		return p, true
+	}
+	// Fallback to 'kortex' (previous rebranding attempt)
 	if p, err := EngramLookPath("kortex"); err == nil && p != "" {
 		return p, true
 	}
@@ -67,7 +71,7 @@ func resolveEngramCommand() (string, bool) {
 	if p, err := EngramLookPath("engram"); err == nil && p != "" {
 		return p, true
 	}
-	return "kortex", false
+	return "kortex-engram", false
 }
 
 // engramServerJSON returns the MCP server config bytes, using the absolute
@@ -104,7 +108,7 @@ func engramOverlayJSON(agentID model.AgentID, cmd string) []byte {
 		// in their config, which is invalid for OpenCode 1.3.3.
 		cfg = map[string]any{
 			"mcp": map[string]any{
-				"engram": map[string]any{
+				"kortex-engram": map[string]any{
 					"__replace__": map[string]any{
 						"command": []string{cmd, "mcp", "--tools=agent"},
 						"type":    "local",
@@ -115,7 +119,7 @@ func engramOverlayJSON(agentID model.AgentID, cmd string) []byte {
 	} else {
 		cfg = map[string]any{
 			"mcpServers": map[string]any{
-				"engram": map[string]any{
+				"kortex-engram": map[string]any{
 					"command": cmd,
 					"args":    []string{"mcp", "--tools=agent"},
 				},
@@ -133,7 +137,7 @@ func engramOverlayJSON(agentID model.AgentID, cmd string) []byte {
 func vsCodeEngramOverlayJSON(cmd string) []byte {
 	cfg := map[string]any{
 		"servers": map[string]any{
-			"engram": map[string]any{
+			"kortex-engram": map[string]any{
 				"command": cmd,
 				"args":    []string{"mcp", "--tools=agent"},
 			},
@@ -159,7 +163,7 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		// engram setup, so we must preserve any absolute command path already
 		// present instead of silently overwriting it with the relative "engram".
 		// See: https://github.com/fortissolucoescontato-bit/kortex/issues (engram absolute path regression)
-		mcpPath := adapter.MCPConfigPath(homeDir, "engram")
+		mcpPath := adapter.MCPConfigPath(homeDir, "kortex-engram")
 		cmd := stableEngramCommandForMergedConfig(mcpPath, adapter.Agent())
 		content := buildSeparateMCPContent(mcpPath, engramServerJSONWithCmd(cmd))
 		mcpWrite, err := filemerge.WriteFileAtomic(mcpPath, content, 0o644)
@@ -183,7 +187,7 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		files = append(files, settingsPath)
 
 	case model.StrategyMCPConfigFile:
-		mcpPath := adapter.MCPConfigPath(homeDir, "engram")
+		mcpPath := adapter.MCPConfigPath(homeDir, "kortex-engram")
 		if mcpPath == "" {
 			break
 		}
@@ -307,6 +311,36 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		}
 	}
 
+	// 3. Write shared convention files (if the agent supports skills).
+	if adapter.SupportsSkills() {
+		skillDir := adapter.SkillsDir(homeDir)
+		if skillDir != "" {
+			sharedFiles := []string{
+				"engram-convention.md",
+				"kortex-convention.md",
+			}
+
+			for _, fileName := range sharedFiles {
+				assetPath := "skills/_shared/" + fileName
+				content, readErr := assets.Read(assetPath)
+				if readErr != nil {
+					continue
+				}
+				if len(content) == 0 {
+					continue
+				}
+
+				path := filepath.Join(skillDir, "_shared", fileName)
+				writeResult, err := filemerge.WriteFileAtomic(path, []byte(content), 0o644)
+				if err != nil {
+					return InjectionResult{}, err
+				}
+				changed = changed || writeResult.Changed
+				files = append(files, path)
+			}
+		}
+	}
+
 	return InjectionResult{Changed: changed, Files: files}, nil
 }
 
@@ -414,7 +448,7 @@ func stableEngramCommandForMergedConfig(path string, agentID model.AgentID) stri
 	}
 
 	if isStandardAgent(agentID) {
-		return "engram"
+		return "kortex-engram"
 	}
 
 	cmd, _ := resolveEngramCommand()
@@ -561,10 +595,11 @@ func isEngramCommand(cmd string) bool {
 	}
 	base := filepath.Base(cmd)
 	if runtime.GOOS == "windows" {
-		return strings.EqualFold(base, "kortex.exe") || strings.EqualFold(base, "kortex") ||
+		return strings.EqualFold(base, "kortex-engram.exe") || strings.EqualFold(base, "kortex-engram") ||
+			strings.EqualFold(base, "kortex.exe") || strings.EqualFold(base, "kortex") ||
 			strings.EqualFold(base, "engram.exe") || strings.EqualFold(base, "engram")
 	}
-	return base == "kortex" || base == "engram"
+	return base == "kortex-engram" || base == "kortex" || base == "engram"
 }
 
 // isAbsoluteEngramPath reports whether path is an absolute filesystem path

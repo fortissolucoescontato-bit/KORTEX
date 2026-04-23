@@ -96,6 +96,11 @@ func normalizeComponents(values []string, preset model.PresetID) ([]model.Compon
 	components := []model.ComponentID{}
 	for _, raw := range values {
 		component := model.ComponentID(raw)
+		// Backward compatibility mapping for 'engram' -> 'kortex-engram'
+		if raw == "engram" {
+			component = model.ComponentEngram
+		}
+
 		if _, ok := allowed[component]; !ok {
 			return nil, fmt.Errorf("unsupported component %q", raw)
 		}

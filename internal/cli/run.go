@@ -526,25 +526,31 @@ func (s componentApplyStep) Run() error {
 					return fmt.Errorf("download engram binary: %w", err)
 				}
 				fmt.Printf("Binário baixado para: %s\n", binaryPath)
-				// Instructions to add to PATH follow at the end of Run()
-				// so that the current session (engram setup, engram.Inject → resolveEngramCommand) can find it.
+
+				// Prepend the new bin dir to PATH for the current session.
+				binDir := filepath.Dir(binaryPath)
+				if !isInPATH(binDir) {
+					os.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
+				}
 			}
 		}
 		setupMode := engram.ParseSetupMode(os.Getenv(engram.SetupModeEnvVar))
 		setupStrict := engram.ParseSetupStrict(os.Getenv(engram.SetupStrictEnvVar))
+		runSlugs := make(map[string]bool)
 		for _, adapter := range adapters {
 			if engram.ShouldAttemptSetup(setupMode, adapter.Agent()) {
 				slug, _ := engram.SetupAgentSlug(adapter.Agent())
-				if slug != "" {
+				if slug != "" && !runSlugs[slug] {
+					runSlugs[slug] = true
 					fmt.Printf("Configurando Kortex-Engram para %s...\n", adapter.Agent())
-					// Attempt to use 'kortex' first
-					cmdToRun := "kortex"
+					// Attempt to use 'kortex-engram' first
+					cmdToRun := "kortex-engram"
 					if _, err := cmdLookPath(cmdToRun); err != nil {
 						cmdToRun = "engram"
 					}
 					if err := runCommand(cmdToRun, "setup", slug); err != nil {
 						if setupStrict {
-							return fmt.Errorf("engram setup for %q: %w", adapter.Agent(), err)
+							return fmt.Errorf("kortex-engram setup for %q: %w", adapter.Agent(), err)
 						}
 						fmt.Printf("Aviso: falha no setup automático do Kortex-Engram para %q. Continuando...\n", adapter.Agent())
 					}
@@ -1048,7 +1054,7 @@ func engramHealthChecks() []verify.Check {
 	return []verify.Check{
 		{
 			ID:          "verify:kortex-engram:binary",
-			Description: "kortex (or engram) binary on PATH (restart shell if missing)",
+			Description: "kortex-engram, kortex (or engram) binary on PATH (restart shell if missing)",
 			Run: func(context.Context) error {
 				if err := engram.VerifyInstalled(); err != nil {
 					return fmt.Errorf("%w\nIf Kortex-Engram was installed via `go install`, add it to PATH:\n  %s", err, engramPathGuidance(os.Getenv("SHELL")))
@@ -1070,6 +1076,7 @@ func engramHealthChecks() []verify.Check {
 		{
 			ID:          "verify:kortex-engram:health",
 			Description: "Kortex-Engram server is running (port 7437)",
+			Soft:        true,
 			Run: func(context.Context) error {
 				ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 				defer cancel()

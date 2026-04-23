@@ -43,7 +43,7 @@ func TestRenderUninstallReportIncludesManualCleanup(t *testing.T) {
 		},
 	})
 
-	if !strings.Contains(report, "Manual cleanup required") {
+	if !strings.Contains(report, "Limpeza manual necessária") {
 		t.Fatalf("RenderUninstallReport() should include manual cleanup heading; got:\n%s", report)
 	}
 	if !strings.Contains(report, "/tmp/skills") {

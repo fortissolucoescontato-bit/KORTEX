@@ -303,7 +303,7 @@ Retrieve full content via two steps:
 
 ## State and Conventions
 
-Convention files under `~/.codeium/windsurf/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
+Convention files under `~/.codeium/windsurf/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
 
 DAG state is tracked in Kortex-Engram under `sdd/{change-name}/state`. Update it after each phase completes so `/sdd-continue` knows which phase to run next.
 

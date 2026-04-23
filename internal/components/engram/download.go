@@ -55,18 +55,22 @@ func DownloadLatestBinary(profile system.PlatformProfile) (string, error) {
 	}
 
 	// 4. Download and extract binary.
-	binaryName := engramName
+	// The binary inside the archive is still named "engram" (or "engram.exe").
+	// We extract it to outPath which uses the new rebranded name "kortex-engram".
+	searchName := engramName
+	localName := "kortex-engram"
 	if goos == "windows" {
-		binaryName = engramName + ".exe"
+		searchName = engramName + ".exe"
+		localName = "kortex-engram.exe"
 	}
-	outPath := filepath.Join(installDir, binaryName)
+	outPath := filepath.Join(installDir, localName)
 
 	if strings.HasSuffix(assetURL, ".zip") {
-		if err := downloadAndExtractZip(assetURL, binaryName, outPath); err != nil {
+		if err := downloadAndExtractZip(assetURL, searchName, outPath); err != nil {
 			return "", fmt.Errorf("download engram zip: %w", err)
 		}
 	} else {
-		if err := downloadAndExtractTarGz(assetURL, engramName, outPath); err != nil {
+		if err := downloadAndExtractTarGz(assetURL, searchName, outPath); err != nil {
 			return "", fmt.Errorf("download engram tar.gz: %w", err)
 		}
 	}
