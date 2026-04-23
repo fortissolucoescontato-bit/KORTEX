@@ -15,9 +15,9 @@ CONTEXT:
 - Working directory: !`echo -n "$(pwd)"`
 - Current project: !`echo -n "$(basename $(pwd))"`
 - Change name: $ARGUMENTS
-- Artifact store mode: engram
+- Artifact store mode: kortex-engram
 
-ENGRAM NOTE:
-Sub-agents handle persistence automatically. Each phase saves its artifact to engram with topic_key "sdd/$ARGUMENTS/{type}".
+KORTEX-ENGRAM NOTE:
+Sub-agents handle persistence automatically. Each phase saves its artifact to kortex-engram with topic_key "sdd/$ARGUMENTS/{type}".
 
 Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline when a native sub-agent is available.

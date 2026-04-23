@@ -437,7 +437,7 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 			sharedFiles := []string{
 				"SKILL.md",
 				"persistence-contract.md",
-				"engram-convention.md",
+				"KortexEngram-convention.md",
 				"kortex-convention.md",
 				"openspec-convention.md",
 				"sdd-phase-common.md",
@@ -1090,7 +1090,7 @@ func hasLegacyBareOrchestrator(content string) bool {
 //
 // Unlike CLAUDE.md markdown-section files, these prompt files often carry the
 // whole orchestrator as a contiguous block followed by other managed sections
-// (for example engram-protocol markers). The legacy block also contains many
+// (for example KortexEngram-protocol markers). The legacy block also contains many
 // "##" headings, so trimming until the next "##" is not enough.
 //
 // Strategy:
@@ -1158,7 +1158,7 @@ func stripBareOrchestratorForFilePrompt(content string) string {
 
 const instructionsFrontmatter = "---\n" +
 	"name: Kortex Carbon Persona\n" +
-	"description: Kortex persona with SDD orchestration and Engram protocol\n" +
+	"description: Kortex persona with SDD orchestration and KortexEngram protocol\n" +
 	"applyTo: \"**\"\n" +
 	"---\n"
 

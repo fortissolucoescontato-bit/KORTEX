@@ -36,24 +36,24 @@ func TestDetectInstalledVersion(t *testing.T) {
 			wantVersion:  "dev",
 		},
 		{
-			name: "engram version parsed from output",
-			tool: ToolInfo{Name: "engram", DetectCmd: []string{"engram", "version"}},
+			name: "KortexEngram version parsed from output",
+			tool: ToolInfo{Name: "kortex-engram", DetectCmd: []string{"kortex-engram", "version"}},
 			lookPathFn: func(string) (string, error) {
-				return "/usr/local/bin/engram", nil
+				return "/usr/local/bin/KortexEngram", nil
 			},
 			execCommandFn: func(name string, args ...string) *exec.Cmd {
-				return exec.Command("echo", "engram v0.3.2")
+				return exec.Command("echo", "KortexEngram v0.3.2")
 			},
 			wantVersion: "0.3.2",
 		},
 		{
-			name: "engram dev output is preserved as dev sentinel",
-			tool: ToolInfo{Name: "engram", DetectCmd: []string{"engram", "version"}},
+			name: "KortexEngram dev output is preserved as dev sentinel",
+			tool: ToolInfo{Name: "kortex-engram", DetectCmd: []string{"kortex-engram", "version"}},
 			lookPathFn: func(string) (string, error) {
-				return "/usr/local/bin/engram", nil
+				return "/usr/local/bin/KortexEngram", nil
 			},
 			execCommandFn: func(name string, args ...string) *exec.Cmd {
-				return exec.Command("echo", "engram dev")
+				return exec.Command("echo", "KortexEngram dev")
 			},
 			wantVersion: "dev",
 		},
@@ -67,9 +67,9 @@ func TestDetectInstalledVersion(t *testing.T) {
 		},
 		{
 			name: "binary exists but version command fails",
-			tool: ToolInfo{Name: "engram", DetectCmd: []string{"engram", "version"}},
+			tool: ToolInfo{Name: "kortex-engram", DetectCmd: []string{"kortex-engram", "version"}},
 			lookPathFn: func(string) (string, error) {
-				return "/usr/local/bin/engram", nil
+				return "/usr/local/bin/KortexEngram", nil
 			},
 			execCommandFn: func(name string, args ...string) *exec.Cmd {
 				return exec.Command("false") // exits with error
@@ -119,8 +119,8 @@ func TestDetectInstalledVersion(t *testing.T) {
 }
 
 func TestParseVersionFromOutput_DevSentinel(t *testing.T) {
-	if got := parseVersionFromOutput("engram dev"); got != "dev" {
-		t.Fatalf("parseVersionFromOutput(engram dev) = %q, want %q", got, "dev")
+	if got := parseVersionFromOutput("KortexEngram dev"); got != "dev" {
+		t.Fatalf("parseVersionFromOutput(KortexEngram dev) = %q, want %q", got, "dev")
 	}
 }
 
@@ -301,8 +301,8 @@ func TestCheckAll(t *testing.T) {
 		switch {
 		case contains(path, "kortex"):
 			release = githubRelease{TagName: "v1.5.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/kortex/releases/tag/v1.5.0"}
-		case contains(path, "engram"):
-			release = githubRelease{TagName: "v0.4.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/engram/releases/tag/v0.4.0"}
+		case contains(path, "kortex-engram"):
+			release = githubRelease{TagName: "v0.4.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/KortexEngram/releases/tag/v0.4.0"}
 		case contains(path, "carbon-guardian-angel"):
 			release = githubRelease{TagName: "v2.0.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/carbon-guardian-angel/releases/tag/v2.0.0"}
 		}
@@ -322,11 +322,11 @@ func TestCheckAll(t *testing.T) {
 	httpClient = server.Client()
 	httpClient.Transport = &testTransport{server: server}
 
-	// Mock: engram is installed at v0.3.2, kortex is not installed.
+	// Mock: KortexEngram is installed at v0.3.2, kortex is not installed.
 	lookPath = func(name string) (string, error) {
 		switch name {
-		case "engram":
-			return "/usr/local/bin/engram", nil
+		case "kortex-engram":
+			return "/usr/local/bin/KortexEngram", nil
 		case "kortex":
 			return "", fmt.Errorf("not found")
 		default:
@@ -334,8 +334,8 @@ func TestCheckAll(t *testing.T) {
 		}
 	}
 	execCommand = func(name string, args ...string) *exec.Cmd {
-		if name == "engram" {
-			return exec.Command("echo", "engram v0.3.2")
+		if name == "kortex-engram" {
+			return exec.Command("echo", "KortexEngram v0.3.2")
 		}
 		return exec.Command("false")
 	}
@@ -350,8 +350,8 @@ func TestCheckAll(t *testing.T) {
 	// kortex: 1.5.0 local == 1.5.0 remote → UpToDate
 	assertResult(t, results[0], "kortex", UpToDate, "1.5.0", "1.5.0")
 
-	// engram: 0.3.2 local < 0.4.0 remote → UpdateAvailable
-	assertResult(t, results[1], "engram", UpdateAvailable, "0.3.2", "0.4.0")
+	// KortexEngram: 0.3.2 local < 0.4.0 remote → UpdateAvailable
+	assertResult(t, results[1], "kortex-engram", UpdateAvailable, "0.3.2", "0.4.0")
 
 	// carbon-guardian-angel: not installed
 	assertResult(t, results[2], "carbon-guardian-angel", NotInstalled, "", "2.0.0")
@@ -399,7 +399,7 @@ func TestCheckAll_NetworkError(t *testing.T) {
 	}
 
 	if results[1].Status != CheckFailed {
-		t.Fatalf("engram status = %q, want %q", results[1].Status, CheckFailed)
+		t.Fatalf("KortexEngram status = %q, want %q", results[1].Status, CheckFailed)
 	}
 	if results[2].Status != CheckFailed {
 		t.Fatalf("kortex status = %q, want %q", results[2].Status, CheckFailed)
@@ -433,13 +433,13 @@ func TestCheckFiltered_FetchErrorPreservesCheckFailedForMissingTool(t *testing.T
 	execCommand = func(name string, args ...string) *exec.Cmd { return exec.Command("false") }
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
-	results := CheckFiltered(context.Background(), "1.0.0", profile, []string{"engram"})
+	results := CheckFiltered(context.Background(), "1.0.0", profile, []string{"kortex-engram"})
 
 	if len(results) != 1 {
 		t.Fatalf("len(results) = %d, want 1", len(results))
 	}
 	if results[0].Status != CheckFailed {
-		t.Fatalf("engram status = %q, want %q", results[0].Status, CheckFailed)
+		t.Fatalf("KortexEngram status = %q, want %q", results[0].Status, CheckFailed)
 	}
 }
 
@@ -471,20 +471,20 @@ func TestUpdateHint(t *testing.T) {
 			want:    "irm https://raw.githubusercontent.com/fortissolucoescontato-bit/kortex/main/scripts/install.ps1 | iex",
 		},
 		{
-			name:    "engram macOS brew",
-			tool:    ToolInfo{Name: "engram"},
+			name:    "KortexEngram macOS brew",
+			tool:    ToolInfo{Name: "kortex-engram"},
 			profile: system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
-			want:    "brew upgrade engram",
+			want:    "brew upgrade KortexEngram",
 		},
 		{
-			name:    "engram linux",
-			tool:    ToolInfo{Name: "engram"},
+			name:    "KortexEngram linux",
+			tool:    ToolInfo{Name: "kortex-engram"},
 			profile: system.PlatformProfile{OS: "linux", PackageManager: "apt"},
 			want:    "kortex upgrade (baixa o binário pré-compilado)",
 		},
 		{
-			name:    "engram windows",
-			tool:    ToolInfo{Name: "engram"},
+			name:    "KortexEngram windows",
+			tool:    ToolInfo{Name: "kortex-engram"},
 			profile: system.PlatformProfile{OS: "windows", PackageManager: "winget"},
 			want:    "kortex upgrade (baixa o binário pré-compilado)",
 		},
@@ -628,7 +628,7 @@ func TestParseVersionFromOutput(t *testing.T) {
 		output string
 		want   string
 	}{
-		{name: "engram v0.3.2", output: "engram v0.3.2", want: "0.3.2"},
+		{name: "KortexEngram v0.3.2", output: "KortexEngram v0.3.2", want: "0.3.2"},
 		{name: "kortex 1.0.0", output: "kortex version 1.0.0", want: "1.0.0"},
 		{name: "bare version", output: "2.1.0", want: "2.1.0"},
 		{name: "no version", output: "no version info here", want: ""},
@@ -656,7 +656,7 @@ func TestRegistryContents(t *testing.T) {
 		repo  string
 	}{
 		"kortex":                {owner: "fortissolucoescontato-bit", repo: "kortex"},
-		"engram":                {owner: "fortissolucoescontato-bit", repo: "engram"},
+		"kortex-engram":                {owner: "fortissolucoescontato-bit", repo: "kortex-engram"},
 		"carbon-guardian-angel": {owner: "fortissolucoescontato-bit", repo: "carbon-guardian-angel"},
 	}
 
@@ -678,9 +678,9 @@ func TestRegistryContents(t *testing.T) {
 		t.Fatalf("kortex DetectCmd should be nil")
 	}
 
-	// engram and kortex must have non-nil DetectCmd.
+	// KortexEngram and kortex must have non-nil DetectCmd.
 	if Tools[1].DetectCmd == nil {
-		t.Fatalf("engram DetectCmd should not be nil")
+		t.Fatalf("KortexEngram DetectCmd should not be nil")
 	}
 	if Tools[2].DetectCmd == nil {
 		t.Fatalf("kortex DetectCmd should not be nil")
@@ -756,27 +756,27 @@ func TestCheckFiltered_SubsetOfTools(t *testing.T) {
 	httpClient = server.Client()
 	httpClient.Transport = &testTransport{server: server}
 	lookPath = func(name string) (string, error) {
-		if name == "engram" {
-			return "/usr/local/bin/engram", nil
+		if name == "kortex-engram" {
+			return "/usr/local/bin/KortexEngram", nil
 		}
 		return "", fmt.Errorf("not found")
 	}
 	execCommand = func(name string, args ...string) *exec.Cmd {
-		if name == "engram" {
-			return exec.Command("echo", "engram v0.9.9")
+		if name == "kortex-engram" {
+			return exec.Command("echo", "KortexEngram v0.9.9")
 		}
 		return exec.Command("false")
 	}
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
 
-	// Request only "engram" — should return exactly 1 result.
-	results := CheckFiltered(context.Background(), "1.0.0", profile, []string{"engram"})
+	// Request only "kortex-engram" — should return exactly 1 result.
+	results := CheckFiltered(context.Background(), "1.0.0", profile, []string{"kortex-engram"})
 	if len(results) != 1 {
-		t.Fatalf("CheckFiltered(engram) len = %d, want 1", len(results))
+		t.Fatalf("CheckFiltered(KortexEngram) len = %d, want 1", len(results))
 	}
-	if results[0].Tool.Name != "engram" {
-		t.Fatalf("CheckFiltered(engram) tool = %q, want %q", results[0].Tool.Name, "engram")
+	if results[0].Tool.Name != "kortex-engram" {
+		t.Fatalf("CheckFiltered(KortexEngram) tool = %q, want %q", results[0].Tool.Name, "kortex-engram")
 	}
 }
 
@@ -850,7 +850,7 @@ func TestCheckFiltered_UnknownToolIgnored(t *testing.T) {
 //
 // The spec says:
 //   - Dev build MUST be reported as development-build semantic
-//   - kortex self-upgrade is skipped while engram/kortex remain eligible
+//   - kortex self-upgrade is skipped while KortexEngram/kortex remain eligible
 func TestCheckFiltered_DevBuildSemanticsForKortex(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -895,7 +895,7 @@ func TestCheckFiltered_DevBuildSemanticsForKortex(t *testing.T) {
 }
 
 // TestCheckFiltered_DevBuildSkipNotEligible verifies that in a mixed run,
-// kortex with "dev" version gets DevBuild while engram with a real version stays eligible.
+// kortex with "dev" version gets DevBuild while KortexEngram with a real version stays eligible.
 func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -906,7 +906,7 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 		switch {
 		case contains(path, "kortex"):
 			release = githubRelease{TagName: "v9.9.9"}
-		case contains(path, "engram"):
+		case contains(path, "kortex-engram"):
 			release = githubRelease{TagName: "v2.0.0"}
 		default:
 			release = githubRelease{TagName: "v1.0.0"}
@@ -929,20 +929,20 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 	httpClient = server.Client()
 	httpClient.Transport = &testTransport{server: server}
 
-	// engram is installed at v1.0.0
+	// KortexEngram is installed at v1.0.0
 	lookPath = func(name string) (string, error) {
-		if name == "engram" {
-			return "/usr/local/bin/engram", nil
+		if name == "kortex-engram" {
+			return "/usr/local/bin/KortexEngram", nil
 		}
 		return "", fmt.Errorf("not found")
 	}
 	execCommand = func(name string, args ...string) *exec.Cmd {
-		if name == "engram" {
-			return exec.Command("echo", "engram v1.0.0")
+		if name == "kortex-engram" {
+			return exec.Command("echo", "KortexEngram v1.0.0")
 		}
 		return exec.Command("false")
 	}
-	// Only kortex and engram for this test
+	// Only kortex and KortexEngram for this test
 	Tools = []ToolInfo{Tools[0], Tools[1]}
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
@@ -957,9 +957,9 @@ func TestCheckFiltered_DevBuildSkipNotEligible(t *testing.T) {
 		t.Fatalf("kortex status = %q, want DevBuild", results[0].Status)
 	}
 
-	// engram should be UpdateAvailable (1.0.0 < 2.0.0)
+	// KortexEngram should be UpdateAvailable (1.0.0 < 2.0.0)
 	if results[1].Status != UpdateAvailable {
-		t.Fatalf("engram status = %q, want UpdateAvailable", results[1].Status)
+		t.Fatalf("KortexEngram status = %q, want UpdateAvailable", results[1].Status)
 	}
 }
 
@@ -972,7 +972,7 @@ func TestNoUpdatesPath(t *testing.T) {
 		path := r.URL.Path
 		var release githubRelease
 		switch {
-		case contains(path, "engram"):
+		case contains(path, "kortex-engram"):
 			release = githubRelease{TagName: "v0.3.2"}
 		case contains(path, "carbon-guardian-angel"):
 			release = githubRelease{TagName: "v1.0.0"}
@@ -997,20 +997,20 @@ func TestNoUpdatesPath(t *testing.T) {
 	httpClient = server.Client()
 	httpClient.Transport = &testTransport{server: server}
 
-	// engram is at v0.3.2 (same as remote), kortex is not installed
+	// KortexEngram is at v0.3.2 (same as remote), kortex is not installed
 	lookPath = func(name string) (string, error) {
-		if name == "engram" {
-			return "/usr/local/bin/engram", nil
+		if name == "kortex-engram" {
+			return "/usr/local/bin/KortexEngram", nil
 		}
 		return "", fmt.Errorf("not found")
 	}
 	execCommand = func(name string, args ...string) *exec.Cmd {
-		if name == "engram" {
-			return exec.Command("echo", "engram v0.3.2")
+		if name == "kortex-engram" {
+			return exec.Command("echo", "KortexEngram v0.3.2")
 		}
 		return exec.Command("false")
 	}
-	// Only engram and kortex for this test (skip kortex to avoid dev-build behavior)
+	// Only KortexEngram and kortex for this test (skip kortex to avoid dev-build behavior)
 	Tools = []ToolInfo{Tools[1], Tools[2]}
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew", Supported: true}
@@ -1020,9 +1020,9 @@ func TestNoUpdatesPath(t *testing.T) {
 		t.Fatalf("len = %d, want 2", len(results))
 	}
 
-	// engram: up to date
+	// KortexEngram: up to date
 	if results[0].Status != UpToDate {
-		t.Fatalf("engram status = %q, want UpToDate", results[0].Status)
+		t.Fatalf("KortexEngram status = %q, want UpToDate", results[0].Status)
 	}
 
 	// kortex: not installed
@@ -1031,12 +1031,12 @@ func TestNoUpdatesPath(t *testing.T) {
 	}
 }
 
-// --- TestEngramHintNoBrew ---
+// --- TestKortexEngramHintNoBrew ---
 
-// TestEngramHintNoBrew verifies that on non-brew platforms, engramHint
+// TestKortexEngramHintNoBrew verifies that on non-brew platforms, KortexEngramHint
 // no longer returns "go install..." — it should reflect binary download.
 // This is the regression test for issue #160.
-func TestEngramHintNoBrew(t *testing.T) {
+func TestKortexEngramHintNoBrew(t *testing.T) {
 	tests := []struct {
 		name    string
 		profile system.PlatformProfile
@@ -1053,17 +1053,17 @@ func TestEngramHintNoBrew(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			tool := ToolInfo{Name: "engram"}
+			tool := ToolInfo{Name: "kortex-engram"}
 			got := updateHint(tool, tc.profile)
 
 			// Must NOT contain "go install".
 			if contains(got, "go install") {
-				t.Errorf("engramHint for non-brew should NOT contain 'go install', got %q", got)
+				t.Errorf("KortexEngramHint for non-brew should NOT contain 'go install', got %q", got)
 			}
 
 			// Must NOT be empty (should have some actionable hint).
 			if got == "" {
-				t.Errorf("engramHint for non-brew should not be empty")
+				t.Errorf("KortexEngramHint for non-brew should not be empty")
 			}
 		})
 	}
@@ -1077,15 +1077,15 @@ func TestInstallMethodFieldsOnRegistry(t *testing.T) {
 		}
 	}
 
-	// engram: uses binary download (not go-install) — GoImportPath must be empty.
+	// KortexEngram: uses binary download (not go-install) — GoImportPath must be empty.
 	for _, tool := range Tools {
 		switch tool.Name {
-		case "engram":
+		case "kortex-engram":
 			if tool.InstallMethod != InstallBinary {
-				t.Errorf("engram InstallMethod = %q, want %q", tool.InstallMethod, InstallBinary)
+				t.Errorf("KortexEngram InstallMethod = %q, want %q", tool.InstallMethod, InstallBinary)
 			}
 			if tool.GoImportPath != "" {
-				t.Errorf("engram GoImportPath should be empty (binary download, not go-install), got %q", tool.GoImportPath)
+				t.Errorf("KortexEngram GoImportPath should be empty (binary download, not go-install), got %q", tool.GoImportPath)
 			}
 		}
 	}

@@ -1,10 +1,10 @@
-# Referência de Comandos do Engram
+# Referência de Comandos do Kortex-Engram
 
 ← [Voltar para o README](../README.md)
 
 ---
 
-O Engram funciona automaticamente. Seu agente de IA salva decisões, descobertas e contexto em uma memória persistente sem que você precise fazer nada. Você não precisa memorizar comandos ou gerenciar a memória manualmente.
+O Kortex-Engram funciona automaticamente. Seu agente de IA salva decisões, descobertas e contexto em uma memória persistente sem que você precise fazer nada. Você não precisa memorizar comandos ou gerenciar a memória manualmente.
 
 Esta página existe para quando você quiser inspecionar, compartilhar ou corrigir suas memórias manualmente.
 
@@ -16,32 +16,32 @@ Estes são os únicos comandos que a maioria das pessoas precisa.
 
 ```bash
 # Navegue por suas memórias visualmente — busque, filtre e detalhe observações
-engram tui
+kortex-engram tui
 
 # Busque pelo terminal sem abrir a TUI
-engram search "refatoração de auth"
+kortex-engram search "refatoração de auth"
 
-# Exporta as memórias do projeto para .engram/ para que você possa commitá-las no git
-engram sync
+# Exporta as memórias do projeto para .kortex-engram/ para que você possa commitá-las no git
+kortex-engram sync
 ```
 
-O `engram tui` é a maneira mais rápida de ver o que seu agente tem salvado. Comece por lá.
+O `kortex-engram tui` é a maneira mais rápida de ver o que seu agente tem salvado. Comece por lá.
 
 ---
 
 ## Gerenciamento de Projetos
 
-O Engram agrupa memórias por nome de projeto, detectado automaticamente a partir do remoto git desde a v1.11.0. Às vezes, os projetos acabam com nomes duplicados (ex: "meu-app" vs "Meu-App" vs "meu-app-frontend"). Estes comandos corrigem isso.
+O Kortex-Engram agrupa memórias por nome de projeto, detectado automaticamente a partir do remoto git desde a v1.11.0. Às vezes, os projetos acabam com nomes duplicados (ex: "meu-app" vs "Meu-App" vs "meu-app-frontend"). Estes comandos corrigem isso.
 
 ```bash
 # Lista todos os projetos com contagem de observações
-engram projects list
+kortex-engram projects list
 
 # Mescla nomes de projetos duplicados em um só de forma interativa
-engram projects consolidate
+kortex-engram projects consolidate
 ```
 
-O `projects list` mostra todos os projetos que o Engram conhece e quantas observações cada um possui. Se você vir o mesmo projeto sob vários nomes, execute `projects consolidate` para mesclá-los.
+O `projects list` mostra todos os projetos que o Kortex-Engram conhece e quantas observações cada um possui. Se você vir o mesmo projeto sob vários nomes, execute `projects consolidate` para mesclá-los.
 
 O equivalente MCP é `mem_merge_projects`, que o agente de IA pode chamar diretamente quando detecta divergência de nomes.
 
@@ -49,17 +49,17 @@ O equivalente MCP é `mem_merge_projects`, que o agente de IA pode chamar direta
 
 ## Compartilhamento em Equipe
 
-As memórias do Engram vivem localmente por padrão. Para compartilhá-las com sua equipe via git:
+As memórias do Kortex-Engram vivem localmente por padrão. Para compartilhá-las com sua equipe via git:
 
 ```bash
-# Após uma sessão de trabalho — exporta as memórias para .engram/ no seu repositório
-engram sync
+# Após uma sessão de trabalho — exporta as memórias para .kortex-engram/ no seu repositório
+kortex-engram sync
 
 # Em outra máquina — importa as memórias após clonar o repositório
-engram sync --import
+kortex-engram sync --import
 ```
 
-Adicione o diretório `.engram/` ao seu repositório e faça o commit. Quando um colega clonar e executar `engram sync --import`, ele receberá todo o contexto do projeto. Isso é especialmente útil para o onboarding — novos contribuidores começam com o conhecimento acumulado da equipe.
+Adicione o diretório `.kortex-engram/` ao seu repositório e faça o commit. Quando um colega clonar e executar `kortex-engram sync --import`, ele receberá todo o contexto do projeto. Isso é especialmente útil para o onboarding — novos contribuidores começam com o conhecimento acumulado da equipe.
 
 ---
 
@@ -92,7 +92,7 @@ Estas são as ferramentas que o agente de IA usa nos bastidores. Você nunca as 
 | `mem_delete` | Exclui uma observação pelo ID |
 | `mem_timeline` | Visualização cronológica das observações |
 | `mem_capture_passive` | Extrai aprendizados da conversa de forma passiva |
-| `mem_merge_projects` | Mescla variantes de nomes de projetos (equivalente na CLI: `engram projects consolidate`) |
+| `mem_merge_projects` | Mescla variantes de nomes de projetos (equivalente na CLI: `kortex-engram projects consolidate`) |
 
 </details>
 
@@ -100,12 +100,12 @@ Estas são as ferramentas que o agente de IA usa nos bastidores. Você nunca as 
 
 ## Como a Detecção de Projeto Funciona
 
-Desde a v1.11.0, o Engram lê a URL remota do git na inicialização, normaliza para minúsculas e usa isso como o nome do projeto. Se encontrar nomes de projetos existentes semelhantes, ele avisa. Isso evita o problema mais comum — o mesmo projeto acumulando memórias sob nomes ligeiramente diferentes.
+Desde a v1.11.0, o Kortex-Engram lê a URL remota do git na inicialização, normaliza para minúsculas e usa isso como o nome do projeto. Se encontrar nomes de projetos existentes semelhantes, ele avisa. Isso evita o problema mais comum — o mesmo projeto acumulando memórias sob nomes ligeiramente diferentes.
 
-Se você estiver trabalhando fora de um repositório git, o Engram usa o nome do diretório como alternativa.
+Se você estiver trabalhando fora de um repositório git, o Kortex-Engram usa o nome do diretório como alternativa.
 
 ---
 
 ## Documentação Completa
 
-Para o código-fonte completo, opções de configuração e guia de contribuição: [github.com/fortissolucoescontato-bit/engram](https://github.com/fortissolucoescontato-bit/engram)
+Para o código-fonte completo, opções de configuração e guia de contribuição: [github.com/fortissolucoescontato-bit/kortex-engram](https://github.com/fortissolucoescontato-bit/kortex-engram)

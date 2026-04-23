@@ -24,11 +24,11 @@ func TestWithPostInstallNotesAddsKortexCLINextSteps(t *testing.T) {
 
 func TestWithPostInstallNotesDoesNotChangeNonKortexCLI(t *testing.T) {
 	// Set GOBIN to a directory already in PATH so that withGoInstallPathNote
-	// does not append a PATH guidance note for the Engram component.
+	// does not append a PATH guidance note for the KortexEngram component.
 	t.Setenv("GOBIN", "/usr/local/bin")
 
 	report := verify.Report{Ready: true, FinalNote: "You're ready."}
-	resolved := planner.ResolvedPlan{OrderedComponents: []model.ComponentID{model.ComponentEngram}}
+	resolved := planner.ResolvedPlan{OrderedComponents: []model.ComponentID{model.ComponentKortexEngram}}
 
 	updated := withPostInstallNotes(report, resolved)
 	if updated.FinalNote != report.FinalNote {

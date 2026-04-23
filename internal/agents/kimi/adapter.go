@@ -272,7 +272,7 @@ func binaryName() string {
 
 // BootstrapTemplate ensures the base KIMI.md template exists in the agent's config directory.
 // It is used by the installation pipeline to guarantee that modular components 
-// (SDD, Engram) can be included even if the Persona component is not installed.
+// (SDD, KortexEngram) can be included even if the Persona component is not installed.
 func (a *Adapter) BootstrapTemplate(homeDir string) error {
 	kimiDir := a.GlobalConfigDir(homeDir)
 	if err := os.MkdirAll(kimiDir, 0o755); err != nil {

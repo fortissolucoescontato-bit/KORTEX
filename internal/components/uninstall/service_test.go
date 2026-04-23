@@ -291,7 +291,7 @@ func TestComponentOperationsSDD_ClaudeRemovesManagedCommandFiles(t *testing.T) {
 	}
 }
 
-func TestComponentOperationsEngram_ProjectScopeRemovesWorkspaceDataOnly(t *testing.T) {
+func TestComponentOperationsKortexEngram_ProjectScopeRemovesWorkspaceDataOnly(t *testing.T) {
 	homeDir := t.TempDir()
 	workspaceDir := t.TempDir()
 
@@ -309,11 +309,11 @@ func TestComponentOperationsEngram_ProjectScopeRemovesWorkspaceDataOnly(t *testi
 	if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll(settings dir) error = %v", err)
 	}
-	if err := os.WriteFile(settingsPath, []byte(`{"mcp":{"engram":{"command":["engram"]}}}`), 0o644); err != nil {
+	if err := os.WriteFile(settingsPath, []byte(`{"mcp":{"kortex-engram":{"command":["kortex-engram"]}}}`), 0o644); err != nil {
 		t.Fatalf("WriteFile(settings) error = %v", err)
 	}
 
-	projectDataDir := filepath.Join(workspaceDir, ".engram")
+	projectDataDir := filepath.Join(workspaceDir, ".KortexEngram")
 	if err := os.MkdirAll(projectDataDir, 0o755); err != nil {
 		t.Fatalf("MkdirAll(projectDataDir) error = %v", err)
 	}
@@ -321,9 +321,9 @@ func TestComponentOperationsEngram_ProjectScopeRemovesWorkspaceDataOnly(t *testi
 		t.Fatalf("WriteFile(memory.db) error = %v", err)
 	}
 
-	svc.SetEngramUninstallScope(model.EngramUninstallScopeProject)
+	svc.SetKortexEngramUninstallScope(model.KortexEngramUninstallScopeProject)
 
-	ops, _, err := svc.componentOperations(adapter, model.ComponentEngram)
+	ops, _, err := svc.componentOperations(adapter, model.ComponentKortexEngram)
 	if err != nil {
 		t.Fatalf("componentOperations() error = %v", err)
 	}
@@ -335,19 +335,19 @@ func TestComponentOperationsEngram_ProjectScopeRemovesWorkspaceDataOnly(t *testi
 	}
 
 	if _, err := os.Stat(projectDataDir); !os.IsNotExist(err) {
-		t.Fatalf("project .engram dir should be removed; err = %v", err)
+		t.Fatalf("project .KortexEngram dir should be removed; err = %v", err)
 	}
 
 	raw, err := os.ReadFile(settingsPath)
 	if err != nil {
 		t.Fatalf("ReadFile(settings) error = %v", err)
 	}
-	if !strings.Contains(string(raw), `"engram"`) {
-		t.Fatalf("global engram config should be preserved in project scope, got: %s", string(raw))
+	if !strings.Contains(string(raw), `"kortex-engram"`) {
+		t.Fatalf("global KortexEngram config should be preserved in project scope, got: %s", string(raw))
 	}
 }
 
-func TestComponentOperationsEngram_GlobalScopeKeepsWorkspaceProjectData(t *testing.T) {
+func TestComponentOperationsKortexEngram_GlobalScopeKeepsWorkspaceProjectData(t *testing.T) {
 	homeDir := t.TempDir()
 	workspaceDir := t.TempDir()
 
@@ -365,11 +365,11 @@ func TestComponentOperationsEngram_GlobalScopeKeepsWorkspaceProjectData(t *testi
 	if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll(settings dir) error = %v", err)
 	}
-	if err := os.WriteFile(settingsPath, []byte(`{"mcp":{"engram":{"command":["engram"]}}}`), 0o644); err != nil {
+	if err := os.WriteFile(settingsPath, []byte(`{"mcp":{"kortex-engram":{"command":["kortex-engram"]}}}`), 0o644); err != nil {
 		t.Fatalf("WriteFile(settings) error = %v", err)
 	}
 
-	projectDataDir := filepath.Join(workspaceDir, ".engram")
+	projectDataDir := filepath.Join(workspaceDir, ".KortexEngram")
 	if err := os.MkdirAll(projectDataDir, 0o755); err != nil {
 		t.Fatalf("MkdirAll(projectDataDir) error = %v", err)
 	}
@@ -377,9 +377,9 @@ func TestComponentOperationsEngram_GlobalScopeKeepsWorkspaceProjectData(t *testi
 		t.Fatalf("WriteFile(memory.db) error = %v", err)
 	}
 
-	svc.SetEngramUninstallScope(model.EngramUninstallScopeGlobal)
+	svc.SetKortexEngramUninstallScope(model.KortexEngramUninstallScopeGlobal)
 
-	ops, _, err := svc.componentOperations(adapter, model.ComponentEngram)
+	ops, _, err := svc.componentOperations(adapter, model.ComponentKortexEngram)
 	if err != nil {
 		t.Fatalf("componentOperations() error = %v", err)
 	}
@@ -391,7 +391,7 @@ func TestComponentOperationsEngram_GlobalScopeKeepsWorkspaceProjectData(t *testi
 	}
 
 	if _, err := os.Stat(projectDataDir); err != nil {
-		t.Fatalf("project .engram dir should be preserved in global scope, err = %v", err)
+		t.Fatalf("project .KortexEngram dir should be preserved in global scope, err = %v", err)
 	}
 
 	raw, err := os.ReadFile(settingsPath)
@@ -401,7 +401,7 @@ func TestComponentOperationsEngram_GlobalScopeKeepsWorkspaceProjectData(t *testi
 		}
 		return
 	}
-	if strings.Contains(string(raw), `"engram"`) {
-		t.Fatalf("global engram config should be removed in global scope, got: %s", string(raw))
+	if strings.Contains(string(raw), `"kortex-engram"`) {
+		t.Fatalf("global KortexEngram config should be removed in global scope, got: %s", string(raw))
 	}
 }

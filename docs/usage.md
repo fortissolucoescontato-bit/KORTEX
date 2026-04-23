@@ -54,7 +54,7 @@ kortex install \
 # Escolher componentes e skills específicos
 kortex install \
   --agent claude-code \
-  --component engram,sdd,skills,context7,persona,permissions \
+  --component kortex-engram,sdd,skills,context7,persona,permissions \
   --skill go-testing,skill-creator,branch-pr,issue-creation \
   --persona carbon
 
@@ -66,7 +66,7 @@ kortex install --dry-run \
 
 ### sync (sincronizar)
 
-Atualiza os assets gerenciados para a versão atual. Use após `brew upgrade kortex` ou quando quiser que suas configurações locais estejam alinhadas com o último lançamento. NÃO reinstala binários (engram, Kortex CLI) — apenas atualiza o conteúdo de prompts, skills, configurações MCP e orquestradores SDD.
+Atualiza os assets gerenciados para a versão atual. Use após `brew upgrade kortex` ou quando quiser que suas configurações locais estejam alinhadas com o último lançamento. NÃO reinstala binários (kortex-engram, Kortex CLI) — apenas atualiza o conteúdo de prompts, skills, configurações MCP e orquestradores SDD.
 
 ```bash
 # Sincronizar todos os agentes instalados
@@ -78,7 +78,7 @@ kortex sync --agent cursor --agent windsurf
 # Sincronizar um componente específico
 kortex sync --component sdd
 kortex sync --component skills
-kortex sync --component engram
+kortex sync --component kortex-engram
 ```
 
 O sync é seguro e idempotente — executá-lo duas vezes não produz alterações na segunda vez.
@@ -149,7 +149,7 @@ kortex -v
 | Flag | Descrição |
 |------|-------------|
 | `--agent`, `--agents` | Agentes a sincronizar (padrão: todos os agentes instalados) |
-| `--component` | Sincroniza apenas um componente específico: `sdd`, `engram`, `context7`, `skills`, `kortex`, `permissions`, `theme` |
+| `--component` | Sincroniza apenas um componente específico: `sdd`, `kortex-engram`, `context7`, `skills`, `kortex`, `permissions`, `theme` |
 | `--profile` | Cria ou atualiza um perfil SDD: `nome:provedor/modelo` (define o modelo padrão para todas as fases) |
 | `--profile-phase` | Sobrescreve uma fase específica em um perfil: `nome:fase:provedor/modelo` |
 | `--sdd-profile-strategy` | Estratégia de sincronização de perfis OpenCode: `generated-multi` ou `external-single-active` |

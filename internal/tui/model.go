@@ -152,7 +152,7 @@ type UninstallFunc func(agentIDs []model.AgentID, componentIDs []model.Component
 
 // UninstallWithProfilesFunc is an uninstall function variant that accepts an
 // explicit profile selection for OpenCode SDD profile cleanup.
-type UninstallWithProfilesFunc func(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, engramScope model.EngramUninstallScope) (componentuninstall.Result, error)
+type UninstallWithProfilesFunc func(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, KortexEngramScope model.KortexEngramUninstallScope) (componentuninstall.Result, error)
 
 // ExecuteFunc builds and runs the installation pipeline. It receives a ProgressFunc
 // callback to emit step-level progress events, and returns the ExecutionResult.
@@ -367,11 +367,11 @@ type Model struct {
 	UninstallProfilesAvailable []string
 	UninstallProfilesToRemove  []string
 	UninstallProfileSelection  bool
-	// UninstallEngramProjectScopeAvailable indicates whether .engram project data
+	// UninstallKortexEngramProjectScopeAvailable indicates whether .KortexEngram project data
 	// was detected for the current workspace, enabling project-only cleanup.
-	UninstallEngramProjectScopeAvailable bool
-	// UninstallEngramScope controls Engram cleanup behavior in uninstall.
-	UninstallEngramScope model.EngramUninstallScope
+	UninstallKortexEngramProjectScopeAvailable bool
+	// UninstallKortexEngramScope controls KortexEngram cleanup behavior in uninstall.
+	UninstallKortexEngramScope model.KortexEngramUninstallScope
 
 	// UninstallResult holds the last uninstall execution result.
 	UninstallResult componentuninstall.Result
@@ -415,7 +415,7 @@ func NewModel(detection system.DetectionResult, version string) Model {
 		Detection:            detection,
 		UninstallAgents:      preselectedAgents(detection),
 		UninstallComponents:  defaultUninstallComponents(),
-		UninstallEngramScope: model.EngramUninstallScopeGlobal,
+		UninstallKortexEngramScope: model.KortexEngramUninstallScopeGlobal,
 		Progress: NewProgressState([]string{
 			"Install dependencies",
 			"Configure selected agents",
@@ -705,11 +705,11 @@ func (m Model) View() string {
 	case ScreenUninstallComponents:
 		return screens.RenderUninstallComponents(m.UninstallComponents, m.Cursor)
 	case ScreenUninstallProfiles:
-		return screens.RenderUninstallProfiles(m.UninstallProfilesAvailable, m.UninstallProfilesToRemove, m.UninstallEngramProjectScopeAvailable, m.UninstallEngramScope, m.Cursor)
+		return screens.RenderUninstallProfiles(m.UninstallProfilesAvailable, m.UninstallProfilesToRemove, m.UninstallKortexEngramProjectScopeAvailable, m.UninstallKortexEngramScope, m.Cursor)
 	case ScreenUninstallConfirm:
-		return screens.RenderUninstallConfirm(m.UninstallMode, m.UninstallAgents, m.UninstallComponents, m.UninstallProfilesToRemove, m.UninstallEngramScope, m.UninstallEngramProjectScopeAvailable, m.Cursor, m.OperationRunning, m.SpinnerFrame)
+		return screens.RenderUninstallConfirm(m.UninstallMode, m.UninstallAgents, m.UninstallComponents, m.UninstallProfilesToRemove, m.UninstallKortexEngramScope, m.UninstallKortexEngramProjectScopeAvailable, m.Cursor, m.OperationRunning, m.SpinnerFrame)
 	case ScreenUninstallResult:
-		return screens.RenderUninstallResult(m.UninstallResult, m.UninstallErr, m.UninstallMode, m.UninstallProfilesToRemove, m.UninstallEngramScope, m.UninstallEngramProjectScopeAvailable, m.SyncCleanInstallFilesChanged, m.SyncCleanInstallErr)
+		return screens.RenderUninstallResult(m.UninstallResult, m.UninstallErr, m.UninstallMode, m.UninstallProfilesToRemove, m.UninstallKortexEngramScope, m.UninstallKortexEngramProjectScopeAvailable, m.SyncCleanInstallFilesChanged, m.SyncCleanInstallErr)
 	case ScreenDetection:
 		return screens.RenderDetection(m.Detection, m.Cursor)
 	case ScreenAgents:
@@ -995,7 +995,7 @@ func (m Model) handleKeyPress(key tea.KeyMsg) (tea.Model, tea.Cmd) {
 			if m.Cursor < len(m.UninstallProfilesAvailable) {
 				m.toggleCurrentUninstallProfile()
 			} else {
-				m.toggleCurrentUninstallEngramScope()
+				m.toggleCurrentUninstallKortexEngramScope()
 			}
 		case ScreenDependencyTree:
 			if m.Selection.Preset == model.PresetCustom {
@@ -1206,16 +1206,16 @@ func (m Model) confirmSelection() (tea.Model, tea.Cmd) {
 		return m, nil
 	case ScreenUninstallProfiles:
 		profileCount := len(m.UninstallProfilesAvailable)
-		engramScopeOptionCount := 0
-		if m.shouldShowUninstallEngramScopeSelection() {
-			engramScopeOptionCount = 2
+		KortexEngramScopeOptionCount := 0
+		if m.shouldShowUninstallKortexEngramScopeSelection() {
+			KortexEngramScopeOptionCount = 2
 		}
-		continueIdx := profileCount + engramScopeOptionCount
+		continueIdx := profileCount + KortexEngramScopeOptionCount
 		switch {
 		case m.Cursor < profileCount:
 			m.toggleCurrentUninstallProfile()
 		case m.Cursor < continueIdx:
-			m.toggleCurrentUninstallEngramScope()
+			m.toggleCurrentUninstallKortexEngramScope()
 		case m.Cursor == continueIdx:
 			m.UninstallProfileSelection = true
 			m.setScreen(ScreenUninstallConfirm)
@@ -2000,8 +2000,8 @@ func (m Model) withResetUninstallState() Model {
 	m.UninstallProfilesAvailable = nil
 	m.UninstallProfilesToRemove = nil
 	m.UninstallProfileSelection = false
-	m.UninstallEngramProjectScopeAvailable = false
-	m.UninstallEngramScope = model.EngramUninstallScopeGlobal
+	m.UninstallKortexEngramProjectScopeAvailable = false
+	m.UninstallKortexEngramScope = model.KortexEngramUninstallScopeGlobal
 	m.UninstallResult = componentuninstall.Result{}
 	m.UninstallErr = nil
 	m.SyncCleanInstallFilesChanged = 0
@@ -2045,7 +2045,7 @@ func (m Model) startUninstall() tea.Cmd {
 	agentIDs := append([]model.AgentID(nil), m.UninstallAgents...)
 	componentIDs := append([]model.ComponentID(nil), m.UninstallComponents...)
 	profileNamesToRemove := append([]string(nil), m.UninstallProfilesToRemove...)
-	engramScope := m.UninstallEngramScope
+	KortexEngramScope := m.UninstallKortexEngramScope
 	profileSelectionUsed := m.UninstallProfileSelection || len(profileNamesToRemove) > 0
 	mode := m.UninstallMode
 	return func() tea.Msg {
@@ -2058,7 +2058,7 @@ func (m Model) startUninstall() tea.Cmd {
 			err    error
 		)
 		if uninstallWithProfilesFn != nil && profileSelectionUsed {
-			result, err = uninstallWithProfilesFn(agentIDs, componentIDs, profileNamesToRemove, engramScope)
+			result, err = uninstallWithProfilesFn(agentIDs, componentIDs, profileNamesToRemove, KortexEngramScope)
 		} else {
 			result, err = uninstallFn(agentIDs, componentIDs)
 		}
@@ -2096,8 +2096,8 @@ func (m Model) startUninstall() tea.Cmd {
 }
 
 func (m *Model) refreshUninstallProfiles() {
-	m.UninstallEngramProjectScopeAvailable = m.detectProjectEngramData()
-	m.UninstallEngramScope = model.EngramUninstallScopeGlobal
+	m.UninstallKortexEngramProjectScopeAvailable = m.detectProjectKortexEngramData()
+	m.UninstallKortexEngramScope = model.KortexEngramUninstallScopeGlobal
 
 	if !m.hasDetectedOpenCode() {
 		m.UninstallProfilesAvailable = nil
@@ -2116,15 +2116,15 @@ func (m *Model) refreshUninstallProfiles() {
 	m.UninstallProfilesAvailable = profileNames(profiles)
 }
 
-func (m Model) detectProjectEngramData() bool {
-	if !hasSelectedComponent(m.UninstallComponents, model.ComponentEngram) {
+func (m Model) detectProjectKortexEngramData() bool {
+	if !hasSelectedComponent(m.UninstallComponents, model.ComponentKortexEngram) {
 		return false
 	}
 	cwd, err := osGetwdFn()
 	if err != nil || strings.TrimSpace(cwd) == "" {
 		return false
 	}
-	info, err := osStatPathFn(filepath.Join(cwd, ".engram"))
+	info, err := osStatPathFn(filepath.Join(cwd, ".KortexEngram"))
 	if err != nil {
 		return false
 	}
@@ -2485,7 +2485,7 @@ func (m *Model) setScreen(next Screen) {
 		m.refreshUninstallProfiles()
 		m.UninstallProfilesToRemove = nil
 		m.UninstallProfileSelection = false
-		m.UninstallEngramScope = model.EngramUninstallScopeGlobal
+		m.UninstallKortexEngramScope = model.KortexEngramUninstallScopeGlobal
 	}
 }
 
@@ -2562,7 +2562,7 @@ func (m Model) optionCount() int {
 		return len(screens.UninstallComponentOptions()) + 2
 	case ScreenUninstallProfiles:
 		count := len(m.UninstallProfilesAvailable) + 2
-		if m.shouldShowUninstallEngramScopeSelection() {
+		if m.shouldShowUninstallKortexEngramScopeSelection() {
 			count += 2
 		}
 		return count
@@ -2762,18 +2762,18 @@ func (m *Model) toggleCurrentUninstallProfile() {
 	m.UninstallProfilesToRemove = append(m.UninstallProfilesToRemove, profileName)
 }
 
-func (m *Model) toggleCurrentUninstallEngramScope() {
+func (m *Model) toggleCurrentUninstallKortexEngramScope() {
 	profileCount := len(m.UninstallProfilesAvailable)
-	if m.Cursor < profileCount || !m.shouldShowUninstallEngramScopeSelection() {
+	if m.Cursor < profileCount || !m.shouldShowUninstallKortexEngramScopeSelection() {
 		return
 	}
 	idx := m.Cursor - profileCount
 	if idx == 0 {
-		m.UninstallEngramScope = model.EngramUninstallScopeProject
+		m.UninstallKortexEngramScope = model.KortexEngramUninstallScopeProject
 		return
 	}
 	if idx == 1 {
-		m.UninstallEngramScope = model.EngramUninstallScopeGlobal
+		m.UninstallKortexEngramScope = model.KortexEngramUninstallScopeGlobal
 	}
 }
 
@@ -2952,14 +2952,14 @@ func (m Model) shouldShowKiroModelPickerScreen() bool {
 func componentsForPreset(preset model.PresetID) []model.ComponentID {
 	switch preset {
 	case model.PresetMinimal:
-		return []model.ComponentID{model.ComponentEngram}
+		return []model.ComponentID{model.ComponentKortexEngram}
 	case model.PresetEcosystemOnly:
-		return []model.ComponentID{model.ComponentEngram, model.ComponentSDD, model.ComponentSkills, model.ComponentContext7, model.ComponentKortexCLI}
+		return []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD, model.ComponentSkills, model.ComponentContext7, model.ComponentKortexCLI}
 	case model.PresetCustom:
 		return nil
 	default:
 		return []model.ComponentID{
-			model.ComponentEngram,
+			model.ComponentKortexEngram,
 			model.ComponentSDD,
 			model.ComponentSkills,
 			model.ComponentContext7,
@@ -3012,15 +3012,15 @@ func (m Model) shouldShowUninstallProfilesSelection() bool {
 	return true
 }
 
-func (m Model) shouldShowUninstallEngramScopeSelection() bool {
-	if !hasSelectedComponent(m.UninstallComponents, model.ComponentEngram) {
+func (m Model) shouldShowUninstallKortexEngramScopeSelection() bool {
+	if !hasSelectedComponent(m.UninstallComponents, model.ComponentKortexEngram) {
 		return false
 	}
-	return m.UninstallEngramProjectScopeAvailable
+	return m.UninstallKortexEngramProjectScopeAvailable
 }
 
 func (m Model) shouldShowUninstallSubSelection() bool {
-	return m.shouldShowUninstallProfilesSelection() || m.shouldShowUninstallEngramScopeSelection()
+	return m.shouldShowUninstallProfilesSelection() || m.shouldShowUninstallKortexEngramScopeSelection()
 }
 
 func (m *Model) selectAllUninstallProfiles() {

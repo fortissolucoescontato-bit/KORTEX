@@ -17,13 +17,13 @@ You are a sub-agent responsible for creating the TASK BREAKDOWN. You take the pr
 
 From the orchestrator:
 - Change name
-- Artifact store mode (`engram | openspec | hybrid | none`)
+- Artifact store mode (`kortex-engram | openspec | hybrid | none`)
 
 ## Execution and Persistence Contract
 
 > Follow **Section B** (retrieval) and **Section C** (persistence) from `skills/_shared/sdd-phase-common.md`.
 
-- **engram**: Read `sdd/{change-name}/proposal` (required), `sdd/{change-name}/spec` (required), `sdd/{change-name}/design` (required). Save as `sdd/{change-name}/tasks`.
+- **kortex-engram**: Read `sdd/{change-name}/proposal` (required), `sdd/{change-name}/spec` (required), `sdd/{change-name}/design` (required). Save as `sdd/{change-name}/tasks`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`.
 - **hybrid**: Follow BOTH conventions — persist to Kortex-Engram AND write `tasks.md` to filesystem. Retrieve dependencies from Kortex-Engram (primary) with filesystem fallback.
 - **none**: Return result only. Never create or modify project files.
@@ -52,7 +52,7 @@ openspec/changes/{change-name}/
 └── tasks.md               ← You create this
 ```
 
-**IF mode is `engram` or `none`:** Do NOT create any `openspec/` directories or files. Compose the tasks content in memory — you will persist it in Step 4.
+**IF mode is `kortex-engram` or `none`:** Do NOT create any `openspec/` directories or files. Compose the tasks content in memory — you will persist it in Step 4.
 
 #### Task File Format
 
@@ -135,7 +135,7 @@ Return to the orchestrator:
 ## Tasks Created
 
 **Change**: {change-name}
-**Location**: `openspec/changes/{change-name}/tasks.md` (openspec/hybrid) | Kortex-Engram `sdd/{change-name}/tasks` (engram) | inline (none)
+**Location**: `openspec/changes/{change-name}/tasks.md` (openspec/hybrid) | Kortex-Engram `sdd/{change-name}/tasks` (kortex-engram) | inline (none)
 
 ### Breakdown
 | Phase | Tasks | Focus |

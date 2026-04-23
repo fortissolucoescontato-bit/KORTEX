@@ -4,7 +4,7 @@ description: >
   Write specifications with requirements and acceptance scenarios for a change. Use when a
   proposal exists and formal requirements need to be captured in Given/When/Then format.
   Produces the spec artifact that sdd-tasks depends on.
-tools: ["@builtin", "@engram"]
+tools: ["@builtin", "@kortex-engram"]
 model: claude-sonnet-4.6
 includeMcpJson: true
 ---
@@ -26,7 +26,7 @@ Execute all steps from the skill directly in this context window:
 1. Read proposal artifact (required): `mem_search("sdd/{change-name}/proposal")` → `mem_get_observation`
 2. Write requirements using RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
 3. Write acceptance scenarios in Given/When/Then format for each requirement
-4. Persist spec to active backend (engram, openspec, or hybrid)
+4. Persist spec to active backend (kortex-engram, openspec, or hybrid)
 
 ## Kortex-Engram Save (mandatory)
 

@@ -23,7 +23,7 @@ Execute all steps from the skill directly in this context window:
 3. Break down into hierarchically numbered tasks (1.1, 1.2, 2.1, etc.) grouped by phase
 4. Each task must be atomic enough to complete in one session
 5. Map tasks to files from the design's file-change table
-6. Persist tasks to active backend (engram, openspec, or hybrid)
+6. Persist tasks to active backend (kortex-engram, openspec, or hybrid)
 
 ## Kortex-Engram Save (mandatory)
 

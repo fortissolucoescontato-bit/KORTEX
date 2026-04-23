@@ -34,10 +34,10 @@ SDD is the structured planning layer for substantial changes.
 
 ### Artifact Store Policy
 
-- `engram` — default when available; persistent memory across sessions
+- `kortex-engram` — default when available; persistent memory across sessions
 - `openspec` — file-based artifacts; use only when user explicitly requests
 - `hybrid` — both backends; cross-session recovery + local files; more tokens per op
-- `none` — return results inline only; recommend enabling engram or openspec
+- `none` — return results inline only; recommend enabling kortex-engram or openspec
 
 ### Commands
 
@@ -141,10 +141,10 @@ Sub-agents get a fresh context with NO memory. The orchestrator controls context
 
 ### State and Conventions
 
-Convention files live under `~/.config/agents/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`, `sdd-phase-common.md`, `skill-resolver.md`.
+Convention files live under `~/.config/agents/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `kortex-engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`, `sdd-phase-common.md`, `skill-resolver.md`.
 
 ### Recovery Rule
 
-- `engram` → `mem_search(...)` → `mem_get_observation(...)`
+- `kortex-engram` → `mem_search(...)` → `mem_get_observation(...)`
 - `openspec` → read `openspec/changes/*/state.yaml`
 - `none` → state not persisted — explain to the user

@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"testing"

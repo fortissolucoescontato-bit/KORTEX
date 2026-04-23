@@ -180,9 +180,9 @@ func stripTrailingCommas(raw []byte) []byte {
 // under that key is used verbatim as the replacement — the corresponding base
 // value is discarded entirely.
 //
-// Example overlay that forces atomic replacement of mcp.engram:
+// Example overlay that forces atomic replacement of mcp.KortexEngram:
 //
-//	{"mcp": {"engram": {"__replace__": {"command": [...], "type": "local"}}}}
+//	{"mcp": {"kortex-engram": {"__replace__": {"command": [...], "type": "local"}}}}
 const replacesentinel = "__replace__"
 
 // asSentinel checks if v is a map with exactly one key "__replace__".

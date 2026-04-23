@@ -31,7 +31,7 @@ const (
 type ComponentID string
 
 const (
-	ComponentEngram     ComponentID = "kortex-engram"
+	ComponentKortexEngram     ComponentID = "kortex-engram"
 	ComponentSDD        ComponentID = "sdd"
 	ComponentSkills     ComponentID = "skills"
 	ComponentContext7   ComponentID = "context7"
@@ -50,11 +50,11 @@ const (
 	UninstallModeCleanInstall UninstallMode = "clean-install"
 )
 
-type EngramUninstallScope string
+type KortexEngramUninstallScope string
 
 const (
-	EngramUninstallScopeGlobal  EngramUninstallScope = "global"
-	EngramUninstallScopeProject EngramUninstallScope = "project"
+	KortexEngramUninstallScopeGlobal  KortexEngramUninstallScope = "global"
+	KortexEngramUninstallScopeProject KortexEngramUninstallScope = "project"
 )
 
 type SkillID string

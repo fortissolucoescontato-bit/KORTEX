@@ -45,7 +45,7 @@ O orquestrador permanece no arquivo de steering e coordena a execução das fase
 sdd-init → sdd-explore → sdd-propose → sdd-spec → sdd-design → sdd-tasks → sdd-apply → sdd-verify → sdd-archive (+ sdd-onboard)
 ```
 
-Isso segue a mesma arquitetura SDD usada no kortex: o orquestrador coordena, os agentes de fase executam e o Engram persiste os artefatos entre as fases.
+Isso segue a mesma arquitetura SDD usada no kortex: o orquestrador coordena, os agentes de fase executam e o Kortex-Engram persiste os artefatos entre as fases.
 
 **Portões de aprovação** continuam sendo obrigatórios antes das fases `apply` (aplicar) e `archive` (arquivar).
 
@@ -69,7 +69,7 @@ O Kiro possui um fluxo de trabalho de specs embutido que o kortex aproveita. Par
 | Tamanho | Abordagem |
 |------|----------|
 | Pequeno | Em linha — sem fases formais de SDD |
-| Médio | Specs nativas do Kiro (`.kiro/specs/`) + Engram |
+| Médio | Specs nativas do Kiro (`.kiro/specs/`) + Kortex-Engram |
 | Grande | Ciclo completo de SDD: explore → propose → spec → design → tasks → apply → verify → archive |
 
 ---

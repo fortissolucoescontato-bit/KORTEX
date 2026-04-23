@@ -38,7 +38,7 @@
 - [ ] T-09 Modify `internal/components/permissions/inject.go`:
   - Add `qwenCodeOverlayJSON` variable: `{"permissions": {"defaultMode": "auto_edit"}}`
   - Add `case model.AgentQwenCode: return qwenCodeOverlayJSON` in `agentOverlay()`
-- [ ] T-10 Modify `internal/components/engram/setup.go`:
+- [ ] T-10 Modify `internal/components/kortex-engram/setup.go`:
   - Add `case model.AgentQwenCode: return "qwen-code", true` in `SetupAgentSlug()`
 - [ ] T-11 Modify `internal/system/config_scan.go`:
   - Add `{Agent: "qwen-code", Path: filepath.Join(homeDir, ".qwen")}` in `knownAgentConfigDirs()`
@@ -60,7 +60,7 @@
   - Verify `~/.qwen/skills/` path reference in orchestrator
 - [ ] T-16 Add `AgentQwenCode` case to `TestSDDOrchestratorAssetSelection` in `internal/components/sdd/inject_test.go`:
   - `{agent: model.AgentQwenCode, want: "qwen/sdd-orchestrator.md"}`
-- [ ] T-17 Add `AgentQwenCode` test case to `TestSetupAgentSlug` in `internal/components/engram/setup_test.go`:
+- [ ] T-17 Add `AgentQwenCode` test case to `TestSetupAgentSlug` in `internal/components/kortex-engram/setup_test.go`:
   - `{model.AgentQwenCode, "qwen-code", true}`
 - [ ] T-18 Update `TestNormalizeInstallFlagsDefaults` in `internal/cli/install_test.go`:
   - Add `model.AgentQwenCode` to expected agents list
@@ -79,7 +79,7 @@
 - [ ] T-23 Run `go vet ./...` — must pass with zero issues
 - [ ] T-24 Run `go test ./internal/agents/qwen/...` — all adapter tests pass
 - [ ] T-25 Run `go test ./internal/components/sdd/...` — SDD injection test passes
-- [ ] T-26 Run `go test ./internal/components/engram/...` — engram setup test passes
+- [ ] T-26 Run `go test ./internal/components/kortex-engram/...` — kortex-engram setup test passes
 - [ ] T-27 Run `go test ./internal/cli/...` — install validation tests pass
 - [ ] T-28 Run `go test ./internal/agents/...` — registry test passes
 - [ ] T-29 Run `go test ./internal/tui/...` — TUI tests pass

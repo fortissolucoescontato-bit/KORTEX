@@ -9,8 +9,8 @@ func updateHint(tool ToolInfo, profile system.PlatformProfile) string {
 	switch tool.Name {
 	case "kortex":
 		return kortexHint(profile)
-	case "engram":
-		return engramHint(profile)
+	case "kortex-engram":
+		return KortexEngramHint(profile)
 	default:
 		return ""
 	}
@@ -29,10 +29,10 @@ func kortexHint(profile system.PlatformProfile) string {
 	}
 }
 
-func engramHint(profile system.PlatformProfile) string {
+func KortexEngramHint(profile system.PlatformProfile) string {
 	switch profile.PackageManager {
 	case "brew":
-		return "brew upgrade engram"
+		return "brew upgrade KortexEngram"
 	default:
 		return "kortex upgrade (baixa o binário pré-compilado)"
 	}

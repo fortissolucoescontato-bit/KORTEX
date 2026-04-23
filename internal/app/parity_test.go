@@ -348,28 +348,28 @@ func TestInstallPlannerParityLinuxPreservesComponentOrder(t *testing.T) {
 		},
 	}
 
-	result, err := cli.RunInstall([]string{"--dry-run", "--agent", "opencode", "--component", "engram,sdd,skills"}, linuxDetection)
+	result, err := cli.RunInstall([]string{"--dry-run", "--agent", "opencode", "--component", "KortexEngram,sdd,skills"}, linuxDetection)
 	if err != nil {
 		t.Fatalf("RunInstall() error = %v", err)
 	}
 
-	// Engram must come before SDD, SDD before Skills (dependency order)
+	// KortexEngram must come before SDD, SDD before Skills (dependency order)
 	order := result.Resolved.OrderedComponents
-	engramIdx, sddIdx, skillsIdx := -1, -1, -1
+	KortexEngramIdx, sddIdx, skillsIdx := -1, -1, -1
 	for i, c := range order {
 		switch c {
-		case "engram":
-			engramIdx = i
+		case "kortex-engram":
+			KortexEngramIdx = i
 		case "sdd":
 			sddIdx = i
 		case "skills":
 			skillsIdx = i
 		}
 	}
-	if engramIdx < 0 || sddIdx < 0 || skillsIdx < 0 {
+	if KortexEngramIdx < 0 || sddIdx < 0 || skillsIdx < 0 {
 		t.Fatalf("missing expected components in order: %v", order)
 	}
-	if engramIdx >= sddIdx || sddIdx >= skillsIdx {
-		t.Fatalf("dependency order violated: engram@%d sdd@%d skills@%d", engramIdx, sddIdx, skillsIdx)
+	if KortexEngramIdx >= sddIdx || sddIdx >= skillsIdx {
+		t.Fatalf("dependency order violated: KortexEngram@%d sdd@%d skills@%d", KortexEngramIdx, sddIdx, skillsIdx)
 	}
 }

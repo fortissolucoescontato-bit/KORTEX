@@ -10,8 +10,8 @@ import (
 
 func FuzzNormalizeJSON_NoPanic(f *testing.F) {
 	seeds := [][]byte{
-		[]byte(`{"mcpServers":{"engram":{"command":"engram"}}}`),
-		[]byte("{\n  // comment\n  \"mcpServers\": {\n    \"engram\": {\n      \"command\": \"engram\",\n    },\n  },\n}\n"),
+		[]byte(`{"mcpServers":{"kortex-engram":{"command":"kortex-engram"}}}`),
+		[]byte("{\n  // comment\n  \"mcpServers\": {\n    \"KortexEngram\": {\n      \"command\": \"KortexEngram\",\n    },\n  },\n}\n"),
 		[]byte(`{"url":"https://example.com/x//y","arr":[1,2,],}`),
 		[]byte(`{"quote":"escaped \" // not a comment"}`),
 		[]byte(`{"unterminated": /* comment`),
@@ -32,20 +32,20 @@ func TestRemoveMarkdownSections_RemovesOnlyManagedBlock(t *testing.T) {
 		"",
 		"Keep this.",
 		"",
-		"<!-- kortex:engram-protocol -->",
+		"<!-- kortex:KortexEngram-protocol -->",
 		"Managed content.",
-		"<!-- /kortex:engram-protocol -->",
+		"<!-- /kortex:KortexEngram-protocol -->",
 		"",
 		"# User Footer",
 		"",
 		"Must stay.",
 	}, "\n") + "\n"
 
-	updated, changed := removeMarkdownSections(input, "engram-protocol")
+	updated, changed := removeMarkdownSections(input, "KortexEngram-protocol")
 	if !changed {
 		t.Fatal("removeMarkdownSections() changed = false, want true")
 	}
-	if strings.Contains(updated, "kortex:engram-protocol") {
+	if strings.Contains(updated, "kortex:KortexEngram-protocol") {
 		t.Fatalf("managed marker block still present:\n%s", updated)
 	}
 	if !strings.Contains(updated, "# User Intro") || !strings.Contains(updated, "# User Footer") {
@@ -57,7 +57,7 @@ func TestRemoveManagedPersonaPreamble_PreservesManagedSuffix(t *testing.T) {
 	input := strings.Join([]string{
 		"---",
 		"name: Kortex Persona",
-		"description: Teaching-oriented persona with SDD orchestration and Engram protocol",
+		"description: Teaching-oriented persona with SDD orchestration and KortexEngram protocol",
 		"applyTo: \"**\"",
 		"---",
 		"",
@@ -88,7 +88,7 @@ func TestRemoveManagedPersonaPreamble_WithoutMarkerDoesNotDeleteContent(t *testi
 	input := strings.Join([]string{
 		"---",
 		"name: Kortex Persona",
-		"description: Teaching-oriented persona with SDD orchestration and Engram protocol",
+		"description: Teaching-oriented persona with SDD orchestration and KortexEngram protocol",
 		"---",
 		"",
 		"## Personality",
@@ -167,8 +167,8 @@ func TestRemoveJSONPaths_SupportsCommentsAndTrailingCommas(t *testing.T) {
 	input := []byte(`{
   // user comment
   "mcpServers": {
-    "engram": {
-      "command": "engram",
+    "kortex-engram": {
+      "command": "kortex-engram",
     },
     "custom": {
       "command": "python"
@@ -177,7 +177,7 @@ func TestRemoveJSONPaths_SupportsCommentsAndTrailingCommas(t *testing.T) {
 }
 `)
 
-	updated, changed, err := removeJSONPaths(input, jsonPath{"mcpServers", "engram"})
+	updated, changed, err := removeJSONPaths(input, jsonPath{"mcpServers", "kortex-engram"})
 	if err != nil {
 		t.Fatalf("removeJSONPaths() error = %v", err)
 	}
@@ -190,8 +190,8 @@ func TestRemoveJSONPaths_SupportsCommentsAndTrailingCommas(t *testing.T) {
 		t.Fatalf("json.Unmarshal(updated) error = %v", err)
 	}
 	mcpServers := got["mcpServers"].(map[string]any)
-	if _, exists := mcpServers["engram"]; exists {
-		t.Fatalf("engram should be removed: %#v", mcpServers)
+	if _, exists := mcpServers["kortex-engram"]; exists {
+		t.Fatalf("KortexEngram should be removed: %#v", mcpServers)
 	}
 	if _, exists := mcpServers["custom"]; !exists {
 		t.Fatalf("custom server should remain: %#v", mcpServers)
@@ -313,12 +313,12 @@ func TestRemoveTopLevelTOMLKeys_PreservesNestedKeys(t *testing.T) {
 
 func TestCleanCodexTOML_RemovesOnlyManagedEntries(t *testing.T) {
 	input := strings.Join([]string{
-		"model_instructions_file = \"/home/me/.codex/engram-instructions.md\"",
-		"experimental_compact_prompt_file = \"/home/me/.codex/engram-compact-prompt.md\"",
+		"model_instructions_file = \"/home/me/.codex/KortexEngram-instructions.md\"",
+		"experimental_compact_prompt_file = \"/home/me/.codex/KortexEngram-compact-prompt.md\"",
 		"custom_top = \"keep\"",
 		"",
-		"[mcp_servers.engram]",
-		"command = \"engram\"",
+		"[mcp_servers.KortexEngram]",
+		"command = \"KortexEngram\"",
 		"args = [\"mcp\", \"--tools=agent\"]",
 		"",
 		"[other]",
@@ -332,8 +332,8 @@ func TestCleanCodexTOML_RemovesOnlyManagedEntries(t *testing.T) {
 	if strings.Contains(updated, "model_instructions_file") || strings.Contains(updated, "experimental_compact_prompt_file") {
 		t.Fatalf("managed top-level keys were not removed:\n%s", updated)
 	}
-	if strings.Contains(updated, "[mcp_servers.engram]") {
-		t.Fatalf("managed engram TOML block was not removed:\n%s", updated)
+	if strings.Contains(updated, "[mcp_servers.KortexEngram]") {
+		t.Fatalf("managed KortexEngram TOML block was not removed:\n%s", updated)
 	}
 	if !strings.Contains(updated, "custom_top = \"keep\"") || !strings.Contains(updated, "[other]") {
 		t.Fatalf("user TOML content was lost:\n%s", updated)
@@ -348,9 +348,9 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 		"",
 		"Hand-written intro.",
 		"",
-		"<!-- kortex:engram-protocol -->",
+		"<!-- kortex:KortexEngram-protocol -->",
 		"Managed content.",
-		"<!-- /kortex:engram-protocol -->",
+		"<!-- /kortex:KortexEngram-protocol -->",
 		"",
 		"# Footer",
 	}, "\n") + "\n"
@@ -362,7 +362,7 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile(%q) error = %v", path, err)
 	}
-	updated, changed := removeMarkdownSections(string(raw), "engram-protocol")
+	updated, changed := removeMarkdownSections(string(raw), "KortexEngram-protocol")
 	if !changed {
 		t.Fatal("removeMarkdownSections() changed = false, want true")
 	}
@@ -375,7 +375,7 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 		t.Fatalf("ReadFile(final) error = %v", err)
 	}
 	final := string(finalRaw)
-	if strings.Contains(final, "kortex:engram-protocol") {
+	if strings.Contains(final, "kortex:KortexEngram-protocol") {
 		t.Fatalf("managed markdown block still present in file:\n%s", final)
 	}
 	if !strings.Contains(final, "Hand-written intro.") || !strings.Contains(final, "# Footer") {
@@ -389,8 +389,8 @@ func TestJSONCleanup_OnRealFileWithTempDir(t *testing.T) {
 	input := []byte(`{
   "outputStyle": "Kortex",
   "mcpServers": {
-    "engram": {
-      "command": "engram"
+    "kortex-engram": {
+      "command": "kortex-engram"
     },
     "custom": {
       "command": "python"
@@ -407,7 +407,7 @@ func TestJSONCleanup_OnRealFileWithTempDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile(%q) error = %v", path, err)
 	}
-	updated, changed, err := removeJSONPaths(raw, jsonPath{"outputStyle"}, jsonPath{"mcpServers", "engram"})
+	updated, changed, err := removeJSONPaths(raw, jsonPath{"outputStyle"}, jsonPath{"mcpServers", "kortex-engram"})
 	if err != nil {
 		t.Fatalf("removeJSONPaths() error = %v", err)
 	}
@@ -433,8 +433,8 @@ func TestJSONCleanup_OnRealFileWithTempDir(t *testing.T) {
 		t.Fatalf("userSetting = %#v, want %q", got["userSetting"], "keep")
 	}
 	mcpServers := got["mcpServers"].(map[string]any)
-	if _, exists := mcpServers["engram"]; exists {
-		t.Fatalf("engram should be removed from file JSON: %#v", mcpServers)
+	if _, exists := mcpServers["kortex-engram"]; exists {
+		t.Fatalf("KortexEngram should be removed from file JSON: %#v", mcpServers)
 	}
 	if _, exists := mcpServers["custom"]; !exists {
 		t.Fatalf("custom server should remain in file JSON: %#v", mcpServers)

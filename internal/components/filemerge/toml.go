@@ -5,33 +5,33 @@ import (
 	"strings"
 )
 
-// UpsertCodexEngramBlock removes any existing [mcp_servers.engram] block from
-// the given TOML content and appends a fresh block with the canonical engram
+// UpsertCodexKortexEngramBlock removes any existing [mcp_servers.KortexEngram] block from
+// the given TOML content and appends a fresh block with the canonical KortexEngram
 // MCP entry (including --tools=agent). All other sections are preserved.
 //
-// engramCmd is the command string to use (e.g. an absolute path like
-// "/usr/local/bin/engram"). If engramCmd is empty, it falls back to "engram".
+// KortexEngramCmd is the command string to use (e.g. an absolute path like
+// "/usr/local/bin/KortexEngram"). If KortexEngramCmd is empty, it falls back to "kortex-engram".
 //
 // This is a string-based helper (no TOML parser dependency) ported from
-// engram/internal/setup/setup.go. It handles the limited TOML subset that
+// KortexEngram/internal/setup/setup.go. It handles the limited TOML subset that
 // Codex uses.
-func UpsertCodexEngramBlock(content, engramCmd string) string {
-	if engramCmd == "" {
-		engramCmd = "kortex-engram"
+func UpsertCodexKortexEngramBlock(content, KortexEngramCmd string) string {
+	if KortexEngramCmd == "" {
+		KortexEngramCmd = "kortex-engram"
 	}
 	// Escape backslashes for TOML double-quoted strings (Windows paths).
 	// e.g. C:\Users\foo → C:\\Users\\foo — prevents TOML unicode escape errors (\U).
-	escapedCmd := strings.ReplaceAll(engramCmd, `\`, `\\`)
-	codexEngramBlock := "[mcp_servers.kortex-engram]\ncommand = \"" + escapedCmd + "\"\nargs = [\"mcp\", \"--tools=agent\"]"
+	escapedCmd := strings.ReplaceAll(KortexEngramCmd, `\`, `\\`)
+	codexKortexEngramBlock := "[mcp_servers.KortexEngram]\ncommand = \"" + escapedCmd + "\"\nargs = [\"mcp\", \"--tools=agent\"]"
 	content = strings.ReplaceAll(content, "\r\n", "\n")
 	lines := strings.Split(content, "\n")
 
 	var kept []string
 	for i := 0; i < len(lines); {
 		trimmed := strings.TrimSpace(lines[i])
-		// Remove both old [mcp_servers.engram] and new [mcp_servers.kortex-engram]
+		// Remove both old [mcp_servers.KortexEngram] and new [mcp_servers.KortexEngram]
 		// to ensure idempotency when renaming.
-		if trimmed == "[mcp_servers.engram]" || trimmed == "[mcp_servers.kortex-engram]" {
+		if trimmed == "[mcp_servers.KortexEngram]" || trimmed == "[mcp_servers.KortexEngram]" {
 			// Skip the old block header and all its key-value lines.
 			i++
 			for i < len(lines) {
@@ -50,10 +50,10 @@ func UpsertCodexEngramBlock(content, engramCmd string) string {
 
 	base := strings.TrimSpace(strings.Join(kept, "\n"))
 	if base == "" {
-		return codexEngramBlock + "\n"
+		return codexKortexEngramBlock + "\n"
 	}
 
-	return base + "\n\n" + codexEngramBlock + "\n"
+	return base + "\n\n" + codexKortexEngramBlock + "\n"
 }
 
 // UpsertTopLevelTOMLString inserts or replaces a top-level key = "value" pair
@@ -61,7 +61,7 @@ func UpsertCodexEngramBlock(content, engramCmd string) string {
 // remains a top-level (non-table) setting. Existing occurrences of the key are
 // removed before inserting the new value (idempotent).
 //
-// Ported from engram/internal/setup/setup.go.
+// Ported from KortexEngram/internal/setup/setup.go.
 func UpsertTopLevelTOMLString(content, key, value string) string {
 	content = strings.ReplaceAll(content, "\r\n", "\n")
 	lines := strings.Split(content, "\n")

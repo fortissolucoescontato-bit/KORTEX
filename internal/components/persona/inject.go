@@ -114,13 +114,13 @@ func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (In
 		}
 
 		// For non-Kortex personas (e.g. neutral), the content is just a short
-		// one-liner. Writing ONLY that content would destroy any SDD/engram
+		// one-liner. Writing ONLY that content would destroy any SDD/KortexEngram
 		// sections that are injected later in the pipeline. Instead, we write the
-		// persona content as the base and let subsequent inject steps (SDD, engram)
+		// persona content as the base and let subsequent inject steps (SDD, KortexEngram)
 		// append their sections. For Kortex, the content is the full persona
 		// asset which is safe to write as-is.
 		//
-		// If the file already exists and has managed sections (SDD, engram), we
+		// If the file already exists and has managed sections (SDD, KortexEngram), we
 		// must preserve them — replace only the persona portion at the top.
 		existing, readErr := readFileOrEmpty(promptPath)
 		if readErr != nil {
@@ -327,7 +327,7 @@ func Inject(homeDir string, adapter agents.Adapter, persona model.PersonaID) (In
 // evidence that the pre-marker persona content is stale legacy text written by
 // an older installer, not user-authored content that happens to share headings.
 //
-// We intentionally do NOT trigger on ATL markers, engram markers, sdd markers,
+// We intentionally do NOT trigger on ATL markers, KortexEngram markers, sdd markers,
 // or any other managed marker — their presence does not prove that the
 // pre-marker content is installer-owned.
 // isExactLegacyPersonaAsset returns true when the file content is an exact
@@ -410,7 +410,7 @@ var osReadFile = func(path string) ([]byte, error) {
 }
 
 // preserveManagedSections checks whether the existing file content has
-// kortex managed sections (SDD orchestrator, engram protocol, etc.) and
+// kortex managed sections (SDD orchestrator, KortexEngram protocol, etc.) and
 // returns new content that preserves those sections while replacing only the
 // persona text before them. Returns ("", false) when no preservation is needed
 // (empty file, Kortex persona, or no managed markers found).
@@ -452,7 +452,7 @@ func readFileOrEmpty(path string) (string, error) {
 func wrapInstructionsFile(content string) string {
 	frontmatter := "---\n" +
 		"name: Kortex Persona\n" +
-		"description: Teaching-oriented persona with SDD orchestration and Engram protocol\n" +
+		"description: Teaching-oriented persona with SDD orchestration and KortexEngram protocol\n" +
 		"applyTo: \"**\"\n" +
 		"---\n\n"
 

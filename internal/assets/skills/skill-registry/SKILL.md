@@ -1,7 +1,7 @@
 ---
 name: skill-registry
 description: >
-  Create or update the skill registry for the current project. Scans user skills and project conventions, writes .atl/skill-registry.md, and saves to engram if available.
+  Create or update the skill registry for the current project. Scans user skills and project conventions, writes .atl/skill-registry.md, and saves to kortex-engram if available.
   Trigger: When user says "update skills", "skill registry", "actualizar skills", "update registry", or after installing/removing skills.
 license: MIT
 metadata:
@@ -150,7 +150,7 @@ Create the `.atl/` directory in the project root if it doesn't exist, then write
 .atl/skill-registry.md
 ```
 
-#### B. If engram is available, also save to engram (cross-session bonus):
+#### B. If kortex-engram is available, also save to kortex-engram (cross-session bonus):
 
 ```
 mem_save(
@@ -192,7 +192,7 @@ To update after installing/removing skills, run this again.
 ## Rules
 
 - ALWAYS write `.atl/skill-registry.md` regardless of any SDD persistence mode
-- ALWAYS save to engram if the `mem_save` tool is available
+- ALWAYS save to kortex-engram if the `mem_save` tool is available
 - SKIP `sdd-*`, `_shared`, and `skill-registry` directories when scanning
 - Read SKILL.md files (respecting the 200-line guard in Step 1) to generate accurate compact rules — this is a build-time cost, not a runtime cost
 - Compact rules MUST be 5-15 lines per skill — concise, actionable, no fluff

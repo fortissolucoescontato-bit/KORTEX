@@ -5,16 +5,16 @@ import (
 	"testing"
 )
 
-// ─── UpsertCodexEngramBlock ───────────────────────────────────────────────────
+// ─── UpsertCodexKortexEngramBlock ───────────────────────────────────────────────────
 
-func TestUpsertCodexEngramBlock_Empty(t *testing.T) {
-	result := UpsertCodexEngramBlock("", "")
+func TestUpsertCodexKortexEngramBlock_Empty(t *testing.T) {
+	result := UpsertCodexKortexEngramBlock("", "")
 
-	if !strings.Contains(result, "[mcp_servers.engram]") {
-		t.Fatalf("result missing [mcp_servers.engram]; got:\n%s", result)
+	if !strings.Contains(result, "[mcp_servers.KortexEngram]") {
+		t.Fatalf("result missing [mcp_servers.KortexEngram]; got:\n%s", result)
 	}
-	if !strings.Contains(result, `command = "engram"`) {
-		t.Fatalf("result missing command = \"engram\"; got:\n%s", result)
+	if !strings.Contains(result, `command = "kortex-engram"`) {
+		t.Fatalf("result missing command = \"KortexEngram\"; got:\n%s", result)
 	}
 	if !strings.Contains(result, `"--tools=agent"`) {
 		t.Fatalf("result missing --tools=agent; got:\n%s", result)
@@ -24,23 +24,23 @@ func TestUpsertCodexEngramBlock_Empty(t *testing.T) {
 	}
 }
 
-func TestUpsertCodexEngramBlock_ExistingBlock(t *testing.T) {
+func TestUpsertCodexKortexEngramBlock_ExistingBlock(t *testing.T) {
 	input := `[other_section]
 key = "value"
 
-[mcp_servers.engram]
-command = "engram"
+[mcp_servers.KortexEngram]
+command = "kortex-engram"
 args = ["mcp"]
 
 [another_section]
 foo = "bar"
 `
-	result := UpsertCodexEngramBlock(input, "")
+	result := UpsertCodexKortexEngramBlock(input, "")
 
-	// Must have exactly one [mcp_servers.engram] block.
-	count := strings.Count(result, "[mcp_servers.engram]")
+	// Must have exactly one [mcp_servers.KortexEngram] block.
+	count := strings.Count(result, "[mcp_servers.KortexEngram]")
 	if count != 1 {
-		t.Fatalf("expected 1 [mcp_servers.engram] block, got %d; result:\n%s", count, result)
+		t.Fatalf("expected 1 [mcp_servers.KortexEngram] block, got %d; result:\n%s", count, result)
 	}
 
 	// Must preserve unrelated sections.
@@ -57,13 +57,13 @@ foo = "bar"
 	}
 }
 
-func TestUpsertCodexEngramBlock_PreservesOtherSections(t *testing.T) {
+func TestUpsertCodexKortexEngramBlock_PreservesOtherSections(t *testing.T) {
 	input := `model = "gpt-4o"
 
 [settings]
 timeout = 30
 `
-	result := UpsertCodexEngramBlock(input, "")
+	result := UpsertCodexKortexEngramBlock(input, "")
 
 	if !strings.Contains(result, `model = "gpt-4o"`) {
 		t.Fatalf("result missing top-level model key; got:\n%s", result)
@@ -71,50 +71,50 @@ timeout = 30
 	if !strings.Contains(result, "[settings]") {
 		t.Fatalf("result missing [settings] section; got:\n%s", result)
 	}
-	if !strings.Contains(result, "[mcp_servers.engram]") {
-		t.Fatalf("result missing [mcp_servers.engram]; got:\n%s", result)
+	if !strings.Contains(result, "[mcp_servers.KortexEngram]") {
+		t.Fatalf("result missing [mcp_servers.KortexEngram]; got:\n%s", result)
 	}
 }
 
-func TestUpsertCodexEngramBlock_AbsolutePath(t *testing.T) {
-	result := UpsertCodexEngramBlock("", "/usr/local/bin/engram")
+func TestUpsertCodexKortexEngramBlock_AbsolutePath(t *testing.T) {
+	result := UpsertCodexKortexEngramBlock("", "/usr/local/bin/KortexEngram")
 
-	if !strings.Contains(result, "[mcp_servers.engram]") {
-		t.Fatalf("result missing [mcp_servers.engram]; got:\n%s", result)
+	if !strings.Contains(result, "[mcp_servers.KortexEngram]") {
+		t.Fatalf("result missing [mcp_servers.KortexEngram]; got:\n%s", result)
 	}
-	if !strings.Contains(result, `command = "/usr/local/bin/engram"`) {
+	if !strings.Contains(result, `command = "/usr/local/bin/KortexEngram"`) {
 		t.Fatalf("result missing absolute command path; got:\n%s", result)
 	}
-	if strings.Contains(result, `command = "engram"`) {
+	if strings.Contains(result, `command = "kortex-engram"`) {
 		t.Fatalf("result should NOT have relative command when absolute path given; got:\n%s", result)
 	}
 }
 
-func TestUpsertCodexEngramBlock_Idempotent(t *testing.T) {
+func TestUpsertCodexKortexEngramBlock_Idempotent(t *testing.T) {
 	input := `[other]
 key = "val"
 `
-	first := UpsertCodexEngramBlock(input, "")
-	second := UpsertCodexEngramBlock(first, "")
+	first := UpsertCodexKortexEngramBlock(input, "")
+	second := UpsertCodexKortexEngramBlock(first, "")
 
 	if first != second {
-		t.Fatalf("UpsertCodexEngramBlock is not idempotent:\nfirst:\n%s\nsecond:\n%s", first, second)
+		t.Fatalf("UpsertCodexKortexEngramBlock is not idempotent:\nfirst:\n%s\nsecond:\n%s", first, second)
 	}
 
-	count := strings.Count(second, "[mcp_servers.engram]")
+	count := strings.Count(second, "[mcp_servers.KortexEngram]")
 	if count != 1 {
-		t.Fatalf("after two runs: expected 1 [mcp_servers.engram] block, got %d; result:\n%s", count, second)
+		t.Fatalf("after two runs: expected 1 [mcp_servers.KortexEngram] block, got %d; result:\n%s", count, second)
 	}
 }
 
-func TestUpsertCodexEngramBlockWindowsPath(t *testing.T) {
+func TestUpsertCodexKortexEngramBlockWindowsPath(t *testing.T) {
 	// Windows paths contain backslashes which must be escaped in TOML double-quoted strings.
 	// \U would be interpreted as a Unicode escape sequence → parse error.
-	windowsCmd := `C:\Users\PERC\AppData\Local\engram\bin\engram.exe`
-	result := UpsertCodexEngramBlock("", windowsCmd)
+	windowsCmd := `C:\Users\PERC\AppData\Local\KortexEngram\bin\kortexengram.exe`
+	result := UpsertCodexKortexEngramBlock("", windowsCmd)
 
 	// TOML double-quoted string must have double backslashes.
-	want := `command = "C:\\Users\\PERC\\AppData\\Local\\engram\\bin\\engram.exe"`
+	want := `command = "C:\\Users\\PERC\\AppData\\Local\\KortexEngram\\bin\\kortexengram.exe"`
 	if !strings.Contains(result, want) {
 		t.Fatalf("result missing properly escaped Windows path;\nwant substring: %s\ngot:\n%s", want, result)
 	}
@@ -123,8 +123,8 @@ func TestUpsertCodexEngramBlockWindowsPath(t *testing.T) {
 // ─── UpsertTopLevelTOMLString ─────────────────────────────────────────────────
 
 func TestUpsertTopLevelTOMLString_NewKey(t *testing.T) {
-	input := `[mcp_servers.engram]
-command = "engram"
+	input := `[mcp_servers.KortexEngram]
+command = "kortex-engram"
 `
 	result := UpsertTopLevelTOMLString(input, "model_instructions_file", "/home/user/.codex/instructions.md")
 
@@ -133,17 +133,17 @@ command = "engram"
 	}
 	// Must appear before the first [section].
 	idx := strings.Index(result, "model_instructions_file")
-	sectionIdx := strings.Index(result, "[mcp_servers.engram]")
+	sectionIdx := strings.Index(result, "[mcp_servers.KortexEngram]")
 	if idx > sectionIdx {
-		t.Fatalf("model_instructions_file should appear before [mcp_servers.engram]; got:\n%s", result)
+		t.Fatalf("model_instructions_file should appear before [mcp_servers.KortexEngram]; got:\n%s", result)
 	}
 }
 
 func TestUpsertTopLevelTOMLString_ReplaceKey(t *testing.T) {
 	input := `model_instructions_file = "/old/path.md"
 
-[mcp_servers.engram]
-command = "engram"
+[mcp_servers.KortexEngram]
+command = "kortex-engram"
 `
 	result := UpsertTopLevelTOMLString(input, "model_instructions_file", "/new/path.md")
 
@@ -160,8 +160,8 @@ command = "engram"
 }
 
 func TestUpsertTopLevelTOMLString_Idempotent(t *testing.T) {
-	input := `[mcp_servers.engram]
-command = "engram"
+	input := `[mcp_servers.KortexEngram]
+command = "kortex-engram"
 `
 	first := UpsertTopLevelTOMLString(input, "model_instructions_file", "/path/instructions.md")
 	second := UpsertTopLevelTOMLString(first, "model_instructions_file", "/path/instructions.md")

@@ -16,8 +16,8 @@ type UninstallModeOption struct {
 	Description string
 }
 
-type UninstallEngramScopeOption struct {
-	Scope       model.EngramUninstallScope
+type UninstallKortexEngramScopeOption struct {
+	Scope       model.KortexEngramUninstallScope
 	Label       string
 	Description string
 }
@@ -171,24 +171,24 @@ func RenderUninstallComponents(selected []model.ComponentID, cursor int) string 
 	return b.String()
 }
 
-func uninstallEngramScopeOptions(projectScopeAvailable bool) []UninstallEngramScopeOption {
-	options := make([]UninstallEngramScopeOption, 0, 2)
+func uninstallKortexEngramScopeOptions(projectScopeAvailable bool) []UninstallKortexEngramScopeOption {
+	options := make([]UninstallKortexEngramScopeOption, 0, 2)
 	if projectScopeAvailable {
-		options = append(options, UninstallEngramScopeOption{
-			Scope:       model.EngramUninstallScopeProject,
+		options = append(options, UninstallKortexEngramScopeOption{
+			Scope:       model.KortexEngramUninstallScopeProject,
 			Label:       "Limpeza apenas do projeto",
-			Description: "Excluir apenas .engram/ no projeto atual",
+			Description: "Excluir apenas .KortexEngram/ no projeto atual",
 		})
 	}
-	options = append(options, UninstallEngramScopeOption{
-		Scope:       model.EngramUninstallScopeGlobal,
+	options = append(options, UninstallKortexEngramScopeOption{
+		Scope:       model.KortexEngramUninstallScopeGlobal,
 		Label:       "Limpeza global",
-		Description: "Remover integração global Engram MCP/prompt de sistema",
+		Description: "Remover integração global KortexEngram MCP/prompt de sistema",
 	})
 	return options
 }
 
-func RenderUninstallProfiles(available []string, selected []string, engramProjectScopeAvailable bool, selectedEngramScope model.EngramUninstallScope, cursor int) string {
+func RenderUninstallProfiles(available []string, selected []string, KortexEngramProjectScopeAvailable bool, selectedKortexEngramScope model.KortexEngramUninstallScope, cursor int) string {
 	var b strings.Builder
 
 	b.WriteString(styles.TitleStyle.Render("Seleção do Escopo de Desinstalação"))
@@ -212,18 +212,18 @@ func RenderUninstallProfiles(available []string, selected []string, engramProjec
 		b.WriteString(renderCheckbox(profileName, checked, focused))
 	}
 
-	engramScopeOptions := uninstallEngramScopeOptions(engramProjectScopeAvailable)
-	engramScopeDisplayed := 0
-	if len(engramScopeOptions) > 1 {
-		engramScopeDisplayed = len(engramScopeOptions)
+	KortexEngramScopeOptions := uninstallKortexEngramScopeOptions(KortexEngramProjectScopeAvailable)
+	KortexEngramScopeDisplayed := 0
+	if len(KortexEngramScopeOptions) > 1 {
+		KortexEngramScopeDisplayed = len(KortexEngramScopeOptions)
 		if len(available) > 0 {
 			b.WriteString("\n")
 		}
-		b.WriteString(styles.SubtextStyle.Render("Selecione o escopo de limpeza do Engram:"))
+		b.WriteString(styles.SubtextStyle.Render("Selecione o escopo de limpeza do KortexEngram:"))
 		b.WriteString("\n")
-		for idx, option := range engramScopeOptions {
+		for idx, option := range KortexEngramScopeOptions {
 			focused := len(available)+idx == cursor
-			checked := selectedEngramScope == option.Scope
+			checked := selectedKortexEngramScope == option.Scope
 			b.WriteString(renderCheckbox(option.Label, checked, focused))
 			b.WriteString(styles.SubtextStyle.Render("    " + option.Description))
 			b.WriteString("\n")
@@ -231,7 +231,7 @@ func RenderUninstallProfiles(available []string, selected []string, engramProjec
 	}
 
 	b.WriteString("\n")
-	relCursor := cursor - (len(available) + engramScopeDisplayed)
+	relCursor := cursor - (len(available) + KortexEngramScopeDisplayed)
 	b.WriteString(renderOptions([]string{"Continuar", "Voltar"}, relCursor))
 	b.WriteString("\n")
 	b.WriteString(styles.HelpStyle.Render("espaço: marcar/selecionar • enter: continuar • esc: voltar"))
@@ -239,7 +239,7 @@ func RenderUninstallProfiles(available []string, selected []string, engramProjec
 	return b.String()
 }
 
-func RenderUninstallConfirm(mode model.UninstallMode, selected []model.AgentID, components []model.ComponentID, profilesToRemove []string, engramScope model.EngramUninstallScope, engramProjectScopeAvailable bool, cursor int, operationRunning bool, spinnerFrame int) string {
+func RenderUninstallConfirm(mode model.UninstallMode, selected []model.AgentID, components []model.ComponentID, profilesToRemove []string, KortexEngramScope model.KortexEngramUninstallScope, KortexEngramProjectScopeAvailable bool, cursor int, operationRunning bool, spinnerFrame int) string {
 	var b strings.Builder
 
 	b.WriteString(styles.TitleStyle.Render("Confirmar Desinstalação"))
@@ -311,15 +311,15 @@ func RenderUninstallConfirm(mode model.UninstallMode, selected []model.AgentID, 
 		}
 	}
 
-	if hasSelectedComponent(components, model.ComponentEngram) {
+	if hasSelectedComponent(components, model.ComponentKortexEngram) {
 		b.WriteString("\n")
-		b.WriteString(styles.SubtextStyle.Render("Escopo de limpeza do Engram:"))
+		b.WriteString(styles.SubtextStyle.Render("Escopo de limpeza do KortexEngram:"))
 		b.WriteString("\n")
 		scopeLabel := "Global"
-		detail := "  • Remove a integração global Engram MCP/prompt de sistema"
-		if engramScope == model.EngramUninstallScopeProject && engramProjectScopeAvailable {
+		detail := "  • Remove a integração global KortexEngram MCP/prompt de sistema"
+		if KortexEngramScope == model.KortexEngramUninstallScopeProject && KortexEngramProjectScopeAvailable {
 			scopeLabel = "Apenas Projeto"
-			detail = "  • Exclui .engram/ apenas no projeto atual"
+			detail = "  • Exclui .KortexEngram/ apenas no projeto atual"
 		}
 		b.WriteString(styles.UnselectedStyle.Render("  • " + scopeLabel))
 		b.WriteString("\n")
@@ -344,7 +344,7 @@ func RenderUninstallConfirm(mode model.UninstallMode, selected []model.AgentID, 
 		b.WriteString("\n")
 		b.WriteString(styles.SubtextStyle.Render("  • .windsurf/workflows/ (fluxos SDD)"))
 		b.WriteString("\n")
-		b.WriteString(styles.SubtextStyle.Render("  • .engram/ (contexto de memória persistente)"))
+		b.WriteString(styles.SubtextStyle.Render("  • .KortexEngram/ (contexto de memória persistente)"))
 		b.WriteString("\n")
 		b.WriteString(styles.SubtextStyle.Render("  • Diretórios de Skills"))
 		b.WriteString("\n\n")
@@ -361,7 +361,7 @@ func RenderUninstallConfirm(mode model.UninstallMode, selected []model.AgentID, 
 	return b.String()
 }
 
-func RenderUninstallResult(result componentuninstall.Result, err error, mode model.UninstallMode, selectedProfiles []string, engramScope model.EngramUninstallScope, engramProjectScopeAvailable bool, syncFilesChanged int, syncErr error) string {
+func RenderUninstallResult(result componentuninstall.Result, err error, mode model.UninstallMode, selectedProfiles []string, KortexEngramScope model.KortexEngramUninstallScope, KortexEngramProjectScopeAvailable bool, syncFilesChanged int, syncErr error) string {
 	var b strings.Builder
 
 	b.WriteString(styles.TitleStyle.Render("Resultado da Desinstalação"))
@@ -413,12 +413,12 @@ func RenderUninstallResult(result componentuninstall.Result, err error, mode mod
 			b.WriteString(styles.UnselectedStyle.Render("Perfis removidos: " + strings.Join(selectedProfiles, ", ")))
 		}
 
-		if hasEngramArtifacts(result) {
+		if hasKortexEngramArtifacts(result) {
 			b.WriteString("\n\n")
-			if engramScope == model.EngramUninstallScopeProject && engramProjectScopeAvailable {
-				b.WriteString(styles.UnselectedStyle.Render("Escopo Engram: Apenas Projeto (.engram/ removido do workspace atual)"))
+			if KortexEngramScope == model.KortexEngramUninstallScopeProject && KortexEngramProjectScopeAvailable {
+				b.WriteString(styles.UnselectedStyle.Render("Escopo KortexEngram: Apenas Projeto (.KortexEngram/ removido do workspace atual)"))
 			} else {
-				b.WriteString(styles.UnselectedStyle.Render("Escopo Engram: Global (Integração MCP/prompt de sistema removida)"))
+				b.WriteString(styles.UnselectedStyle.Render("Escopo KortexEngram: Global (Integração MCP/prompt de sistema removida)"))
 			}
 		}
 
@@ -444,19 +444,19 @@ func RenderUninstallResult(result componentuninstall.Result, err error, mode mod
 	return b.String()
 }
 
-func hasEngramArtifacts(result componentuninstall.Result) bool {
+func hasKortexEngramArtifacts(result componentuninstall.Result) bool {
 	for _, path := range result.ChangedFiles {
-		if strings.Contains(path, "engram") {
+		if strings.Contains(path, "kortex-engram") {
 			return true
 		}
 	}
 	for _, path := range result.RemovedFiles {
-		if strings.Contains(path, "engram") {
+		if strings.Contains(path, "kortex-engram") {
 			return true
 		}
 	}
 	for _, path := range result.RemovedDirectories {
-		if strings.Contains(path, ".engram") {
+		if strings.Contains(path, ".KortexEngram") {
 			return true
 		}
 	}

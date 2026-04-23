@@ -16,7 +16,7 @@
 - [ ] Executar dry-run da instalação no macOS.
 - [ ] Executar instalação real em uma conta de teste do macOS.
 - [ ] Validar os caminhos de saída principais para Claude Code e OpenCode.
-- [ ] Validar que o endpoint de saúde do Engram está acessível quando selecionado.
+- [ ] Validar que o endpoint de saúde do Kortex-Engram está acessível quando selecionado.
 
 ## Documentação
 

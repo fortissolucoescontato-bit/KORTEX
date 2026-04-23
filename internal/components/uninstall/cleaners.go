@@ -135,7 +135,7 @@ func jsonIsEmptyObject(raw []byte) bool {
 
 func cleanCodexTOML(content string) (string, bool) {
 	normalized := strings.ReplaceAll(content, "\r\n", "\n")
-	updated := removeTOMLTable(normalized, "mcp_servers.engram")
+	updated := removeTOMLTable(normalized, "mcp_servers.KortexEngram")
 	updated = removeTopLevelTOMLKeys(updated, "model_instructions_file", "experimental_compact_prompt_file")
 	updated = strings.TrimSpace(updated)
 	if updated != "" {

@@ -11,14 +11,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/engram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/system"
 	"github.com/fortissolucoescontato-bit/kortex/internal/update"
 )
 
-// engramDownloadFn is the function used to download the engram binary.
+// KortexEngramDownloadFn is the function used to download the KortexEngram binary.
 // Package-level var for testability — swapped in tests to avoid real network calls.
-var engramDownloadFn = engram.DownloadLatestBinary
+var KortexEngramDownloadFn = kortexengram.DownloadLatestBinary
 
 // execCommand is a package-level var declared in executor.go (same package).
 
@@ -111,19 +111,19 @@ func goInstallUpgrade(ctx context.Context, tool update.ToolInfo, latestVersion s
 
 // binaryUpgrade handles binary-release upgrades via GitHub Releases asset download.
 //
-// engram has its own cross-platform binary downloader (DownloadLatestBinary) that
+// KortexEngram has its own cross-platform binary downloader (DownloadLatestBinary) that
 // works on all platforms including Windows. For all other tools on Windows,
 // self-replace of a running binary is deferred (Phase 1) — a ManualFallbackError
 // is returned so the executor surfaces it as UpgradeSkipped with an actionable hint.
 func binaryUpgrade(ctx context.Context, r update.UpdateResult, profile system.PlatformProfile) error {
-	// engram: always use its dedicated binary downloader regardless of platform
+	// KortexEngram: always use its dedicated binary downloader regardless of platform
 	// (except brew, which is handled by effectiveMethod before we get here).
-	if r.Tool.Name == "engram" {
-		return engramBinaryUpgrade(profile)
+	if r.Tool.Name == "kortex-engram" {
+		return KortexEngramBinaryUpgrade(profile)
 	}
 
 	if profile.OS == "windows" {
-		// Phase 1: Windows binary self-replace is deferred for non-engram tools.
+		// Phase 1: Windows binary self-replace is deferred for non-KortexEngram tools.
 		// Return a ManualFallbackError so the executor surfaces this as UpgradeSkipped
 		// with an actionable hint — NOT as UpgradeFailed.
 		hint := r.UpdateHint
@@ -139,13 +139,13 @@ func binaryUpgrade(ctx context.Context, r update.UpdateResult, profile system.Pl
 	return downloadAndReplace(ctx, r, profile)
 }
 
-// engramBinaryUpgrade downloads the latest engram binary using its dedicated
+// KortexEngramBinaryUpgrade downloads the latest KortexEngram binary using its dedicated
 // cross-platform downloader and adds the install directory to PATH.
 // On Windows the PATH change is also persisted to the user registry via PowerShell.
-func engramBinaryUpgrade(profile system.PlatformProfile) error {
-	binaryPath, err := engramDownloadFn(profile)
+func KortexEngramBinaryUpgrade(profile system.PlatformProfile) error {
+	binaryPath, err := KortexEngramDownloadFn(profile)
 	if err != nil {
-		return fmt.Errorf("download engram binary: %w", err)
+		return fmt.Errorf("download KortexEngram binary: %w", err)
 	}
 	// Add install dir to PATH. On Windows this also persists via PowerShell (user registry).
 	binDir := filepath.Dir(binaryPath)
@@ -233,7 +233,7 @@ func scriptUpgrade(ctx context.Context, r update.UpdateResult, profile system.Pl
 // kortexMkdirTemp is the function used to create a temporary directory for KortexCLI git clone.
 // Package-level var for testability — swapped in tests to control the temp dir path.
 var kortexMkdirTemp = func() (string, error) {
-	return os.MkdirTemp("", "kortex-kortex-*")
+	return os.MkdirTemp("", "kortex-*")
 }
 
 // kortexScriptUpgrade upgrades KortexCLI by cloning its repository and running install.sh

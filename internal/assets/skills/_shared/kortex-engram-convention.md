@@ -1,6 +1,6 @@
 # Kortex-Engram Artifact Convention (reference documentation)
 
-NOTE: Critical engram calls (`mem_search`, `mem_save`, `mem_get_observation`) are inlined directly in each skill's SKILL.md. This document is supplementary reference — sub-agents do NOT need to read it to function.
+NOTE: Critical kortex-engram calls (`mem_search`, `mem_save`, `mem_get_observation`) are inlined directly in each skill's SKILL.md. This document is supplementary reference — sub-agents do NOT need to read it to function.
 
 ## Naming Rules
 
@@ -38,7 +38,7 @@ mem_save(
   topic_key: "sdd/{change-name}/state",
   type: "architecture",
   project: "{project}",
-  content: "change: {change-name}\nphase: {last-phase}\nartifact_store: engram\nartifacts:\n  proposal: true\n  specs: true\n  design: false\n  tasks: false\ntasks_progress:\n  completed: []\n  pending: []\nlast_updated: {ISO date}"
+  content: "change: {change-name}\nphase: {last-phase}\nartifact_store: kortex-engram\nartifacts:\n  proposal: true\n  specs: true\n  design: false\n  tasks: false\ntasks_progress:\n  completed: []\n  pending: []\nlast_updated: {ISO date}"
 )
 ```
 
@@ -109,15 +109,15 @@ mem_search(query: "sdd/{change-name}/", project: "{project}")
 → Returns all artifacts for that change
 ```
 
-## Project Name Resolution (engram v1.11.0+)
+## Project Name Resolution (kortex-engram v1.11.0+)
 
-Kortex-Engram auto-detects the project name from the git remote at MCP startup. The `--project` flag and `ENGRAM_PROJECT` env var can override detection. All project names are normalized to lowercase and trimmed.
+Kortex-Engram auto-detects the project name from the git remote at MCP startup. The `--project` flag and `KORTEX-ENGRAM_PROJECT` env var can override detection. All project names are normalized to lowercase and trimmed.
 
-If the agent saves a memory under a project name that doesn't match existing observations, engram warns about potential name drift. Use `mem_merge_projects` (MCP tool) or `engram projects consolidate` (CLI) to merge variants.
+If the agent saves a memory under a project name that doesn't match existing observations, kortex-engram warns about potential name drift. Use `mem_merge_projects` (MCP tool) or `kortex-engram projects consolidate` (CLI) to merge variants.
 
 ## Upsert Behavior
 
-Same `topic_key` + `project` + `scope` → UPDATE (overwrite), not INSERT. Previous content is lost — `revision_count` increments but old content is NOT saved. This is by design — engram is working memory, not an audit trail. For iteration history or team collaboration, use `openspec` or `hybrid` mode.
+Same `topic_key` + `project` + `scope` → UPDATE (overwrite), not INSERT. Previous content is lost — `revision_count` increments but old content is NOT saved. This is by design — kortex-engram is working memory, not an audit trail. For iteration history or team collaboration, use `openspec` or `hybrid` mode.
 
 ## Why This Convention
 

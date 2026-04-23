@@ -18,7 +18,7 @@ Also read shared conventions at `~/.config/agents/skills/_shared/sdd-phase-commo
 
 Execute all steps from the skill directly in this context window:
 1. Detect project tech stack (package.json, go.mod, pyproject.toml, etc.)
-2. Initialize the persistence backend (engram, openspec, or hybrid)
+2. Initialize the persistence backend (kortex-engram, openspec, or hybrid)
 3. Build the skill registry and write `.atl/skill-registry.md`
 4. Save project context to the active backend
 

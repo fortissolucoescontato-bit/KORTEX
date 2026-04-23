@@ -25,10 +25,10 @@ Requirements:
 - Examples must be realistic and cover edge cases
 - The Trigger section must be precise enough to avoid false activations
 
-Engram Integration:
+KortexEngram Integration:
 - After completing significant work triggered by this skill, the agent MUST call mem_save
 - Include a "PROACTIVE SAVE TRIGGERS" list in the Instructions section
-- Reference the Engram persistent memory protocol for cross-session continuity
+- Reference the KortexEngram persistent memory protocol for cross-session continuity
 
 Output ONLY the raw SKILL.md content, starting with "# {Title}".
 Do NOT wrap the output in code fences or add any preamble.`

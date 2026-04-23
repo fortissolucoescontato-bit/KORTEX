@@ -19,8 +19,8 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/system"
 )
 
-// missingBinaryLookPath simulates all installable binaries (engram, kortex) as
-// missing. Go availability is no longer required for engram installation
+// missingBinaryLookPath simulates all installable binaries (KortexEngram, kortex) as
+// missing. Go availability is no longer required for KortexEngram installation
 // (pre-built binaries are downloaded directly from GitHub Releases).
 func missingBinaryLookPath(name string) (string, error) {
 	return "", exec.ErrNotFound
@@ -80,18 +80,18 @@ func TestRunInstallRollsBackOnComponentFailure(t *testing.T) {
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	runCommand = func(name string, args ...string) error {
-		if name == "brew" && len(args) == 2 && args[0] == "install" && args[1] == "engram" {
+		if name == "brew" && len(args) == 2 && args[0] == "install" && args[1] == "kortex-engram" {
 			return os.ErrPermission
 		}
 		return nil
 	}
 
-	// Use only engram (not context7) — context7 injects MCP config into
+	// Use only KortexEngram (not context7) — context7 injects MCP config into
 	// the settings file and does not have a rollback step, so including it
 	// makes the before/after comparison fail even when the pipeline rollback
 	// works correctly. Context7 rollback is tracked separately.
 	_, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		system.DetectionResult{},
 	)
 	if err == nil {
@@ -225,7 +225,7 @@ func TestRunInstallLinuxArchResolvesPacmanCommands(t *testing.T) {
 	}
 }
 
-func TestRunInstallLinuxUbuntuWithEngramUsesDirectDownload(t *testing.T) {
+func TestRunInstallLinuxUbuntuWithKortexEngramUsesDirectDownload(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -241,16 +241,16 @@ func TestRunInstallLinuxUbuntuWithEngramUsesDirectDownload(t *testing.T) {
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 
-	// Override engramDownloadFn to avoid real HTTP calls.
-	origDownloadFn := engramDownloadFn
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
-		return "/tmp/fake-engram", nil
+	// Override KortexEngramDownloadFn to avoid real HTTP calls.
+	origDownloadFn := KortexEngramDownloadFn
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+		return "/tmp/fake-KortexEngram", nil
 	}
-	t.Cleanup(func() { engramDownloadFn = origDownloadFn })
+	t.Cleanup(func() { KortexEngramDownloadFn = origDownloadFn })
 
 	detection := linuxDetectionResult(system.LinuxDistroUbuntu, "apt")
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -261,15 +261,15 @@ func TestRunInstallLinuxUbuntuWithEngramUsesDirectDownload(t *testing.T) {
 		t.Fatalf("verification ready = false, report = %#v", result.Verify)
 	}
 
-	// Must NOT use go install for engram on Linux.
+	// Must NOT use go install for KortexEngram on Linux.
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "go install") && strings.Contains(cmd, "engram") {
-			t.Fatalf("Linux engram install should NOT use go install, got command: %s", cmd)
+		if strings.Contains(cmd, "go install") && strings.Contains(cmd, "kortex-engram") {
+			t.Fatalf("Linux KortexEngram install should NOT use go install, got command: %s", cmd)
 		}
 	}
 }
 
-func TestRunInstallLinuxArchWithEngramUsesDirectDownload(t *testing.T) {
+func TestRunInstallLinuxArchWithKortexEngramUsesDirectDownload(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -285,15 +285,15 @@ func TestRunInstallLinuxArchWithEngramUsesDirectDownload(t *testing.T) {
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 
-	origDownloadFn := engramDownloadFn
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
-		return "/tmp/fake-engram", nil
+	origDownloadFn := KortexEngramDownloadFn
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+		return "/tmp/fake-KortexEngram", nil
 	}
-	t.Cleanup(func() { engramDownloadFn = origDownloadFn })
+	t.Cleanup(func() { KortexEngramDownloadFn = origDownloadFn })
 
 	detection := linuxDetectionResult(system.LinuxDistroArch, "pacman")
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -304,10 +304,10 @@ func TestRunInstallLinuxArchWithEngramUsesDirectDownload(t *testing.T) {
 		t.Fatalf("verification ready = false, report = %#v", result.Verify)
 	}
 
-	// Must NOT use go install for engram on Arch Linux.
+	// Must NOT use go install for KortexEngram on Arch Linux.
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "go install") && strings.Contains(cmd, "engram") {
-			t.Fatalf("Arch Linux engram install should NOT use go install, got command: %s", cmd)
+		if strings.Contains(cmd, "go install") && strings.Contains(cmd, "kortex-engram") {
+			t.Fatalf("Arch Linux KortexEngram install should NOT use go install, got command: %s", cmd)
 		}
 	}
 }
@@ -337,17 +337,17 @@ func TestRunInstallLinuxRollsBackOnComponentFailure(t *testing.T) {
 	osUserHomeDir = func() (string, error) { return home, nil }
 	runCommand = func(name string, args ...string) error { return nil }
 
-	// Fail the engram download to trigger rollback.
-	origDownloadFn := engramDownloadFn
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+	// Fail the KortexEngram download to trigger rollback.
+	origDownloadFn := KortexEngramDownloadFn
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
 		return "", os.ErrPermission
 	}
-	t.Cleanup(func() { engramDownloadFn = origDownloadFn })
+	t.Cleanup(func() { KortexEngramDownloadFn = origDownloadFn })
 
 	detection := linuxDetectionResult(system.LinuxDistroUbuntu, "apt")
 	// Exclude context7 — it has no rollback and taints the settings file.
 	_, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err == nil {
@@ -369,7 +369,7 @@ func TestRunInstallLinuxRollsBackOnComponentFailure(t *testing.T) {
 	}
 }
 
-func TestRunInstallFedoraQwenEngramSkipsUnsupportedSetupAndWritesSettings(t *testing.T) {
+func TestRunInstallFedoraQwenKortexEngramSkipsUnsupportedSetupAndWritesSettings(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -385,15 +385,15 @@ func TestRunInstallFedoraQwenEngramSkipsUnsupportedSetupAndWritesSettings(t *tes
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 
-	origDownloadFn := engramDownloadFn
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
-		return filepath.Join(home, "bin", "engram"), nil
+	origDownloadFn := KortexEngramDownloadFn
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+		return filepath.Join(home, "bin", "kortex-engram"), nil
 	}
-	t.Cleanup(func() { engramDownloadFn = origDownloadFn })
+	t.Cleanup(func() { KortexEngramDownloadFn = origDownloadFn })
 
 	detection := linuxDetectionResult(system.LinuxDistroFedora, "dnf")
 	result, err := RunInstall(
-		[]string{"--agent", "qwen-code", "--component", "engram"},
+		[]string{"--agent", "qwen-code", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -409,7 +409,7 @@ func TestRunInstallFedoraQwenEngramSkipsUnsupportedSetupAndWritesSettings(t *tes
 	}
 
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "engram setup qwen-code") {
+		if strings.Contains(cmd, "KortexEngram setup qwen-code") {
 			t.Fatalf("unexpected unsupported setup command: %s", cmd)
 		}
 	}
@@ -590,7 +590,7 @@ func TestRunInstallMacOSStillResolvesBrewCommands(t *testing.T) {
 
 	detection := macOSDetectionResult()
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -605,13 +605,13 @@ func TestRunInstallMacOSStillResolvesBrewCommands(t *testing.T) {
 	commands := recorder.get()
 	foundBrew := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "brew install engram") {
+		if strings.Contains(cmd, "brew install KortexEngram") {
 			foundBrew = true
 			break
 		}
 	}
 	if !foundBrew {
-		t.Fatalf("expected brew install for macOS engram, got commands: %v", commands)
+		t.Fatalf("expected brew install for macOS KortexEngram, got commands: %v", commands)
 	}
 }
 
@@ -689,7 +689,7 @@ func TestRunInstallMacOSRollbackStillWorks(t *testing.T) {
 
 	osUserHomeDir = func() (string, error) { return home, nil }
 	runCommand = func(name string, args ...string) error {
-		if name == "brew" && len(args) == 2 && args[0] == "install" && args[1] == "engram" {
+		if name == "brew" && len(args) == 2 && args[0] == "install" && args[1] == "kortex-engram" {
 			return os.ErrPermission
 		}
 		return nil
@@ -698,7 +698,7 @@ func TestRunInstallMacOSRollbackStillWorks(t *testing.T) {
 	detection := macOSDetectionResult()
 	// Exclude context7 — it has no rollback and taints the settings file.
 	_, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err == nil {
@@ -721,7 +721,7 @@ func TestRunInstallMacOSRollbackStillWorks(t *testing.T) {
 
 // --- Skip-when-installed and Go auto-install tests ---
 
-func TestRunInstallEngramSkipsInstallWhenAlreadyOnPath(t *testing.T) {
+func TestRunInstallKortexEngramSkipsInstallWhenAlreadyOnPath(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -733,7 +733,7 @@ func TestRunInstallEngramSkipsInstallWhenAlreadyOnPath(t *testing.T) {
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
-	// Simulate engram already installed on PATH.
+	// Simulate KortexEngram already installed on PATH.
 	cmdLookPath = func(name string) (string, error) {
 		return "/usr/local/bin/" + name, nil
 	}
@@ -742,7 +742,7 @@ func TestRunInstallEngramSkipsInstallWhenAlreadyOnPath(t *testing.T) {
 
 	detection := macOSDetectionResult()
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -755,13 +755,13 @@ func TestRunInstallEngramSkipsInstallWhenAlreadyOnPath(t *testing.T) {
 
 	// No brew/go install commands should have been recorded — only agent install.
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "brew install engram") || (strings.Contains(cmd, "go install") && strings.Contains(cmd, "engram")) {
-			t.Fatalf("expected engram install to be skipped, but got command: %s", cmd)
+		if strings.Contains(cmd, "brew install KortexEngram") || (strings.Contains(cmd, "go install") && strings.Contains(cmd, "kortex-engram")) {
+			t.Fatalf("expected KortexEngram install to be skipped, but got command: %s", cmd)
 		}
 	}
 }
 
-func TestRunInstallEngramAttemptsOpenCodeSetupWhenBinaryPresent(t *testing.T) {
+func TestRunInstallKortexEngramAttemptsOpenCodeSetupWhenBinaryPresent(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -780,7 +780,7 @@ func TestRunInstallEngramAttemptsOpenCodeSetupWhenBinaryPresent(t *testing.T) {
 	runCommand = recorder.record
 
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		macOSDetectionResult(),
 	)
 	if err != nil {
@@ -793,17 +793,17 @@ func TestRunInstallEngramAttemptsOpenCodeSetupWhenBinaryPresent(t *testing.T) {
 	commands := recorder.get()
 	foundSetup := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "engram setup opencode") {
+		if strings.Contains(cmd, "KortexEngram setup opencode") {
 			foundSetup = true
 			break
 		}
 	}
 	if !foundSetup {
-		t.Fatalf("expected engram setup command, got commands: %v", commands)
+		t.Fatalf("expected KortexEngram setup command, got commands: %v", commands)
 	}
 }
 
-func TestRunInstallEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
+func TestRunInstallKortexEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -819,14 +819,14 @@ func TestRunInstallEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
+		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
 			return errors.New("setup failed")
 		}
 		return nil
 	}
 
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		macOSDetectionResult(),
 	)
 	if err != nil {
@@ -842,8 +842,8 @@ func TestRunInstallEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
 	}
 }
 
-func TestRunInstallEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
-	t.Setenv("KORTEX_ENGRAM_SETUP_STRICT", "1")
+func TestRunInstallKortexEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
+	t.Setenv("KORTEX_KORTEX-ENGRAM_SETUP_STRICT", "1")
 
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
@@ -864,25 +864,25 @@ func TestRunInstallEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
+		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
 			return errors.New("setup failed")
 		}
 		return nil
 	}
 
 	_, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		macOSDetectionResult(),
 	)
 	if err == nil {
 		t.Fatalf("RunInstall() expected error in strict setup mode")
 	}
-	if !strings.Contains(err.Error(), "engram setup for \"opencode\"") {
+	if !strings.Contains(err.Error(), "KortexEngram setup for \"opencode\"") {
 		t.Fatalf("RunInstall() error = %v, want setup error", err)
 	}
 }
 
-func TestRunInstallEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
+func TestRunInstallKortexEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -901,7 +901,7 @@ func TestRunInstallEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
 	runCommand = recorder.record
 
 	result, err := RunInstall(
-		[]string{"--agent", "claude-code", "--component", "engram"},
+		[]string{"--agent", "claude-code", "--component", "kortex-engram"},
 		macOSDetectionResult(),
 	)
 	if err != nil {
@@ -914,7 +914,7 @@ func TestRunInstallEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
 	commands := recorder.get()
 	foundSetup := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "engram setup claude-code") {
+		if strings.Contains(cmd, "KortexEngram setup claude-code") {
 			foundSetup = true
 			break
 		}
@@ -924,7 +924,7 @@ func TestRunInstallEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
 	}
 }
 
-func TestRunInstallAntigravityCopiesGeminiSettingsAfterEngramSetup(t *testing.T) {
+func TestRunInstallAntigravityCopiesGeminiSettingsAfterKortexEngramSetup(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -940,7 +940,7 @@ func TestRunInstallAntigravityCopiesGeminiSettingsAfterEngramSetup(t *testing.T)
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
+		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
 			settingsPath := filepath.Join(home, ".gemini", "settings.json")
 			if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 				return err
@@ -951,7 +951,7 @@ func TestRunInstallAntigravityCopiesGeminiSettingsAfterEngramSetup(t *testing.T)
 	}
 
 	result, err := RunInstall(
-		[]string{"--agent", "antigravity", "--component", "engram", "--component", "context7", "--component", "permissions"},
+		[]string{"--agent", "antigravity", "--component", "kortex-engram", "--component", "context7", "--component", "permissions"},
 		macOSDetectionResult(),
 	)
 	if err != nil {
@@ -971,7 +971,7 @@ func TestRunInstallAntigravityCopiesGeminiSettingsAfterEngramSetup(t *testing.T)
 	}
 }
 
-func TestRunInstallDeduplicatesSharedEngramSetupSlugs(t *testing.T) {
+func TestRunInstallDeduplicatesSharedKortexEngramSetupSlugs(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -992,7 +992,7 @@ func TestRunInstallDeduplicatesSharedEngramSetupSlugs(t *testing.T) {
 		if err := recorder.record(name, args...); err != nil {
 			return err
 		}
-		if  (name == "kortex-engram" || name == "engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
+		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
 			settingsPath := filepath.Join(home, ".gemini", "settings.json")
 			if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 				return err
@@ -1003,7 +1003,7 @@ func TestRunInstallDeduplicatesSharedEngramSetupSlugs(t *testing.T) {
 	}
 
 	result, err := RunInstall(
-		[]string{"--agent", "gemini-cli", "--agent", "antigravity", "--component", "engram", "--component", "context7", "--component", "permissions"},
+		[]string{"--agent", "gemini-cli", "--agent", "antigravity", "--component", "kortex-engram", "--component", "context7", "--component", "permissions"},
 		macOSDetectionResult(),
 	)
 	if err != nil {
@@ -1015,12 +1015,12 @@ func TestRunInstallDeduplicatesSharedEngramSetupSlugs(t *testing.T) {
 
 	var setupCount int
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "engram setup gemini-cli") {
+		if strings.Contains(cmd, "KortexEngram setup gemini-cli") {
 			setupCount++
 		}
 	}
 	if setupCount != 1 {
-		t.Fatalf("engram setup gemini-cli count = %d, want 1", setupCount)
+		t.Fatalf("KortexEngram setup gemini-cli count = %d, want 1", setupCount)
 	}
 }
 
@@ -1133,9 +1133,9 @@ func TestRunInstallKortexCLILinuxIncludesTempCleanupBeforeClone(t *testing.T) {
 	}
 }
 
-// TestRunInstallEngramLinuxUsesDirectDownloadNoGoRequired verifies that on Linux,
-// engram is now installed via pre-built binary download — Go is NOT required.
-func TestRunInstallEngramLinuxUsesDirectDownloadNoGoRequired(t *testing.T) {
+// TestRunInstallKortexEngramLinuxUsesDirectDownloadNoGoRequired verifies that on Linux,
+// KortexEngram is now installed via pre-built binary download — Go is NOT required.
+func TestRunInstallKortexEngramLinuxUsesDirectDownloadNoGoRequired(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -1147,7 +1147,7 @@ func TestRunInstallEngramLinuxUsesDirectDownloadNoGoRequired(t *testing.T) {
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
-	// Simulate: engram missing, Go also NOT available — should still succeed.
+	// Simulate: KortexEngram missing, Go also NOT available — should still succeed.
 	cmdLookPath = func(string) (string, error) {
 		return "", exec.ErrNotFound
 	}
@@ -1155,15 +1155,15 @@ func TestRunInstallEngramLinuxUsesDirectDownloadNoGoRequired(t *testing.T) {
 	runCommand = recorder.record
 
 	// Override download to succeed without hitting GitHub.
-	origDownloadFn := engramDownloadFn
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
-		return "/tmp/fake-engram", nil
+	origDownloadFn := KortexEngramDownloadFn
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+		return "/tmp/fake-KortexEngram", nil
 	}
-	t.Cleanup(func() { engramDownloadFn = origDownloadFn })
+	t.Cleanup(func() { KortexEngramDownloadFn = origDownloadFn })
 
 	detection := linuxDetectionResult(system.LinuxDistroUbuntu, "apt")
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -1177,17 +1177,17 @@ func TestRunInstallEngramLinuxUsesDirectDownloadNoGoRequired(t *testing.T) {
 	// Neither "go install" nor "apt-get install golang" should appear.
 	for _, cmd := range recorder.get() {
 		if strings.Contains(cmd, "apt-get install -y golang") {
-			t.Fatalf("Go should NOT be auto-installed (no longer needed for engram), got command: %s", cmd)
+			t.Fatalf("Go should NOT be auto-installed (no longer needed for KortexEngram), got command: %s", cmd)
 		}
-		if strings.Contains(cmd, "go install") && strings.Contains(cmd, "engram") {
-			t.Fatalf("engram should NOT be installed via go install, got command: %s", cmd)
+		if strings.Contains(cmd, "go install") && strings.Contains(cmd, "kortex-engram") {
+			t.Fatalf("KortexEngram should NOT be installed via go install, got command: %s", cmd)
 		}
 	}
 }
 
-// TestRunInstallEngramLinuxNeverInstallsGo verifies that even if Go is present,
-// we never install Go as a prerequisite for engram (direct download path).
-func TestRunInstallEngramLinuxNeverInstallsGo(t *testing.T) {
+// TestRunInstallKortexEngramLinuxNeverInstallsGo verifies that even if Go is present,
+// we never install Go as a prerequisite for KortexEngram (direct download path).
+func TestRunInstallKortexEngramLinuxNeverInstallsGo(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -1203,15 +1203,15 @@ func TestRunInstallEngramLinuxNeverInstallsGo(t *testing.T) {
 	recorder := &commandRecorder{}
 	runCommand = recorder.record
 
-	origDownloadFn := engramDownloadFn
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
-		return "/tmp/fake-engram", nil
+	origDownloadFn := KortexEngramDownloadFn
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+		return "/tmp/fake-KortexEngram", nil
 	}
-	t.Cleanup(func() { engramDownloadFn = origDownloadFn })
+	t.Cleanup(func() { KortexEngramDownloadFn = origDownloadFn })
 
 	detection := linuxDetectionResult(system.LinuxDistroUbuntu, "apt")
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -1225,12 +1225,12 @@ func TestRunInstallEngramLinuxNeverInstallsGo(t *testing.T) {
 	// No Go installation commands should appear.
 	for _, cmd := range recorder.get() {
 		if strings.Contains(cmd, "apt-get install -y golang") || strings.Contains(cmd, "apt-get install -y go") {
-			t.Fatalf("Go should never be installed as engram dependency, got command: %s", cmd)
+			t.Fatalf("Go should never be installed as KortexEngram dependency, got command: %s", cmd)
 		}
 	}
 }
 
-func TestRunInstallEngramBrewSkipsGoCheck(t *testing.T) {
+func TestRunInstallKortexEngramBrewSkipsGoCheck(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -1242,7 +1242,7 @@ func TestRunInstallEngramBrewSkipsGoCheck(t *testing.T) {
 	})
 
 	osUserHomeDir = func() (string, error) { return home, nil }
-	// Simulate: engram missing — brew platform, no Go or download needed.
+	// Simulate: KortexEngram missing — brew platform, no Go or download needed.
 	cmdLookPath = func(string) (string, error) {
 		return "", exec.ErrNotFound
 	}
@@ -1251,7 +1251,7 @@ func TestRunInstallEngramBrewSkipsGoCheck(t *testing.T) {
 
 	detection := macOSDetectionResult()
 	result, err := RunInstall(
-		[]string{"--agent", "opencode", "--component", "engram"},
+		[]string{"--agent", "opencode", "--component", "kortex-engram"},
 		detection,
 	)
 	if err != nil {
@@ -1275,12 +1275,12 @@ func TestRunInstallEngramBrewSkipsGoCheck(t *testing.T) {
 
 	foundBrew := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "brew install engram") {
+		if strings.Contains(cmd, "brew install KortexEngram") {
 			foundBrew = true
 		}
 	}
 	if !foundBrew {
-		t.Fatalf("expected brew install engram, got commands: %v", commands)
+		t.Fatalf("expected brew install KortexEngram, got commands: %v", commands)
 	}
 }
 
@@ -1493,7 +1493,7 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 	args := []string{
 		"--agent", "claude-code",
 		"--component", "sdd",
-		"--component", "engram",
+		"--component", "kortex-engram",
 		"--component", "persona",
 	}
 
@@ -1508,15 +1508,15 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 
 	// Capture all relevant output files after the first run.
 	claudeMDPath := filepath.Join(home, ".claude", "CLAUDE.md")
-	engramMCPPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
+	KortexEngramMCPPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
 
 	claudeMDAfterRun1, err := os.ReadFile(claudeMDPath)
 	if err != nil {
 		t.Fatalf("run 1: ReadFile(%q) error = %v", claudeMDPath, err)
 	}
-	engramMCPAfterRun1, err := os.ReadFile(engramMCPPath)
+	KortexEngramMCPAfterRun1, err := os.ReadFile(KortexEngramMCPPath)
 	if err != nil {
-		t.Fatalf("run 1: ReadFile(%q) error = %v", engramMCPPath, err)
+		t.Fatalf("run 1: ReadFile(%q) error = %v", KortexEngramMCPPath, err)
 	}
 
 	// --- Run 2 (same flags) ---
@@ -1533,9 +1533,9 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 	if err != nil {
 		t.Fatalf("run 2: ReadFile(%q) error = %v", claudeMDPath, err)
 	}
-	engramMCPAfterRun2, err := os.ReadFile(engramMCPPath)
+	KortexEngramMCPAfterRun2, err := os.ReadFile(KortexEngramMCPPath)
 	if err != nil {
-		t.Fatalf("run 2: ReadFile(%q) error = %v", engramMCPPath, err)
+		t.Fatalf("run 2: ReadFile(%q) error = %v", KortexEngramMCPPath, err)
 	}
 
 	// --- Assertions ---
@@ -1545,9 +1545,9 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 		t.Errorf("CLAUDE.md changed between run 1 and run 2 (idempotency violation):\n--- run1 ---\n%s\n--- run2 ---\n%s",
 			claudeMDAfterRun1, claudeMDAfterRun2)
 	}
-	if string(engramMCPAfterRun1) != string(engramMCPAfterRun2) {
-		t.Errorf("engram MCP config changed between run 1 and run 2 (idempotency violation):\n--- run1 ---\n%s\n--- run2 ---\n%s",
-			engramMCPAfterRun1, engramMCPAfterRun2)
+	if string(KortexEngramMCPAfterRun1) != string(KortexEngramMCPAfterRun2) {
+		t.Errorf("KortexEngram MCP config changed between run 1 and run 2 (idempotency violation):\n--- run1 ---\n%s\n--- run2 ---\n%s",
+			KortexEngramMCPAfterRun1, KortexEngramMCPAfterRun2)
 	}
 
 	// 2. No duplicate "## Agent Teams Orchestrator" headings in CLAUDE.md.
@@ -1560,7 +1560,7 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 
 	// 3. No duplicate kortex marker blocks — each section's open marker
 	// must appear exactly once.
-	for _, sectionID := range []string{"sdd-orchestrator", "engram-protocol"} {
+	for _, sectionID := range []string{"sdd-orchestrator", "KortexEngram-protocol"} {
 		openMarker := "<!-- kortex:" + sectionID + " -->"
 		count := strings.Count(content, openMarker)
 		if count != 1 {
@@ -1569,13 +1569,13 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 		}
 	}
 
-	// 4. Engram MCP JSON must not contain duplicate keys.
+	// 4. KortexEngram MCP JSON must not contain duplicate keys.
 	// A simple structural check: "command" key should appear exactly once.
-	engramJSON := string(engramMCPAfterRun2)
-	commandCount := strings.Count(engramJSON, `"command"`)
+	KortexEngramJSON := string(KortexEngramMCPAfterRun2)
+	commandCount := strings.Count(KortexEngramJSON, `"command"`)
 	if commandCount != 1 {
-		t.Errorf("engram MCP JSON contains %d occurrences of \"command\", want exactly 1:\n%s",
-			commandCount, engramJSON)
+		t.Errorf("KortexEngram MCP JSON contains %d occurrences of \"command\", want exactly 1:\n%s",
+			commandCount, KortexEngramJSON)
 	}
 }
 
@@ -1655,8 +1655,8 @@ func TestRunInstallCustomPresetExplicitSkillsFlagPopulatesSelection(t *testing.T
 		t.Fatalf("expected branch-pr skill file %q: %v", branchPRPath, err)
 	}
 
-	// Note: the graph defines skills → sdd → engram as a hard dependency chain.
-	// Selecting --component skills auto-resolves sdd (and engram) as dependencies.
+	// Note: the graph defines skills → sdd → KortexEngram as a hard dependency chain.
+	// Selecting --component skills auto-resolves sdd (and KortexEngram) as dependencies.
 	// The SDD component installs its own 10 SDD+orchestration skills during injection,
 	// regardless of the --skills flag. So sdd-init and other SDD skills ARE installed.
 	sddInitPath := filepath.Join(home, ".claude", "skills", "sdd-init", "SKILL.md")
@@ -1721,8 +1721,8 @@ func TestRunInstallCustomPresetSkillsNoFlagInstallsNothing(t *testing.T) {
 		t.Fatalf("verification ready = false, report = %#v", result.Verify)
 	}
 
-	// The graph defines skills → sdd → engram as hard dependencies.
-	// Selecting --component skills auto-resolves sdd (and engram).
+	// The graph defines skills → sdd → KortexEngram as hard dependencies.
+	// Selecting --component skills auto-resolves sdd (and KortexEngram).
 	// The SDD component ALWAYS installs its 10 SDD+orchestration skills during injection.
 	// Without --skills flag, selectedSkillIDs() returns nil for custom preset,
 	// so the skills COMPONENT is a no-op — but the sdd DEPENDENCY still runs and
@@ -1781,7 +1781,7 @@ func TestRunInstallCustomPresetExplicitComponentsResolveCorrectly(t *testing.T) 
 		[]string{
 			"--agent", "claude-code",
 			"--preset", "custom",
-			"--component", "engram",
+			"--component", "kortex-engram",
 			"--component", "sdd",
 			"--component", "permissions",
 			"--dry-run",
@@ -1792,7 +1792,7 @@ func TestRunInstallCustomPresetExplicitComponentsResolveCorrectly(t *testing.T) 
 		t.Fatalf("RunInstall() error = %v", err)
 	}
 
-	// Should have exactly the 3 explicit components (sdd depends on engram which is already selected).
+	// Should have exactly the 3 explicit components (sdd depends on KortexEngram which is already selected).
 	if len(result.Resolved.OrderedComponents) != 3 {
 		t.Fatalf("expected 3 ordered components, got %d: %v",
 			len(result.Resolved.OrderedComponents), result.Resolved.OrderedComponents)
@@ -1812,7 +1812,7 @@ func TestRunInstallCustomPresetExplicitComponentsResolveCorrectly(t *testing.T) 
 // overwrite the entire AGENTS.md, destroying the SDD orchestrator section.
 //
 // This test exercises the full install pipeline for OpenCode with Persona +
-// Engram + SDD selected together and verifies that the final AGENTS.md
+// KortexEngram + SDD selected together and verifies that the final AGENTS.md
 // contains all three sections with no duplicates.
 func TestOpenCodePersonaBeforeSDDPreservesAllSections(t *testing.T) {
 	home := t.TempDir()
@@ -1833,7 +1833,7 @@ func TestOpenCodePersonaBeforeSDDPreservesAllSections(t *testing.T) {
 		[]string{
 			"--agent", "opencode",
 			"--component", "persona",
-			"--component", "engram",
+			"--component", "kortex-engram",
 			"--component", "sdd",
 			"--persona", "carbon",
 		},
@@ -1856,21 +1856,21 @@ func TestOpenCodePersonaBeforeSDDPreservesAllSections(t *testing.T) {
 	}
 
 	// For OpenCode, the SDD orchestrator goes into opencode.json (agent overlay),
-	// NOT AGENTS.md. AGENTS.md only contains persona and engram sections.
+	// NOT AGENTS.md. AGENTS.md only contains persona and KortexEngram sections.
 	// The issue #121 regression was that Persona would overwrite AGENTS.md
-	// AFTER engram had already injected the engram-protocol marker, destroying
-	// the engram section. We verify persona + engram coexist.
+	// AFTER KortexEngram had already injected the KortexEngram-protocol marker, destroying
+	// the KortexEngram section. We verify persona + KortexEngram coexist.
 
-	// Engram protocol section must be present
-	if !strings.Contains(text, "<!-- kortex:engram-protocol -->") {
-		t.Error("AGENTS.md missing engram-protocol open marker (issue #121 regression: persona may have overwritten engram section)")
+	// KortexEngram protocol section must be present
+	if !strings.Contains(text, "<!-- kortex:KortexEngram-protocol -->") {
+		t.Error("AGENTS.md missing KortexEngram-protocol open marker (issue #121 regression: persona may have overwritten KortexEngram section)")
 	}
-	if !strings.Contains(text, "<!-- /kortex:engram-protocol -->") {
-		t.Error("AGENTS.md missing engram-protocol close marker")
+	if !strings.Contains(text, "<!-- /kortex:KortexEngram-protocol -->") {
+		t.Error("AGENTS.md missing KortexEngram-protocol close marker")
 	}
 
-	// Engram section must not be duplicated
-	marker := "<!-- kortex:engram-protocol -->"
+	// KortexEngram section must not be duplicated
+	marker := "<!-- kortex:KortexEngram-protocol -->"
 	if count := strings.Count(text, marker); count != 1 {
 		t.Errorf("AGENTS.md contains %d occurrences of %q, want exactly 1 (no duplicates)", count, marker)
 	}

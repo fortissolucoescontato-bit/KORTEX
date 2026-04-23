@@ -36,10 +36,10 @@ SDD is the structured planning layer for substantial changes.
 
 ### Artifact Store Policy
 
-- `engram` — default when available; persistent memory across sessions via MCP
+- `kortex-engram` — default when available; persistent memory across sessions via MCP
 - `openspec` — file-based artifacts; use only when user explicitly requests
 - `hybrid` — both backends; cross-session recovery + local files; more tokens per op
-- `none` — return results inline only; recommend enabling engram or openspec
+- `none` — return results inline only; recommend enabling kortex-engram or openspec
 
 ### Commands
 
@@ -98,11 +98,11 @@ For this agent (solo inline execution): **Interactive** is already the natural b
 
 When the user invokes `/sdd-new`, `/sdd-ff`, or `/sdd-continue` for the first time in a session, ALSO ASK which artifact store they want for this change:
 
-- **`engram`**: Fast, no files created. Artifacts live in engram only. Best for solo work and quick iteration. Note: re-running a phase overwrites the previous version (no history).
+- **`kortex-engram`**: Fast, no files created. Artifacts live in kortex-engram only. Best for solo work and quick iteration. Note: re-running a phase overwrites the previous version (no history).
 - **`openspec`**: File-based. Creates `openspec/` directory with full artifact trail. Committable, shareable with team, full git history.
-- **`hybrid`**: Both — files for team sharing + engram for cross-session recovery. Higher token cost.
+- **`hybrid`**: Both — files for team sharing + kortex-engram for cross-session recovery. Higher token cost.
 
-If the user doesn't specify, detect: if kortex-engram is available → default to `engram`. Otherwise → `none`.
+If the user doesn't specify, detect: if kortex-engram is available → default to `kortex-engram`. Otherwise → `none`.
 
 Cache the artifact store choice for the session. Pass it as `artifact_store.mode` to every sub-agent launch.
 
@@ -215,7 +215,7 @@ Approve to proceed with implementation?
 Since Cascade is a solo-agent, skill resolution runs inline before each phase. Do this ONCE per session (or after compaction):
 
 1. `mem_search(query: "skill-registry", project: "{project}")` → `mem_get_observation(id)` for full registry content
-2. Fallback: read `.atl/skill-registry.md` if engram not available
+2. Fallback: read `.atl/skill-registry.md` if kortex-engram not available
 3. Cache the **Compact Rules** section and the **User Skills** trigger table
 4. If no registry exists, warn user and proceed without project-specific standards
 
@@ -278,9 +278,9 @@ This prevents progress loss across batches. Read-merge-write is mandatory for co
 ### Non-SDD Tasks
 
 When executing general (non-SDD) work:
-1. Search engram (`mem_search`) for relevant prior context before starting
-2. If you make important discoveries, decisions, or fix bugs, save them to engram via `mem_save`
-3. Do NOT rely solely on conversation history — persist important findings to engram for cross-session durability
+1. Search kortex-engram (`mem_search`) for relevant prior context before starting
+2. If you make important discoveries, decisions, or fix bugs, save them to kortex-engram via `mem_save`
+3. Do NOT rely solely on conversation history — persist important findings to kortex-engram for cross-session durability
 
 ## Kortex-Engram Topic Key Format
 
@@ -303,12 +303,12 @@ Retrieve full content via two steps:
 
 ## State and Conventions
 
-Convention files under `~/.codeium/windsurf/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
+Convention files under `~/.codeium/windsurf/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `kortex-engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
 
 DAG state is tracked in Kortex-Engram under `sdd/{change-name}/state`. Update it after each phase completes so `/sdd-continue` knows which phase to run next.
 
 ## Recovery Rule
 
-- `engram` → `mem_search(...)` → `mem_get_observation(...)`
+- `kortex-engram` → `mem_search(...)` → `mem_get_observation(...)`
 - `openspec` → read `openspec/changes/*/state.yaml`
 - `none` → state not persisted — explain to user

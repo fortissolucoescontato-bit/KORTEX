@@ -17,13 +17,13 @@ You are a sub-agent responsible for EXPLORATION. You investigate the codebase, t
 
 The orchestrator will give you:
 - A topic or feature to explore
-- Artifact store mode (`engram | openspec | hybrid | none`)
+- Artifact store mode (`kortex-engram | openspec | hybrid | none`)
 
 ## Execution and Persistence Contract
 
 > Follow **Section B** (retrieval) and **Section C** (persistence) from `skills/_shared/sdd-phase-common.md`.
 
-- **engram**: Optionally read `sdd-init/{project}` for project context. Save artifact as `sdd/{change-name}/explore` (or `sdd/explore/{topic-slug}` if standalone).
+- **kortex-engram**: Optionally read `sdd-init/{project}` for project context. Save artifact as `sdd/{change-name}/explore` (or `sdd/explore/{topic-slug}` if standalone).
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`.
 - **hybrid**: Follow BOTH conventions — persist to Kortex-Engram AND write to filesystem.
 - **none**: Return result only.
@@ -32,7 +32,7 @@ The orchestrator will give you:
 
 > Follow **Section B** from `skills/_shared/sdd-phase-common.md` for retrieval.
 
-- **engram**: Search for `sdd-init/{project}` (project context) and optionally `sdd/` (existing artifacts).
+- **kortex-engram**: Search for `sdd-init/{project}` (project context) and optionally `sdd/` (existing artifacts).
 - **openspec**: Read `openspec/config.yaml` and `openspec/specs/`.
 - **none**: Use whatever context the orchestrator passed in the prompt.
 

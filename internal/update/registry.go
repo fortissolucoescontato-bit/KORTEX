@@ -21,12 +21,12 @@ var Tools = []ToolInfo{
 		InstallMethod: InstallBinary,
 	},
 	{
-		Name:          "engram",
+		Name:          "kortex-engram",
 		Owner:         "fortissolucoescontato-bit",
-		Repo:          "engram",
-		DetectCmd:     []string{"engram", "version"},
+		Repo:          "kortex-engram",
+		DetectCmd:     []string{"kortex-engram", "version"},
 		VersionPrefix: "v",
-		// engram: brew on macOS/Linux-brew, binary download elsewhere.
+		// KortexEngram: brew on macOS/Linux-brew, binary download elsewhere.
 		InstallMethod: InstallBinary,
 	},
 	{

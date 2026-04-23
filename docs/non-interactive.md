@@ -37,7 +37,7 @@ macOS (ou qualquer plataforma suportada — as mesmas flags, a plataforma é aut
 ```bash
 go run ./cmd/kortex install \
   --agent claude-code,opencode \
-  --component engram,sdd,skills \
+  --component kortex-engram,sdd,skills \
   --skill sdd-apply \
   --persona carbon \
   --preset full-carbon \

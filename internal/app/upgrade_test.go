@@ -69,24 +69,24 @@ func TestRunArgs_UpgradeNoArgs(t *testing.T) {
 	}
 }
 
-// TestRunArgs_UpgradeToolFilter verifies that `kortex upgrade engram` filters
-// to only check/upgrade engram.
+// TestRunArgs_UpgradeToolFilter verifies that `kortex upgrade KortexEngram` filters
+// to only check/upgrade kortexengram.
 func TestRunArgs_UpgradeToolFilter(t *testing.T) {
 	var buf bytes.Buffer
-	err := RunArgs([]string{"upgrade", "engram"}, &buf)
+	err := RunArgs([]string{"upgrade", "kortex-engram"}, &buf)
 	if err != nil {
 		errStr := err.Error()
 		if strings.Contains(errStr, "unknown command") {
 			t.Fatalf("upgrade command is not registered: %v", err)
 		}
-		t.Logf("upgrade engram got non-fatal error (likely network/not installed): %v", err)
+		t.Logf("upgrade KortexEngram got non-fatal error (likely network/not installed): %v", err)
 	}
 
 	out := buf.String()
-	// Output should only mention engram or no-upgrades, not kortex or kortex.
+	// Output should only mention KortexEngram or no-upgrades, not kortex or kortex.
 	// This is a soft check since the tool may not be installed.
-	if strings.Contains(out, "kortex") && !strings.Contains(out, "engram") {
-		t.Errorf("filtering to engram should not show kortex in output; got: %s", out)
+	if strings.Contains(out, "kortex") && !strings.Contains(out, "kortex-engram") {
+		t.Errorf("filtering to KortexEngram should not show kortex in output; got: %s", out)
 	}
 }
 
@@ -156,13 +156,13 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 			name: "succeeded tool shows old→new version",
 			results: []upgrade.ToolUpgradeResult{
 				{
-					ToolName:   "engram",
+					ToolName:   "kortex-engram",
 					OldVersion: "0.3.0",
 					NewVersion: "0.4.0",
 					Status:     upgrade.UpgradeSucceeded,
 				},
 			},
-			wantContains:   []string{"engram", "0.3.0", "0.4.0", "[ok]"},
+			wantContains:   []string{"kortex-engram", "0.3.0", "0.4.0", "[ok]"},
 			wantNotContain: []string{"FAILED", "manual update required"},
 		},
 		{
@@ -212,20 +212,20 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 			dryRun: true,
 			results: []upgrade.ToolUpgradeResult{
 				{
-					ToolName:   "engram",
+					ToolName:   "kortex-engram",
 					OldVersion: "0.3.0",
 					NewVersion: "0.4.0",
 					Status:     upgrade.UpgradeSkipped,
 				},
 			},
-			wantContains:   []string{"dry", "engram", "0.3.0", "0.4.0"},
+			wantContains:   []string{"dry", "kortex-engram", "0.3.0", "0.4.0"},
 			wantNotContain: []string{"FAILED"},
 		},
 		{
 			name: "mixed: success + skip + manual in same report",
 			results: []upgrade.ToolUpgradeResult{
 				{
-					ToolName:   "engram",
+					ToolName:   "kortex-engram",
 					OldVersion: "0.3.0",
 					NewVersion: "0.4.0",
 					Status:     upgrade.UpgradeSucceeded,
@@ -245,7 +245,7 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 					ManualHint: "Download from https://github.com/fortissolucoescontato-bit/kortex/releases",
 				},
 			},
-			wantContains:   []string{"engram", "[ok]", "kortex", "[--]", "kortex", "1 succeeded", "2 skipped"},
+			wantContains:   []string{"kortex-engram", "[ok]", "kortex", "[--]", "kortex", "1 succeeded", "2 skipped"},
 			wantNotContain: []string{"FAILED", "[!!]"},
 		},
 	}

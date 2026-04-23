@@ -4,7 +4,7 @@ description: >
   Validate implementation against specs and tasks. Use when code is written and needs
   verification — runs tests, checks spec compliance, validates design coherence. Reports
   CRITICAL / WARNING / SUGGESTION findings. Read-only: does not modify code.
-tools: ["read", "shell", "@engram"]
+tools: ["read", "shell", "@kortex-engram"]
 model: {{KIRO_MODEL}}
 includeMcpJson: true
 ---

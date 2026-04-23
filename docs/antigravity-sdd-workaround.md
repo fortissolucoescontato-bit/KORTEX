@@ -18,8 +18,8 @@ Para implementar uma integração precoce sem depender de APIs externas e **sem 
 3.  **Amnésia Controlada (Load State)**
     Ao iniciar a fase seguinte (ex: `sdd-spec`), o Antigravity NÃO DEVE confiar em seu histórico de chat. Sua primeira ação obrigatória é usar a ferramenta de leitura (`Read`) para carregar o arquivo gerado no passo anterior. Isso refresca o contexto exato necessário para a fase atual.
 
-4.  **Uso Correto do Engram**
-    O Engram (`mem_save`) é preservado UNICAMENTE para registrar decisões arquitetônicas globais, convenções e correções de bugs. NÃO deve ser usado para salvar o estado intermediário de um SDD em andamento (para isso servem os arquivos `.sdd/*.md`).
+4.  **Uso Correto do Kortex-Engram**
+    O Kortex-Engram (`mem_save`) é preservado UNICAMENTE para registrar decisões arquitetônicas globais, convenções e correções de bugs. NÃO deve ser usado para salvar o estado intermediário de um SDD em andamento (para isso servem os arquivos `.sdd/*.md`).
 
 ## Conclusão
 Este workaround permite ter o SDD funcional no Antigravity hoje mesmo, operando sob um modo de "Simulação de Thread Única", mantendo intactas a limpeza e a modularidade do repositório original do Kortex.

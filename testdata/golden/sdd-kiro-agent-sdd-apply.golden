@@ -4,7 +4,7 @@ description: >
   Implement code changes from task definitions. Use when tasks are ready and implementation
   should begin. Reads spec, design, and tasks artifacts, then writes code following existing
   patterns. Marks tasks complete as it goes.
-tools: ["@builtin", "@engram"]
+tools: ["@builtin", "@kortex-engram"]
 model: claude-sonnet-4.6
 includeMcpJson: true
 ---
@@ -41,7 +41,7 @@ After completing work, call `mem_save` with:
 - type: `"architecture"`
 - project: `{project-name from context}`
 
-Also update the tasks artifact with `[x]` marks via `mem_update` (engram) or file edit (openspec/hybrid).
+Also update the tasks artifact with `[x]` marks via `mem_update` (kortex-engram) or file edit (openspec/hybrid).
 
 ## Result Contract
 

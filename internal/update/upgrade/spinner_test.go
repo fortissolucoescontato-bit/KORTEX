@@ -9,7 +9,7 @@ import (
 // TestSpinner_FinishSuccess verifies that Finish(true) writes the ✓ success icon.
 func TestSpinner_FinishSuccess(t *testing.T) {
 	var buf bytes.Buffer
-	s := NewSpinner(&buf, "Upgrading engram")
+	s := NewSpinner(&buf, "Upgrading KortexEngram")
 	s.Finish(true)
 
 	got := buf.String()
@@ -21,7 +21,7 @@ func TestSpinner_FinishSuccess(t *testing.T) {
 // TestSpinner_FinishFailure verifies that Finish(false) writes the ✗ failure icon.
 func TestSpinner_FinishFailure(t *testing.T) {
 	var buf bytes.Buffer
-	s := NewSpinner(&buf, "Upgrading engram")
+	s := NewSpinner(&buf, "Upgrading KortexEngram")
 	s.Finish(false)
 
 	got := buf.String()

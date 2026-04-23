@@ -15,7 +15,7 @@ Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in
 - `internal/assets/assets.go` — add `all:qwen` to `//go:embed` directive
 - `internal/components/sdd/inject.go` — `sddOrchestratorAsset()` case for `AgentQwenCode`
 - `internal/components/permissions/inject.go` — `qwenCodeOverlayJSON` with `auto_edit` mode
-- `internal/components/engram/setup.go` — `"qwen-code"` slug mapping
+- `internal/components/kortex-engram/setup.go` — `"qwen-code"` slug mapping
 - `internal/system/config_scan.go` — qwen-code entry in `knownAgentConfigDirs()`
 - `internal/cli/validate.go` — agent validation case
 - `internal/tui/model.go` — TUI agent selection case
@@ -34,11 +34,11 @@ Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in
 - `qwen-code-adapter`: Full agent adapter with detection, auto-install, config paths, strategies
 - `qwen-sdd-orchestrator`: Agent-specific SDD orchestrator with `~/.qwen/skills/` path references
 - `qwen-permissions`: Auto-edit mode with manual shell approval
-- `qwen-engram-slug`: `"qwen-code"` slug for `engram setup` integration
+- `qwen-kortex-engram-slug`: `"qwen-code"` slug for `kortex-engram setup` integration
 
 ### Modified Capabilities
 - `kortex`: None (spec unchanged)
-- `enorm`: Engram setup gains `qwen-code` slug
+- `enorm`: Kortex-Engram setup gains `qwen-code` slug
 
 ## Approach
 
@@ -64,7 +64,7 @@ Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in
 | `internal/assets/assets.go` | Modified | Embed directive |
 | `internal/components/sdd/inject.go` | Modified | `sddOrchestratorAsset()` switch |
 | `internal/components/permissions/inject.go` | Modified | `qwenCodeOverlayJSON` + switch case |
-| `internal/components/engram/setup.go` | Modified | `"qwen-code"` slug |
+| `internal/components/kortex-engram/setup.go` | Modified | `"qwen-code"` slug |
 | `internal/system/config_scan.go` | Modified | `knownAgentConfigDirs()` entry |
 | `internal/cli/validate.go` | Modified | Agent validation case |
 | `internal/tui/model.go` | Modified | TUI agent selection case |
@@ -76,7 +76,7 @@ Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in
 | Qwen Code npm package name changes | Low | Pinned to `@qwen-code/qwen-code@latest`; can be updated via single constant change |
 | Config paths differ across OSes | Med | Uses `~/.qwen/` consistently (Qwen's documented cross-platform config root) |
 | Qwen Code adds/removes features between versions | Med | Adapter declares capabilities at integration time; future updates may adjust flags |
-| Engram `engram setup` may not recognize `"qwen-code"` slug | Low | Slug follows established convention; engram component updated in same change |
+| Kortex-Engram `kortex-engram setup` may not recognize `"qwen-code"` slug | Low | Slug follows established convention; kortex-engram component updated in same change |
 
 ## Rollback Plan
 
@@ -99,7 +99,7 @@ Add Qwen Code (by Alibaba/Alibaba Cloud) as a fully supported AI coding agent in
 - [ ] `go vet ./...` reports no issues
 - [ ] `go test ./internal/agents/qwen/...` — all tests pass (detection, install, config paths, capabilities)
 - [ ] `go test ./internal/components/sdd/...` — SDD injection test for Qwen Code passes
-- [ ] `go test ./internal/components/engram/...` — engram setup slug test passes
+- [ ] `go test ./internal/components/kortex-engram/...` — kortex-engram setup slug test passes
 - [ ] `go test ./internal/cli/...` — install validation and default agent test pass
 - [ ] `go test ./internal/agents/...` — registry test includes Qwen Code
 - [ ] Qwen Code appears in TUI agent selection screen

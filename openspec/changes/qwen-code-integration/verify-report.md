@@ -39,7 +39,7 @@ go vet ./... — zero issues
 ```
 ok  internal/agents/qwen          0.003s
 ok  internal/components/sdd       0.313s
-ok  internal/components/engram    0.018s
+ok  internal/components/kortex-engram    0.018s
 ok  internal/cli                  2.413s
 ok  internal/agents               0.005s
 ok  internal/agents/antigravity   0.004s
@@ -132,7 +132,7 @@ ok  internal/system               0.008s
 | Overlay has auto_edit mode | Static check: `qwenCodeOverlayJSON` = `{"permissions":{"defaultMode":"auto_edit"}}` | ✅ COMPLIANT |
 | agentOverlay returns qwenCodeOverlayJSON | Static check: `case AgentQwenCode` returns correct var | ✅ COMPLIANT |
 
-### REQ-09: Engram Setup
+### REQ-09: Kortex-Engram Setup
 
 | Scenario | Test | Result |
 |----------|------|--------|
@@ -173,7 +173,7 @@ ok  internal/system               0.008s
 | Adapter tests exist | `internal/agents/qwen/adapter_test.go` — 6 test functions, all table-driven | ✅ COMPLIANT |
 | SDD injection test exists | `TestInjectQwenCodeWritesSDDOrchestratorAndSkills` in inject_test.go | ✅ COMPLIANT |
 | Asset selection test extended | `TestSDDOrchestratorAssetSelection` includes qwen-code case | ✅ COMPLIANT |
-| Engram setup test extended | `TestSetupAgentSlug` includes qwen-code case | ✅ COMPLIANT |
+| Kortex-Engram setup test extended | `TestSetupAgentSlug` includes qwen-code case | ✅ COMPLIANT |
 | CLI install tests extended | `TestNormalizeInstallFlagsDefaults` + `TestDefaultAgentsFromDetection_AllAgentsMappedCorrectly` include qwen-code | ✅ COMPLIANT |
 | Registry test extended | `TestDefaultRegistryIncludesAllAgents` includes AgentQwenCode | ✅ COMPLIANT |
 | TUI test extended | `makeDetectionWithAgents()` includes "qwen-code" | ✅ COMPLIANT |
@@ -194,7 +194,7 @@ ok  internal/system               0.008s
 | Capabilities | ✅ Implemented | All 6 flags correct, including SupportsSlashCommands=true |
 | SDD orchestrator | ✅ Implemented | Dedicated asset with Qwen-specific paths |
 | Permissions | ✅ Implemented | auto_edit overlay defined and wired |
-| Engram setup | ✅ Implemented | "qwen-code" slug mapped |
+| Kortex-Engram setup | ✅ Implemented | "qwen-code" slug mapped |
 | Config scan | ✅ Implemented | Entry in knownAgentConfigDirs |
 | CLI validation | ✅ Implemented | Case in validate.go switch |
 | TUI selection | ✅ Implemented | Case in loadSelection switch |
@@ -210,7 +210,7 @@ ok  internal/system               0.008s
 | StrategyMergeIntoSettings for MCP | ✅ Yes | Matches Gemini CLI pattern |
 | npm global install | ✅ Yes | `@qwen-code/qwen-code@latest` |
 | auto_edit permission mode | ✅ Yes | Matches Qwen native model |
-| "qwen-code" engram slug | ✅ Yes | Dashes follow convention |
+| "qwen-code" kortex-engram slug | ✅ Yes | Dashes follow convention |
 | Dedicated SDD orchestrator asset | ✅ Yes | `qwen/sdd-orchestrator.md` |
 | Slash command support = true | ✅ Yes | Differentiator from Gemini CLI |
 | Mirror Gemini CLI adapter pattern | ✅ Yes | Structurally identical with minimal deviations |

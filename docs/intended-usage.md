@@ -16,26 +16,26 @@ Abra seu agente de IA e comece a trabalhar. Só isso.
 
 ---
 
-## Engram (Memória) — Automático, mas Você PODE Usar
+## Kortex-Engram (Memória) — Automático, mas Você PODE Usar
 
-O Engram é a memória persistente para o seu agente de IA. Ele salva decisões, descobertas, correções de bugs e contexto entre as sessões — automaticamente. O agente gerencia tudo via ferramentas MCP (`mem_save`, `mem_search`, etc.).
+O Kortex-Engram é a memória persistente para o seu agente de IA. Ele salva decisões, descobertas, correções de bugs e contexto entre as sessões — automaticamente. O agente gerencia tudo via ferramentas MCP (`mem_save`, `mem_search`, etc.).
 
 **No dia a dia: você não precisa fazer nada.** O agente lida com a memória automaticamente.
 
-**Mas o Engram tem ferramentas úteis quando você precisar:**
+**Mas o Kortex-Engram tem ferramentas úteis quando você precisar:**
 
 | Comando | Quando usar |
 |---------|-------------|
-| `engram tui` | Navegue por suas memórias visualmente — busque, filtre e detalhe observações |
-| `engram sync` | Exporta as memórias do projeto para `.engram/` para rastreamento via git. Execute após sessões de trabalho significativas |
-| `engram sync --import` | Importa memórias em outra máquina após clonar um repositório com `.engram/` |
-| `engram projects list` | Veja todos os projetos com contagem de observações |
-| `engram projects consolidate` | Corrige divergências de nomes de projetos (ex: "meu-app" vs "Meu-App" vs "meu-app-frontend") |
-| `engram search <termo>` | Busca rápida de memória pelo terminal |
+| `kortex-engram tui` | Navegue por suas memórias visualmente — busque, filtre e detalhe observações |
+| `kortex-engram sync` | Exporta as memórias do projeto para `.kortex-engram/` para rastreamento via git. Execute após sessões de trabalho significativas |
+| `kortex-engram sync --import` | Importa memórias em outra máquina após clonar um repositório com `.kortex-engram/` |
+| `kortex-engram projects list` | Veja todos os projetos com contagem de observações |
+| `kortex-engram projects consolidate` | Corrige divergências de nomes de projetos (ex: "meu-app" vs "Meu-App" vs "meu-app-frontend") |
+| `kortex-engram search <termo>` | Busca rápida de memória pelo terminal |
 
-Desde a v1.11.0, o Engram detecta automaticamente o nome do projeto a partir do remoto git na inicialização, normaliza para minúsculas e avisa se encontrar nomes de projetos existentes semelhantes. Isso evita que o mesmo projeto acabe com múltiplas variantes de nome.
+Desde a v1.11.0, o Kortex-Engram detecta automaticamente o nome do projeto a partir do remoto git na inicialização, normaliza para minúsculas e avisa se encontrar nomes de projetos existentes semelhantes. Isso evita que o mesmo projeto acabe com múltiplas variantes de nome.
 
-Para documentação completa: [github.com/fortissolucoescontato-bit/engram](https://github.com/fortissolucoescontato-bit/engram)
+Para documentação completa: [github.com/fortissolucoescontato-bit/kortex-engram](https://github.com/fortissolucoescontato-bit/kortex-engram)
 
 ---
 
@@ -82,11 +82,11 @@ Quando o orquestrador delega o trabalho para um subagente (digamos, `sdd-explore
 
 O que os torna "super subagentes":
 
-1. **Eles descobrem habilidades por conta própria.** A primeira ação de cada subagente é procurar o registro de skills — via memória do Engram ou pelo arquivo local `.atl/skill-registry.md`. Se encontrar skills relevantes (padrões React, testes em Go, arquitetura Angular, etc.), ele as carrega e as segue. O orquestrador não precisa "dar na boca" os caminhos das skills.
+1. **Eles descobrem habilidades por conta própria.** A primeira ação de cada subagente é procurar o registro de skills — via memória do Kortex-Engram ou pelo arquivo local `.atl/skill-registry.md`. Se encontrar skills relevantes (padrões React, testes em Go, arquitetura Angular, etc.), ele as carrega e as segue. O orquestrador não precisa "dar na boca" os caminhos das skills.
 
 2. **Eles se adaptam ao seu projeto.** Um subagente `sdd-apply` trabalhando em um projeto React carregará padrões do React 19. O mesmo subagente trabalhando em um projeto Go carregará convenções de teste em Go. As skills que ele carrega dependem do que o registro diz ser relevante, não de uma lista fixa.
 
-3. **Eles persistem seu trabalho.** Cada subagente salva seus artefatos no Engram antes de retornar. O próximo subagente no pipeline pode continuar exatamente de onde o anterior parou, mesmo entre diferentes sessões.
+3. **Eles persistem seu trabalho.** Cada subagente salva seus artefatos no Kortex-Engram antes de retornar. O próximo subagente no pipeline pode continuar exatamente de onde o anterior parou, mesmo entre diferentes sessões.
 
 Este padrão funciona hoje em:
 
@@ -119,7 +119,7 @@ Uma vez instaladas, seu agente detecta no que você está trabalhando e carrega 
 
 Como funciona:
 
-1. **Execute `/skill-registry` dentro do seu projeto** — ele varre todas as suas skills instaladas (nível de usuário e nível de projeto), lê seus frontmatters e constrói um registro em `.atl/skill-registry.md`. Se o Engram estiver disponível, ele também salva o registro na memória para acesso entre sessões.
+1. **Execute `/skill-registry` dentro do seu projeto** — ele varre todas as suas skills instaladas (nível de usuário e nível de projeto), lê seus frontmatters e constrói um registro em `.atl/skill-registry.md`. Se o Kortex-Engram estiver disponível, ele também salva o registro na memória para acesso entre sessões.
 2. **O orquestrador o usa automaticamente** — uma vez que o registro existe, o orquestrador o lê no início da sessão e passa os caminhos das skills já resolvidos para os subagentes. Você não interage com o registro depois disso.
 3. **Execute novamente quando as coisas mudarem** — sempre que você adicionar, remover ou modificar uma skill, execute `/skill-registry` novamente para que o orquestrador perceba as mudanças.
 
@@ -144,7 +144,7 @@ Quanto menos você pensar no kortex após a instalação, melhor ele estará fun
 | Execute o instalador, escolha seus agentes e preset | Edite manualmente os arquivos de configuração gerados |
 | Apenas comece a programar com seu agente de IA | Memorize as fases ou comandos do SDD |
 | Deixe o agente sugerir o SDD quando a tarefa for grande | Force o SDD em cada pequena tarefa |
-| Confie que o Engram está salvando o contexto para você | Bisbilhote o armazenamento do Engram, a menos que precise de `engram sync` ou `engram tui` |
+| Confie que o Kortex-Engram está salvando o contexto para você | Bisbilhote o armazenamento do Kortex-Engram, a menos que precise de `kortex-engram sync` ou `kortex-engram tui` |
 | Execute `/skill-registry` após instalar ou alterar skills | Esqueça de atualizar o registro após adicionar novas skills |
 | Diga "use sdd" se souber que quer um planejamento estruturado | Se preocupe com qual fase do SDD vem a seguir |
 | Execute o instalador novamente para atualizar ou mudar seu setup | Tente "remendar" arquivos de skill ou instruções de persona manualmente |

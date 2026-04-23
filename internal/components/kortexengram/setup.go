@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"strings"
@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	SetupModeEnvVar   = "KORTEX_ENGRAM_SETUP_MODE"
-	SetupStrictEnvVar = "KORTEX_ENGRAM_SETUP_STRICT"
+	SetupModeEnvVar   = "KORTEX_KORTEX-ENGRAM_SETUP_MODE"
+	SetupStrictEnvVar = "KORTEX_KORTEX-ENGRAM_SETUP_STRICT"
 )
 
 type SetupMode string
@@ -51,18 +51,18 @@ func SetupAgentSlug(agent model.AgentID) (string, bool) {
 		// Codex slug registered for future MCP support; ShouldAttemptSetup gates on SupportsMCP().
 		return "codex", true
 	case model.AgentAntigravity:
-		// Antigravity relies on Gemini's engram setup surface; the engram binary
+		// Antigravity relies on Gemini's KortexEngram setup surface; the KortexEngram binary
 		// does not currently expose a native "antigravity" slug.
 		return "gemini-cli", true
 	case model.AgentWindsurf:
 		return "windsurf", true
 	case model.AgentCursor, model.AgentVSCodeCopilot:
-		// Cursor and VS Code Copilot do not use `engram setup` — their MCP
-		// config is injected directly by the engram component. Returning false
+		// Cursor and VS Code Copilot do not use `KortexEngram setup` — their MCP
+		// config is injected directly by the KortexEngram component. Returning false
 		// here is intentional, not an omission.
 		return "", false
 	case model.AgentQwenCode:
-		// Qwen uses direct settings.json injection only. The engram binary does
+		// Qwen uses direct settings.json injection only. The KortexEngram binary does
 		// not currently expose a native `qwen-code` setup target.
 		return "", false
 	default:

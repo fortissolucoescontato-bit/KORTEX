@@ -166,7 +166,7 @@ func runUpdate(ctx context.Context, currentVersion string, profile system.Platfo
 // runUpgrade handles the `kortex upgrade [--dry-run] [tool...]` command.
 //
 // This command:
-//   - Checks for available updates for managed tools (kortex, engram, kortex)
+//   - Checks for available updates for managed tools (kortex, KortexEngram, kortex)
 //   - Snapshots agent config paths before execution (config preservation by design)
 //   - Executes binary-only upgrades; does NOT invoke install or sync pipelines
 //   - Skips kortex itself when running as a dev build (version="dev")
@@ -336,12 +336,12 @@ func tuiUninstall(homeDir string) tui.UninstallFunc {
 }
 
 func tuiUninstallWithProfiles(homeDir string) tui.UninstallWithProfilesFunc {
-	return func(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, engramScope model.EngramUninstallScope) (componentuninstall.Result, error) {
+	return func(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, KortexEngramScope model.KortexEngramUninstallScope) (componentuninstall.Result, error) {
 		workspaceDir, err := os.Getwd()
 		if err != nil {
 			return componentuninstall.Result{}, fmt.Errorf("falha ao resolver diretório de trabalho: %w", err)
 		}
-		return cli.RunUninstallWithSelectionAndProfiles(homeDir, workspaceDir, agentIDs, componentIDs, profileNames, engramScope)
+		return cli.RunUninstallWithSelectionAndProfiles(homeDir, workspaceDir, agentIDs, componentIDs, profileNames, KortexEngramScope)
 	}
 }
 

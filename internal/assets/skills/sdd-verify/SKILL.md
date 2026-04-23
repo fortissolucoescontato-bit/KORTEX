@@ -19,13 +19,13 @@ Static analysis alone is NOT enough. You must execute the code.
 
 From the orchestrator:
 - Change name
-- Artifact store mode (`engram | openspec | hybrid | none`)
+- Artifact store mode (`kortex-engram | openspec | hybrid | none`)
 
 ## Execution and Persistence Contract
 
 > Follow **Section B** (retrieval) and **Section C** (persistence) from `skills/_shared/sdd-phase-common.md`.
 
-- **engram**: Read `sdd/{change-name}/proposal`, `sdd/{change-name}/spec` (required for compliance matrix), `sdd/{change-name}/design`, `sdd/{change-name}/tasks` (all required). Save as `sdd/{change-name}/verify-report`.
+- **kortex-engram**: Read `sdd/{change-name}/proposal`, `sdd/{change-name}/spec` (required for compliance matrix), `sdd/{change-name}/design`, `sdd/{change-name}/tasks` (all required). Save as `sdd/{change-name}/verify-report`.
 - **openspec**: Read and follow `skills/_shared/openspec-convention.md`. Save to `openspec/changes/{change-name}/verify-report.md`.
 - **hybrid**: Follow BOTH conventions — persist to Kortex-Engram AND write `verify-report.md` to filesystem.
 - **none**: Return the verification report inline only. Never write files.
@@ -41,7 +41,7 @@ Read the cached testing capabilities to determine if Strict TDD verification app
 
 ```
 Read testing capabilities from:
-├── engram: mem_search("sdd/{project}/testing-capabilities") → mem_get_observation(id)
+├── kortex-engram: mem_search("sdd/{project}/testing-capabilities") → mem_get_observation(id)
 ├── openspec: openspec/config.yaml → strict_tdd + testing section
 └── Fallback: check project files directly
 
@@ -60,7 +60,7 @@ Resolve mode:
 
 #### Orchestrator-Injected TDD Mode
 
-If the orchestrator's launch prompt contains "STRICT TDD MODE IS ACTIVE", treat this as authoritative — do NOT override it with a failed engram search. The orchestrator already verified TDD status. Proceed directly to Strict TDD verification in Step 5a.
+If the orchestrator's launch prompt contains "STRICT TDD MODE IS ACTIVE", treat this as authoritative — do NOT override it with a failed kortex-engram search. The orchestrator already verified TDD status. Proceed directly to Strict TDD verification in Step 5a.
 
 ### Step 3: Check Completeness
 

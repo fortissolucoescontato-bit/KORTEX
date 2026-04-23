@@ -245,7 +245,7 @@ func TestInstallingDoneToComplete(t *testing.T) {
 func TestBuildProgressLabelsFromResolvedPlan(t *testing.T) {
 	resolved := planner.ResolvedPlan{
 		Agents:            []model.AgentID{model.AgentClaudeCode},
-		OrderedComponents: []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD},
 	}
 
 	labels := buildProgressLabels(resolved)
@@ -255,7 +255,7 @@ func TestBuildProgressLabelsFromResolvedPlan(t *testing.T) {
 		"prepare:backup-snapshot",
 		"apply:rollback-restore",
 		"agent:claude-code",
-		"component:engram",
+		"component:KortexEngram",
 		"component:sdd",
 	}
 
@@ -305,25 +305,25 @@ func TestShouldShowSDDModeScreen(t *testing.T) {
 		{
 			name:       "OpenCode + SDD = true",
 			agents:     []model.AgentID{model.AgentOpenCode},
-			components: []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+			components: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD},
 			want:       true,
 		},
 		{
 			name:       "Claude only + SDD = false",
 			agents:     []model.AgentID{model.AgentClaudeCode},
-			components: []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+			components: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD},
 			want:       false,
 		},
 		{
 			name:       "OpenCode + no SDD = false",
 			agents:     []model.AgentID{model.AgentOpenCode},
-			components: []model.ComponentID{model.ComponentEngram},
+			components: []model.ComponentID{model.ComponentKortexEngram},
 			want:       false,
 		},
 		{
 			name:       "multiple agents including OpenCode + SDD = true",
 			agents:     []model.AgentID{model.AgentClaudeCode, model.AgentOpenCode},
-			components: []model.ComponentID{model.ComponentSDD, model.ComponentEngram},
+			components: []model.ComponentID{model.ComponentSDD, model.ComponentKortexEngram},
 			want:       true,
 		},
 		{
@@ -364,19 +364,19 @@ func TestShouldShowClaudeModelPickerScreen(t *testing.T) {
 		{
 			name:       "Claude + SDD = true",
 			agents:     []model.AgentID{model.AgentClaudeCode},
-			components: []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+			components: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD},
 			want:       true,
 		},
 		{
 			name:       "OpenCode + SDD = false",
 			agents:     []model.AgentID{model.AgentOpenCode},
-			components: []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+			components: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD},
 			want:       false,
 		},
 		{
 			name:       "Claude + no SDD = false",
 			agents:     []model.AgentID{model.AgentClaudeCode},
-			components: []model.ComponentID{model.ComponentEngram},
+			components: []model.ComponentID{model.ComponentKortexEngram},
 			want:       false,
 		},
 	}
@@ -398,7 +398,7 @@ func TestPresetFlowShowsClaudeModelPickerBeforeDependencyTree(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenPreset
 	m.Selection.Agents = []model.AgentID{model.AgentClaudeCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Cursor = 0
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -416,7 +416,7 @@ func TestClaudeModelPickerBalancedSelectionStoresAssignments(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenClaudeModelPicker
 	m.Selection.Agents = []model.AgentID{model.AgentClaudeCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.ClaudeModelPicker = screens.NewClaudeModelPickerState()
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -465,7 +465,7 @@ func TestSDDModeMultiSkipModelPickerWhenCacheMissing(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenSDDMode
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Cursor = sddMultiCursor(t)
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -500,7 +500,7 @@ func TestSDDModeMultiShowsModelPickerWhenCacheExists(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenSDDMode
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Cursor = sddMultiCursor(t)
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -657,7 +657,7 @@ func TestUpgradePhaseCompletedMsg_SetsReport(t *testing.T) {
 
 	report := upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
-			{ToolName: "engram", Status: upgrade.UpgradeSucceeded},
+			{ToolName: "kortex-engram", Status: upgrade.UpgradeSucceeded},
 		},
 	}
 	updated, _ := m.Update(UpgradePhaseCompletedMsg{Report: report})
@@ -705,13 +705,13 @@ func TestUpgradeDoneClearsUpdateResults(t *testing.T) {
 	m.Screen = ScreenUpgrade
 	m.OperationRunning = true
 	m.UpdateResults = []update.UpdateResult{
-		{Tool: update.ToolInfo{Name: "engram"}, InstalledVersion: "1.0.0", LatestVersion: "1.1.0", Status: update.UpdateAvailable},
+		{Tool: update.ToolInfo{Name: "kortex-engram"}, InstalledVersion: "1.0.0", LatestVersion: "1.1.0", Status: update.UpdateAvailable},
 	}
 	m.UpdateCheckDone = true
 
 	report := upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
-			{ToolName: "engram", Status: upgrade.UpgradeSucceeded},
+			{ToolName: "kortex-engram", Status: upgrade.UpgradeSucceeded},
 		},
 	}
 	updated, _ := m.Update(UpgradeDoneMsg{Report: report})
@@ -733,13 +733,13 @@ func TestUpgradePhaseCompletedClearsUpdateResults(t *testing.T) {
 	m.Screen = ScreenUpgradeSync
 	m.OperationRunning = true
 	m.UpdateResults = []update.UpdateResult{
-		{Tool: update.ToolInfo{Name: "engram"}, InstalledVersion: "1.0.0", LatestVersion: "1.1.0", Status: update.UpdateAvailable},
+		{Tool: update.ToolInfo{Name: "kortex-engram"}, InstalledVersion: "1.0.0", LatestVersion: "1.1.0", Status: update.UpdateAvailable},
 	}
 	m.UpdateCheckDone = true
 
 	report := upgrade.UpgradeReport{
 		Results: []upgrade.ToolUpgradeResult{
-			{ToolName: "engram", Status: upgrade.UpgradeSucceeded},
+			{ToolName: "kortex-engram", Status: upgrade.UpgradeSucceeded},
 		},
 	}
 	updated, _ := m.Update(UpgradePhaseCompletedMsg{Report: report})
@@ -1248,16 +1248,16 @@ func TestStartUninstall_UsesProfileAwareUninstallWhenConfigured(t *testing.T) {
 	m.UninstallAgents = []model.AgentID{model.AgentOpenCode}
 	m.UninstallComponents = []model.ComponentID{model.ComponentSDD}
 	m.UninstallProfilesToRemove = []string{"cheap"}
-	m.UninstallEngramScope = model.EngramUninstallScopeGlobal
+	m.UninstallKortexEngramScope = model.KortexEngramUninstallScopeGlobal
 
 	called := false
-	m.UninstallWithProfilesFn = func(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, engramScope model.EngramUninstallScope) (componentuninstall.Result, error) {
+	m.UninstallWithProfilesFn = func(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, KortexEngramScope model.KortexEngramUninstallScope) (componentuninstall.Result, error) {
 		called = true
 		if !reflect.DeepEqual(profileNames, []string{"cheap"}) {
 			t.Fatalf("profileNames = %v, want [cheap]", profileNames)
 		}
-		if engramScope != model.EngramUninstallScopeGlobal {
-			t.Fatalf("engramScope = %q, want %q", engramScope, model.EngramUninstallScopeGlobal)
+		if KortexEngramScope != model.KortexEngramUninstallScopeGlobal {
+			t.Fatalf("KortexEngramScope = %q, want %q", KortexEngramScope, model.KortexEngramUninstallScopeGlobal)
 		}
 		return componentuninstall.Result{}, nil
 	}
@@ -1275,10 +1275,10 @@ func TestStartUninstall_UsesProfileAwareUninstallWhenConfigured(t *testing.T) {
 	}
 }
 
-func TestUninstallComponents_ContinueWithEngramProjectScopeNavigatesToSubSelection(t *testing.T) {
+func TestUninstallComponents_ContinueWithKortexEngramProjectScopeNavigatesToSubSelection(t *testing.T) {
 	tempWorkspace := t.TempDir()
-	if err := os.MkdirAll(filepath.Join(tempWorkspace, ".engram"), 0o755); err != nil {
-		t.Fatalf("MkdirAll(.engram) error = %v", err)
+	if err := os.MkdirAll(filepath.Join(tempWorkspace, ".KortexEngram"), 0o755); err != nil {
+		t.Fatalf("MkdirAll(.KortexEngram) error = %v", err)
 	}
 	restoreGetwd := setOSGetwdForTest(tempWorkspace, nil)
 	defer restoreGetwd()
@@ -1287,7 +1287,7 @@ func TestUninstallComponents_ContinueWithEngramProjectScopeNavigatesToSubSelecti
 	m.Screen = ScreenUninstallComponents
 	m.UninstallMode = model.UninstallModePartial
 	m.UninstallAgents = []model.AgentID{model.AgentOpenCode}
-	m.UninstallComponents = []model.ComponentID{model.ComponentEngram}
+	m.UninstallComponents = []model.ComponentID{model.ComponentKortexEngram}
 	m.Cursor = len(screens.UninstallComponentOptions())
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -1296,11 +1296,11 @@ func TestUninstallComponents_ContinueWithEngramProjectScopeNavigatesToSubSelecti
 	if state.Screen != ScreenUninstallProfiles {
 		t.Fatalf("screen = %v, want %v", state.Screen, ScreenUninstallProfiles)
 	}
-	if !state.UninstallEngramProjectScopeAvailable {
-		t.Fatal("UninstallEngramProjectScopeAvailable = false, want true")
+	if !state.UninstallKortexEngramProjectScopeAvailable {
+		t.Fatal("UninstallKortexEngramProjectScopeAvailable = false, want true")
 	}
-	if state.UninstallEngramScope != model.EngramUninstallScopeGlobal {
-		t.Fatalf("UninstallEngramScope = %q, want %q", state.UninstallEngramScope, model.EngramUninstallScopeGlobal)
+	if state.UninstallKortexEngramScope != model.KortexEngramUninstallScopeGlobal {
+		t.Fatalf("UninstallKortexEngramScope = %q, want %q", state.UninstallKortexEngramScope, model.KortexEngramUninstallScopeGlobal)
 	}
 }
 
@@ -2276,7 +2276,7 @@ func TestStrictTDDScreenAppearsAfterSDDMode(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenSDDMode
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Cursor = sddSingleCursor(t)
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -2299,7 +2299,7 @@ func TestStrictTDDScreenEnableSetsSelection(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenStrictTDD
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Cursor = screens.StrictTDDOptionEnable // cursor on "Enable"
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -2322,7 +2322,7 @@ func TestStrictTDDScreenDisableSetsSelection(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenStrictTDD
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Selection.StrictTDD = true              // start as enabled
 	m.Cursor = screens.StrictTDDOptionDisable // cursor on "Disable"
 
@@ -2347,7 +2347,7 @@ func TestStrictTDDScreenSkippedWhenNoSDD(t *testing.T) {
 	m.Screen = ScreenSDDMode
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
 	// No ComponentSDD in components.
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram}
 	m.Cursor = sddSingleCursor(t)
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
@@ -2364,7 +2364,7 @@ func TestStrictTDDBackNavigatesToSDDMode(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenStrictTDD
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEsc})
 	state := updated.(Model)
@@ -2385,7 +2385,7 @@ func TestDependencyTreeEnterBackNavigatesToStrictTDD(t *testing.T) {
 	m.Screen = ScreenDependencyTree
 	m.Selection.Preset = model.PresetFullKortex // non-custom
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Selection.SDDMode = model.SDDModeSingle
 	// cursor == 1 → the "Back" option in DependencyTreeOptions() = ["Continue", "Back"]
 	m.Cursor = 1
@@ -2408,7 +2408,7 @@ func TestModelPickerEnterBackNavigatesToSDDMode(t *testing.T) {
 	m.Screen = ScreenModelPicker
 	m.Selection.Preset = model.PresetFullKortex // non-custom
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Selection.SDDMode = model.SDDModeMulti
 	m.ModelConfigMode = false
 	m.ModelPicker.AvailableIDs = []string{"openai"}
@@ -2432,7 +2432,7 @@ func TestModelPickerContinueMultiGoesToStrictTDD(t *testing.T) {
 	m.Screen = ScreenModelPicker
 	m.Selection.Preset = model.PresetFullKortex // non-custom
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Selection.SDDMode = model.SDDModeMulti
 	m.ModelConfigMode = false
 	m.ModelPicker.AvailableIDs = []string{"openai"}
@@ -2467,7 +2467,7 @@ func TestStrictTDDBackNavigatesToModelPickerWhenMultiWithCache(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenStrictTDD
 	m.Selection.Agents = []model.AgentID{model.AgentOpenCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Selection.SDDMode = model.SDDModeMulti
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEsc})
@@ -2489,7 +2489,7 @@ func TestStrictTDDScreenAppearsForClaudeCodeAgent(t *testing.T) {
 	m.Screen = ScreenClaudeModelPicker
 	m.Selection.Preset = model.PresetFullKortex // non-custom
 	m.Selection.Agents = []model.AgentID{model.AgentClaudeCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.ClaudeModelPicker = screens.NewClaudeModelPickerState()
 
 	// Simulate HandleClaudeModelPickerNav returning updated assignments (non-nil)
@@ -2585,7 +2585,7 @@ func TestStrictTDDBackNavFromClaudeFlow(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenStrictTDD
 	m.Selection.Agents = []model.AgentID{model.AgentClaudeCode}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Selection.Preset = model.PresetFullKortex
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEsc})
@@ -2604,7 +2604,7 @@ func TestStrictTDDBackNavFromPresetFlow(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenStrictTDD
 	m.Selection.Agents = []model.AgentID{model.AgentCursor}
-	m.Selection.Components = []model.ComponentID{model.ComponentEngram, model.ComponentSDD}
+	m.Selection.Components = []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD}
 	m.Selection.Preset = model.PresetFullKortex
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEsc})

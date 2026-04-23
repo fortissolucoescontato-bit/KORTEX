@@ -1,7 +1,7 @@
-<!-- kortex:engram-protocol -->
-## Engram Persistent Memory — Protocol
+<!-- kortex:kortex-engram-protocol -->
+## Kortex-Engram Persistent Memory — Protocol
 
-You have access to Engram, a persistent memory system that survives across sessions and compactions.
+You have access to Kortex-Engram, a persistent memory system that survives across sessions and compactions.
 This protocol is MANDATORY and ALWAYS ACTIVE.
 
 ### PROACTIVE SAVE TRIGGERS (mandatory)
@@ -16,7 +16,7 @@ At the beginning of EVERY session, call `mem_search(query: "session-summary", pr
 
 ### SESSION CLOSE PROTOCOL (mandatory)
 Before ending, call `mem_session_summary` with Goal, Discoveries, Accomplished, and Next Steps.
-<!-- /kortex:engram-protocol -->
+<!-- /kortex:kortex-engram-protocol -->
 
 <!-- kortex:project-standards -->
 ## Padrões do Projeto Kortex
@@ -32,5 +32,5 @@ Before ending, call `mem_session_summary` with Goal, Discoveries, Accomplished, 
 Este projeto utiliza o fluxo SDD para mudanças substanciais.
 - Use `/sdd-init` para inicializar.
 - Siga o fluxo: Proposta -> Specs -> Design -> Tasks -> Apply -> Verify.
-- Priorize a persistência `hybrid` (arquivos + engram).
+- Priorize a persistência `hybrid` (arquivos + kortex-engram).
 <!-- /kortex:sdd-orchestrator -->

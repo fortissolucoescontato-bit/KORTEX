@@ -105,11 +105,11 @@ Se você quer ter controle cirúrgico sobre cada etapa do processo, você pode c
 
 ---
 
-## 💾 6. A Memória Implacável: O Engram
+## 💾 6. A Memória Implacável: O Kortex-Engram
 
 A maior frustração com IAs normais (como o ChatGPT) é que se você fechar a janela, a IA esquece tudo o que vocês fizeram.
 
-No ecossistema Kortex, o seu agente é integrado ao **Kortex Engram** (uma memória persistente de longo prazo). Todo comando `/sdd` que você executa salva automaticamente decisões de arquitetura, padrões e correções de bugs.
+No ecossistema Kortex, o seu agente é integrado ao **Kortex Kortex-Engram** (uma memória persistente de longo prazo). Todo comando `/sdd` que você executa salva automaticamente decisões de arquitetura, padrões e correções de bugs.
 
 Quando você voltar a trabalhar no projeto no dia seguinte, ou até daqui a um ano, o agente vai silenciosamente buscar no banco de dados e vai **lembrar de todas as decisões que vocês tomaram no passado!** 
 
@@ -124,6 +124,6 @@ Pronto! Você agora tem um ambiente de engenharia profissional rodando na sua m�
 **Resumo para o sucesso:**
 1. Comece ideias grandes com `/sdd-new`.
 2. Avance as etapas do planejamento com `/sdd-continue`.
-3. Deixe o **Engram** cuidar da memória do projeto.
+3. Deixe o **Kortex-Engram** cuidar da memória do projeto.
 
 Dúvidas ou problemas técnicos? Envie uma issue (mensagem) lá no nosso GitHub e estaremos prontos para ajudar. Mãos à obra!

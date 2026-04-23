@@ -2,7 +2,7 @@
   "mcp": {
     "kortex-engram": {
       "command": [
-        "engram",
+        "kortex-engram",
         "mcp",
         "--tools=agent"
       ],

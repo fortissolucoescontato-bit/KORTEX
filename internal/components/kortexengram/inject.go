@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"encoding/json"
@@ -27,63 +27,63 @@ type bootstrapper interface {
 	BootstrapTemplate(homeDir string) error
 }
 
-// EngramLookPath is the function used to resolve the engram binary path.
+// kortexEngramLookPath is the function used to resolve the KortexEngram binary path.
 // It is a package-level variable so it can be replaced in tests — both from
-// within the engram package and from external test packages (e.g. golden_test.go).
+// within the KortexEngram package and from external test packages (e.g. golden_test.go).
 // In production it is set to exec.LookPath.
-var EngramLookPath = exec.LookPath
+var kortexEngramLookPath = exec.LookPath
 
-// SetLookPathForTest replaces EngramLookPath with a mock for the duration of
+// SetLookPathForTest replaces kortexEngramLookPath with a mock for the duration of
 // a test and restores the original after the test completes. Exported so that
 // external test packages (e.g. golden_test.go in components) can control the
-// resolved engram path.
+// resolved KortexEngram path.
 func SetLookPathForTest(t interface {
 	Helper()
 	Cleanup(func())
 }, result, errMsg string) {
 	t.Helper()
-	orig := EngramLookPath
-	EngramLookPath = func(string) (string, error) {
+	orig := kortexEngramLookPath
+	kortexEngramLookPath = func(string) (string, error) {
 		if errMsg != "" {
 			return "", fmt.Errorf("%s", errMsg)
 		}
 		return result, nil
 	}
-	t.Cleanup(func() { EngramLookPath = orig })
+	t.Cleanup(func() { kortexEngramLookPath = orig })
 }
 
-// resolveEngramCommand attempts to resolve the engram binary to an absolute
+// resolveKortexEngramCommand attempts to resolve the KortexEngram binary to an absolute
 // path using exec.LookPath. If found, it returns the absolute path and true.
-// If not found (e.g. binary not yet installed), it returns "engram" and false.
+// If not found (e.g. binary not yet installed), it returns "kortex-engram" and false.
 // This is used to write the most stable command possible into MCP configs:
 // an absolute path survives across environments where PATH is not fully
 // inherited (e.g. Windsurf, IDEs that launch without a login shell).
-func resolveEngramCommand() (string, bool) {
-	// Try 'kortex-engram' first (new dedicated server name)
-	if p, err := EngramLookPath("kortex-engram"); err == nil && p != "" {
+func resolveKortexEngramCommand() (string, bool) {
+	// Try 'KortexEngram' first (new dedicated server name)
+	if p, err := kortexEngramLookPath("kortex-engram"); err == nil && p != "" {
 		return p, true
 	}
 	// Fallback to 'kortex' (previous rebranding attempt)
-	if p, err := EngramLookPath("kortex"); err == nil && p != "" {
+	if p, err := kortexEngramLookPath("kortex"); err == nil && p != "" {
 		return p, true
 	}
-	// Fallback to 'engram' (legacy)
-	if p, err := EngramLookPath("engram"); err == nil && p != "" {
+	// Fallback to 'KortexEngram' (legacy)
+	if p, err := kortexEngramLookPath("kortex-engram"); err == nil && p != "" {
 		return p, true
 	}
 	return "kortex-engram", false
 }
 
-// engramServerJSON returns the MCP server config bytes, using the absolute
-// path to the engram binary if it can be resolved via PATH.
-func engramServerJSON() []byte {
-	cmd, _ := resolveEngramCommand()
-	return engramServerJSONWithCmd(cmd)
+// kortexEngramServerJSON returns the MCP server config bytes, using the absolute
+// path to the KortexEngram binary if it can be resolved via PATH.
+func kortexEngramServerJSON() []byte {
+	cmd, _ := resolveKortexEngramCommand()
+	return kortexEngramServerJSONWithCmd(cmd)
 }
 
-// engramServerJSONWithCmd returns the MCP server config bytes for a specific
+// kortexEngramServerJSONWithCmd returns the MCP server config bytes for a specific
 // command.
-func engramServerJSONWithCmd(cmd string) []byte {
+func kortexEngramServerJSONWithCmd(cmd string) []byte {
 	cfg := map[string]any{
 		"command": cmd,
 		"args":    []string{"mcp", "--tools=agent"},
@@ -92,9 +92,9 @@ func engramServerJSONWithCmd(cmd string) []byte {
 	return append(b, '\n')
 }
 
-// engramOverlayJSON returns the settings overlay JSON (used for merge-into-settings
-// and MCPConfigFile strategies), with the resolved engram command.
-func engramOverlayJSON(agentID model.AgentID, cmd string) []byte {
+// kortexEngramOverlayJSON returns the settings overlay JSON (used for merge-into-settings
+// and MCPConfigFile strategies), with the resolved KortexEngram command.
+func kortexEngramOverlayJSON(agentID model.AgentID, cmd string) []byte {
 	var cfg map[string]any
 	if agentID == model.AgentOpenCode || agentID == model.AgentKilocode {
 		// OpenCode 1.3.3+ requires command as an array for type:local servers.
@@ -102,7 +102,7 @@ func engramOverlayJSON(agentID model.AgentID, cmd string) []byte {
 		// command array itself.
 		//
 		// Use the __replace__ sentinel so that MergeJSONObjects replaces the
-		// entire mcp.engram object atomically instead of deep-merging into it.
+		// entire mcp.KortexEngram object atomically instead of deep-merging into it.
 		// Without this, users upgrading from v1.11.3 (which had a separate
 		// "args" key) would end up with both "args" and the new array "command"
 		// in their config, which is invalid for OpenCode 1.3.3.
@@ -130,11 +130,11 @@ func engramOverlayJSON(agentID model.AgentID, cmd string) []byte {
 	return append(b, '\n')
 }
 
-// vsCodeEngramOverlayJSON is the VS Code mcp.json overlay using the "servers" key.
-// Uses --tools=agent per engram contract.
+// vsCodekortexEngramOverlayJSON is the VS Code mcp.json overlay using the "servers" key.
+// Uses --tools=agent per KortexEngram contract.
 // VS Code uses a fixed "servers" key structure rather than mcpServers, so it
 // is kept as a separate helper.
-func vsCodeEngramOverlayJSON(cmd string) []byte {
+func vsCodekortexEngramOverlayJSON(cmd string) []byte {
 	cfg := map[string]any{
 		"servers": map[string]any{
 			"kortex-engram": map[string]any{
@@ -158,14 +158,14 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 	// 1. Write MCP server config using the adapter's strategy.
 	switch adapter.MCPStrategy() {
 	case model.StrategySeparateMCPFiles:
-		// Engram v1.10.3+ writes an absolute path for the command field when
-		// `engram setup <agent>` is invoked. kortex's Inject() runs after
-		// engram setup, so we must preserve any absolute command path already
-		// present instead of silently overwriting it with the relative "engram".
-		// See: https://github.com/fortissolucoescontato-bit/kortex/issues (engram absolute path regression)
+		// KortexEngram v1.10.3+ writes an absolute path for the command field when
+		// `KortexEngram setup <agent>` is invoked. kortex's Inject() runs after
+		// KortexEngram setup, so we must preserve any absolute command path already
+		// present instead of silently overwriting it with the relative "kortex-engram".
+		// See: https://github.com/fortissolucoescontato-bit/kortex/issues (KortexEngram absolute path regression)
 		mcpPath := adapter.MCPConfigPath(homeDir, "kortex-engram")
-		cmd := stableEngramCommandForMergedConfig(mcpPath, adapter.Agent())
-		content := buildSeparateMCPContent(mcpPath, engramServerJSONWithCmd(cmd))
+		cmd := stablekortexEngramCommandForMergedConfig(mcpPath, adapter.Agent())
+		content := buildSeparateMCPContent(mcpPath, kortexEngramServerJSONWithCmd(cmd))
 		mcpWrite, err := filemerge.WriteFileAtomic(mcpPath, content, 0o644)
 		if err != nil {
 			return InjectionResult{}, err
@@ -178,7 +178,7 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		if settingsPath == "" {
 			break
 		}
-		overlay := engramOverlayJSON(adapter.Agent(), stableEngramCommandForMergedConfig(settingsPath, adapter.Agent()))
+		overlay := kortexEngramOverlayJSON(adapter.Agent(), stablekortexEngramCommandForMergedConfig(settingsPath, adapter.Agent()))
 		settingsWrite, err := mergeJSONFile(settingsPath, overlay)
 		if err != nil {
 			return InjectionResult{}, err
@@ -193,9 +193,9 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		}
 		var overlay []byte
 		if adapter.Agent() == model.AgentVSCodeCopilot {
-			overlay = vsCodeEngramOverlayJSON(stableEngramCommandForMergedConfig(mcpPath, adapter.Agent()))
+			overlay = vsCodekortexEngramOverlayJSON(stablekortexEngramCommandForMergedConfig(mcpPath, adapter.Agent()))
 		} else {
-			overlay = engramOverlayJSON(adapter.Agent(), stableEngramCommandForMergedConfig(mcpPath, adapter.Agent()))
+			overlay = kortexEngramOverlayJSON(adapter.Agent(), stablekortexEngramCommandForMergedConfig(mcpPath, adapter.Agent()))
 		}
 
 		mcpWrite, err := mergeJSONFile(mcpPath, overlay)
@@ -217,11 +217,11 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		}
 
 	case model.StrategyTOMLFile:
-		// Codex: upsert [mcp_servers.engram] block and instruction-file keys
+		// Codex: upsert [mcp_servers.KortexEngram] block and instruction-file keys
 		// in ~/.codex/config.toml, then write instruction files.
 		// All TOML mutations are composed in a single pass before writing to
 		// ensure idempotency (no intermediate states that differ on re-run).
-		configPath := adapter.MCPConfigPath(homeDir, "engram")
+		configPath := adapter.MCPConfigPath(homeDir, "kortex-engram")
 		if configPath == "" {
 			break
 		}
@@ -237,8 +237,8 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		if err != nil {
 			return InjectionResult{}, err
 		}
-		engramCmd := stableEngramCommandForMergedConfig(configPath, adapter.Agent())
-		withMCP := filemerge.UpsertCodexEngramBlock(existing, engramCmd)
+		KortexEngramCmd := stablekortexEngramCommandForMergedConfig(configPath, adapter.Agent())
+		withMCP := filemerge.UpsertCodexKortexEngramBlock(existing, KortexEngramCmd)
 		withInstr := filemerge.UpsertTopLevelTOMLString(withMCP, "model_instructions_file", instructionsPath)
 		withCompact := filemerge.UpsertTopLevelTOMLString(withInstr, "experimental_compact_prompt_file", compactPath)
 
@@ -250,19 +250,19 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		files = append(files, configPath)
 	}
 
-	// 2. Inject Engram memory protocol into system prompt (if supported).
+	// 2. Inject KortexEngram memory protocol into system prompt (if supported).
 	if adapter.SupportsSystemPrompt() {
 		switch adapter.SystemPromptStrategy() {
 		case model.StrategyMarkdownSections:
 			promptPath := adapter.SystemPromptFile(homeDir)
-			protocolContent := assets.MustRead("claude/engram-protocol.md")
+			protocolContent := assets.MustRead("claude/KortexEngram-protocol.md")
 
 			existing, err := readFileOrEmpty(promptPath)
 			if err != nil {
 				return InjectionResult{}, err
 			}
 
-			updated := filemerge.InjectMarkdownSection(existing, "engram-protocol", protocolContent)
+			updated := filemerge.InjectMarkdownSection(existing, "KortexEngram-protocol", protocolContent)
 
 			mdWrite, err := filemerge.WriteFileAtomic(promptPath, []byte(updated), 0o644)
 			if err != nil {
@@ -279,11 +279,11 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 				}
 			}
 
-			// Write the Engram protocol as a standalone Jinja include module.
-			// The static KIMI.md template references it via {% include "engram-protocol.md" %}.
+			// Write the KortexEngram protocol as a standalone Jinja include module.
+			// The static KIMI.md template references it via {% include "KortexEngram-protocol.md" %}.
 			configDir := adapter.GlobalConfigDir(homeDir)
-			protocolContent := assets.MustRead("claude/engram-protocol.md")
-			modulePath := filepath.Join(configDir, "engram-protocol.md")
+			protocolContent := assets.MustRead("claude/KortexEngram-protocol.md")
+			modulePath := filepath.Join(configDir, "KortexEngram-protocol.md")
 			mdWrite, err := filemerge.WriteFileAtomic(modulePath, []byte(protocolContent), 0o644)
 			if err != nil {
 				return InjectionResult{}, err
@@ -293,14 +293,14 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 
 		default:
 			promptPath := adapter.SystemPromptFile(homeDir)
-			protocolContent := assets.MustRead("claude/engram-protocol.md")
+			protocolContent := assets.MustRead("claude/KortexEngram-protocol.md")
 
 			existing, err := readFileOrEmpty(promptPath)
 			if err != nil {
 				return InjectionResult{}, err
 			}
 
-			updated := filemerge.InjectMarkdownSection(existing, "engram-protocol", protocolContent)
+			updated := filemerge.InjectMarkdownSection(existing, "KortexEngram-protocol", protocolContent)
 
 			mdWrite, err := filemerge.WriteFileAtomic(promptPath, []byte(updated), 0o644)
 			if err != nil {
@@ -316,7 +316,7 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		skillDir := adapter.SkillsDir(homeDir)
 		if skillDir != "" {
 			sharedFiles := []string{
-				"engram-convention.md",
+				"KortexEngram-convention.md",
 				"kortex-convention.md",
 			}
 
@@ -378,24 +378,24 @@ func ensureAntigravitySettings(homeDir string, adapter agents.Adapter) (settings
 	return settingsBootstrapResult{Changed: writeResult.Changed, Path: settingsPath}, nil
 }
 
-// writeCodexInstructionFiles writes the Engram memory protocol and compact prompt
+// writeCodexInstructionFiles writes the KortexEngram memory protocol and compact prompt
 // files to ~/.codex/ and returns their paths.
 func writeCodexInstructionFiles(homeDir string) (instructionsPath, compactPath string, err error) {
 	codexDir := homeDir + "/.codex"
-	instructionsPath = codexDir + "/engram-instructions.md"
-	compactPath = codexDir + "/engram-compact-prompt.md"
+	instructionsPath = codexDir + "/KortexEngram-instructions.md"
+	compactPath = codexDir + "/KortexEngram-compact-prompt.md"
 
-	instrContent := assets.MustRead("codex/engram-instructions.md")
+	instrContent := assets.MustRead("codex/KortexEngram-instructions.md")
 	instrWrite, err := filemerge.WriteFileAtomic(instructionsPath, []byte(instrContent), 0o644)
 	if err != nil {
-		return "", "", fmt.Errorf("write codex engram-instructions.md: %w", err)
+		return "", "", fmt.Errorf("write codex KortexEngram-instructions.md: %w", err)
 	}
 	_ = instrWrite
 
-	compactContent := assets.MustRead("codex/engram-compact-prompt.md")
+	compactContent := assets.MustRead("codex/KortexEngram-compact-prompt.md")
 	compactWrite, err := filemerge.WriteFileAtomic(compactPath, []byte(compactContent), 0o644)
 	if err != nil {
-		return "", "", fmt.Errorf("write codex engram-compact-prompt.md: %w", err)
+		return "", "", fmt.Errorf("write codex KortexEngram-compact-prompt.md: %w", err)
 	}
 	_ = compactWrite
 
@@ -439,10 +439,10 @@ func readFileOrEmpty(path string) (string, error) {
 	return string(data), nil
 }
 
-func stableEngramCommandForMergedConfig(path string, agentID model.AgentID) string {
+func stablekortexEngramCommandForMergedConfig(path string, agentID model.AgentID) string {
 	raw, err := osReadFile(path)
 	if err == nil {
-		if cmd, ok := existingMergedEngramCommand(raw, agentID); ok {
+		if cmd, ok := existingMergedKortexEngramCommand(raw, agentID); ok {
 			return cmd
 		}
 	}
@@ -451,11 +451,11 @@ func stableEngramCommandForMergedConfig(path string, agentID model.AgentID) stri
 		return "kortex-engram"
 	}
 
-	cmd, _ := resolveEngramCommand()
+	cmd, _ := resolveKortexEngramCommand()
 	return cmd
 }
 
-func existingMergedEngramCommand(raw []byte, agentID model.AgentID) (string, bool) {
+func existingMergedKortexEngramCommand(raw []byte, agentID model.AgentID) (string, bool) {
 	if len(raw) == 0 {
 		return "", false
 	}
@@ -479,7 +479,7 @@ func existingMergedEngramCommand(raw []byte, agentID model.AgentID) (string, boo
 		}
 		server = mcp["kortex-engram"]
 		if server == nil {
-			server = mcp["engram"] // Fallback
+			server = mcp["kortex-engram"] // Fallback
 		}
 	case model.AgentVSCodeCopilot:
 		servers, ok := root["servers"].(map[string]any)
@@ -488,7 +488,7 @@ func existingMergedEngramCommand(raw []byte, agentID model.AgentID) (string, boo
 		}
 		server = servers["kortex-engram"]
 		if server == nil {
-			server = servers["engram"] // Fallback
+			server = servers["kortex-engram"] // Fallback
 		}
 	default:
 		mcpServers, ok := root["mcpServers"].(map[string]any)
@@ -497,7 +497,7 @@ func existingMergedEngramCommand(raw []byte, agentID model.AgentID) (string, boo
 		}
 		server = mcpServers["kortex-engram"]
 		if server == nil {
-			server = mcpServers["engram"] // Fallback
+			server = mcpServers["kortex-engram"] // Fallback
 		}
 	}
 
@@ -543,15 +543,15 @@ func isStandardAgent(id model.AgentID) bool {
 // file for agents that use the StrategySeparateMCPFiles strategy (e.g. Claude
 // Code).
 //
-// Engram v1.10.3+ writes an absolute command path when `engram setup` is run.
+// KortexEngram v1.10.3+ writes an absolute command path when `KortexEngram setup` is run.
 // kortex runs Inject() after setup, so we must not overwrite that absolute
-// path with the relative "engram" string from defaultEngramServerJSON.
+// path with the relative "kortex-engram" string from defaultKortexEngramServerJSON.
 //
 // Logic:
 //   - If the file does not exist yet, return defaultContent unchanged.
 //   - If the file exists but cannot be parsed as JSON, return defaultContent.
 //   - If the parsed JSON has a "command" value that is an absolute path to the
-//     engram binary, rebuild the config using that command and the canonical
+//     KortexEngram binary, rebuild the config using that command and the canonical
 //     args (["mcp", "--tools=agent"]) so that the absolute path is preserved
 //     and the correct flags are always present.
 //   - Otherwise (relative command or other value), return defaultContent.
@@ -569,8 +569,8 @@ func buildSeparateMCPContent(mcpPath string, defaultContent []byte) []byte {
 	}
 
 	cmd, ok := executableFromCommandValue(existing["command"])
-	if !ok || !isEngramCommand(cmd) {
-		// No command, or not an engram command — use the default.
+	if !ok || !iskortexEngramCommand(cmd) {
+		// No command, or not an KortexEngram command — use the default.
 		return defaultContent
 	}
 
@@ -587,23 +587,23 @@ func buildSeparateMCPContent(mcpPath string, defaultContent []byte) []byte {
 	return append(encoded, '\n')
 }
 
-// isEngramCommand reports whether cmd is either a relative "engram" command
-// or an absolute path pointing to an engram binary.
-func isEngramCommand(cmd string) bool {
+// iskortexEngramCommand reports whether cmd is either a relative "kortex-engram" command
+// or an absolute path pointing to an KortexEngram binary.
+func iskortexEngramCommand(cmd string) bool {
 	if cmd == "" {
 		return false
 	}
 	base := filepath.Base(cmd)
 	if runtime.GOOS == "windows" {
-		return strings.EqualFold(base, "kortex-engram.exe") || strings.EqualFold(base, "kortex-engram") ||
+		return strings.EqualFold(base, "kortexengram.exe") || strings.EqualFold(base, "kortex-engram") ||
 			strings.EqualFold(base, "kortex.exe") || strings.EqualFold(base, "kortex") ||
-			strings.EqualFold(base, "engram.exe") || strings.EqualFold(base, "engram")
+			strings.EqualFold(base, "kortexengram.exe") || strings.EqualFold(base, "kortex-engram")
 	}
-	return base == "kortex-engram" || base == "kortex" || base == "engram"
+	return base == "kortex-engram" || base == "kortex" || base == "kortex-engram"
 }
 
-// isAbsoluteEngramPath reports whether path is an absolute filesystem path
-// that points to an engram binary.
-func isAbsoluteEngramPath(path string) bool {
-	return filepath.IsAbs(path) && isEngramCommand(path)
+// isAbsolutekortexEngramPath reports whether path is an absolute filesystem path
+// that points to an KortexEngram binary.
+func isAbsolutekortexEngramPath(path string) bool {
+	return filepath.IsAbs(path) && iskortexEngramCommand(path)
 }

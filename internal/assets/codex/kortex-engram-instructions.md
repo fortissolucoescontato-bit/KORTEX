@@ -32,7 +32,7 @@ Topic update rules:
 ### WHEN TO SEARCH MEMORY
 
 1. **SESSION START (MANDATORY)**: At the beginning of EVERY session, call mem_search(query: "session-summary", project: "{project}", limit: 3) to recover context from the last sessions. ACT as if you were part of those sessions.
-2. **AUDIT & PERSIST**: Before editing, perform a complete audit of the requested context (app, server, database, site, etc.). If context is missing, ASK the user. Search engram for any previous audit findings. After the audit or any significant change, IMMEDIATELY save findings to engram (mem_save) to maintain an updated source of truth.
+2. **AUDIT & PERSIST**: Before editing, perform a complete audit of the requested context (app, server, database, site, etc.). If context is missing, ASK the user. Search kortex-engram for any previous audit findings. After the audit or any significant change, IMMEDIATELY save findings to kortex-engram (mem_save) to maintain an updated source of truth.
 
 On any variation of "remember", "recall", "what did we do", "how did we solve", "recordar", "qué hicimos", or references to past work:
 1. Call mem_context — checks recent session history (fast, cheap)

@@ -19,7 +19,7 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents/vscode"
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents/windsurf"
 	"github.com/fortissolucoescontato-bit/kortex/internal/assets"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/engram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/mcp"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/persona"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/sdd"
@@ -550,85 +550,85 @@ func TestGoldenPersona_Kiro_Kortex(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Engram Injector golden tests
+// KortexEngram Injector golden tests
 // ---------------------------------------------------------------------------
 
-func TestGoldenEngram_Claude(t *testing.T) {
+func TestGoldenKortexEngram_Claude(t *testing.T) {
 	home := t.TempDir()
 
-	engram.SetLookPathForTest(t, "/opt/homebrew/bin/engram", "")
+	kortexengram.SetLookPathForTest(t, "/opt/homebrew/bin/KortexEngram", "")
 
-	result, err := engram.Inject(home, claudeAdapter())
+	result, err := kortexengram.Inject(home, claudeAdapter())
 	if err != nil {
-		t.Fatalf("engram.Inject(claude) error = %v", err)
+		t.Fatalf("kortexengram.Inject(claude) error = %v", err)
 	}
 	if !result.Changed {
-		t.Fatalf("engram.Inject(claude) changed = false")
+		t.Fatalf("kortexengram.Inject(claude) changed = false")
 	}
 
 	// MCP server JSON config.
-	mcpJSON := readTestFile(t, filepath.Join(home, ".claude", "mcp", "engram.json"))
-	assertGolden(t, "engram-claude-mcp.golden", mcpJSON)
+	mcpJSON := readTestFile(t, filepath.Join(home, ".claude", "mcp", "kortexengram.json"))
+	assertGolden(t, "KortexEngram-claude-mcp.golden", mcpJSON)
 
-	// CLAUDE.md with engram-protocol section.
+	// CLAUDE.md with KortexEngram-protocol section.
 	claudeMD := readTestFile(t, filepath.Join(home, ".claude", "CLAUDE.md"))
-	assertGolden(t, "engram-claude-claudemd.golden", claudeMD)
+	assertGolden(t, "KortexEngram-claude-claudemd.golden", claudeMD)
 }
 
-func TestGoldenEngram_OpenCode(t *testing.T) {
+func TestGoldenKortexEngram_OpenCode(t *testing.T) {
 	home := t.TempDir()
 
-	// Mock engramLookPath so the resolved command matches the golden file regardless
-	// of whether engram is installed at /opt/homebrew/bin/engram on the current machine.
-	engram.SetLookPathForTest(t, "/opt/homebrew/bin/engram", "")
+	// Mock KortexEngramLookPath so the resolved command matches the golden file regardless
+	// of whether KortexEngram is installed at /opt/homebrew/bin/KortexEngram on the current machine.
+	kortexengram.SetLookPathForTest(t, "/opt/homebrew/bin/KortexEngram", "")
 
-	result, err := engram.Inject(home, opencodeAdapter())
+	result, err := kortexengram.Inject(home, opencodeAdapter())
 	if err != nil {
-		t.Fatalf("engram.Inject(opencode) error = %v", err)
+		t.Fatalf("kortexengram.Inject(opencode) error = %v", err)
 	}
 	if !result.Changed {
-		t.Fatalf("engram.Inject(opencode) changed = false")
+		t.Fatalf("kortexengram.Inject(opencode) changed = false")
 	}
 
 	configJSON := readTestFile(t, filepath.Join(home, ".config", "opencode", "opencode.json"))
-	assertGolden(t, "engram-opencode-settings.golden", configJSON)
+	assertGolden(t, "KortexEngram-opencode-settings.golden", configJSON)
 }
 
-func TestGoldenEngram_Windsurf(t *testing.T) {
+func TestGoldenKortexEngram_Windsurf(t *testing.T) {
 	home := t.TempDir()
 
-	engram.SetLookPathForTest(t, "/opt/homebrew/bin/engram", "")
+	kortexengram.SetLookPathForTest(t, "/opt/homebrew/bin/KortexEngram", "")
 
-	result, err := engram.Inject(home, windsurfAdapter())
+	result, err := kortexengram.Inject(home, windsurfAdapter())
 	if err != nil {
-		t.Fatalf("engram.Inject(windsurf) error = %v", err)
+		t.Fatalf("kortexengram.Inject(windsurf) error = %v", err)
 	}
 	if !result.Changed {
-		t.Fatalf("engram.Inject(windsurf) changed = false")
+		t.Fatalf("kortexengram.Inject(windsurf) changed = false")
 	}
 
 	mcpJSON := readTestFile(t, filepath.Join(home, ".codeium", "windsurf", "mcp_config.json"))
-	assertGolden(t, "engram-windsurf-mcp.golden", mcpJSON)
+	assertGolden(t, "KortexEngram-windsurf-mcp.golden", mcpJSON)
 }
 
-func TestGoldenEngram_Kiro(t *testing.T) {
+func TestGoldenKortexEngram_Kiro(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("XDG_CONFIG_HOME", filepath.Join(home, ".config"))
 	t.Setenv("APPDATA", filepath.Join(home, "AppData", "Roaming"))
 
-	engram.SetLookPathForTest(t, "/opt/homebrew/bin/engram", "")
+	kortexengram.SetLookPathForTest(t, "/opt/homebrew/bin/KortexEngram", "")
 
-	result, err := engram.Inject(home, kiroAdapter())
+	result, err := kortexengram.Inject(home, kiroAdapter())
 	if err != nil {
-		t.Fatalf("engram.Inject(kiro) error = %v", err)
+		t.Fatalf("kortexengram.Inject(kiro) error = %v", err)
 	}
 	if !result.Changed {
-		t.Fatalf("engram.Inject(kiro) changed = false")
+		t.Fatalf("kortexengram.Inject(kiro) changed = false")
 	}
 
 	// Kiro reads MCP from ~/.kiro/settings/mcp.json (not from the app config dir)
 	mcpJSON := readTestFile(t, filepath.Join(home, ".kiro", "settings", "mcp.json"))
-	assertGolden(t, "engram-kiro-mcp.golden", mcpJSON)
+	assertGolden(t, "KortexEngram-kiro-mcp.golden", mcpJSON)
 }
 
 // ---------------------------------------------------------------------------
@@ -723,17 +723,17 @@ func TestGoldenSkills_Kiro(t *testing.T) {
 func TestGoldenCombined_Claude(t *testing.T) {
 	home := t.TempDir()
 
-	engram.SetLookPathForTest(t, "/opt/homebrew/bin/engram", "")
+	kortexengram.SetLookPathForTest(t, "/opt/homebrew/bin/KortexEngram", "")
 
-	// Inject persona first, then SDD, then Engram — all write sections into CLAUDE.md.
+	// Inject persona first, then SDD, then KortexEngram — all write sections into CLAUDE.md.
 	if _, err := persona.Inject(home, claudeAdapter(), model.PersonaKortex); err != nil {
 		t.Fatalf("persona.Inject error = %v", err)
 	}
 	if _, err := sdd.Inject(home, claudeAdapter(), ""); err != nil {
 		t.Fatalf("sdd.Inject error = %v", err)
 	}
-	if _, err := engram.Inject(home, claudeAdapter()); err != nil {
-		t.Fatalf("engram.Inject error = %v", err)
+	if _, err := kortexengram.Inject(home, claudeAdapter()); err != nil {
+		t.Fatalf("kortexengram.Inject error = %v", err)
 	}
 
 	claudeMD := readTestFile(t, filepath.Join(home, ".claude", "CLAUDE.md"))
@@ -744,7 +744,7 @@ func TestGoldenCombined_Windsurf(t *testing.T) {
 	home := t.TempDir()
 	workspace := t.TempDir()
 
-	engram.SetLookPathForTest(t, "/opt/homebrew/bin/engram", "")
+	kortexengram.SetLookPathForTest(t, "/opt/homebrew/bin/KortexEngram", "")
 	if err := os.WriteFile(filepath.Join(workspace, "go.mod"), []byte("module test\n"), 0o644); err != nil {
 		t.Fatalf("write go.mod marker: %v", err)
 	}
@@ -757,8 +757,8 @@ func TestGoldenCombined_Windsurf(t *testing.T) {
 	if _, err := sdd.Inject(home, windsurfAdapter(), "", sdd.InjectOptions{WorkspaceDir: workspace}); err != nil {
 		t.Fatalf("sdd.Inject(windsurf) error = %v", err)
 	}
-	if _, err := engram.Inject(home, windsurfAdapter()); err != nil {
-		t.Fatalf("engram.Inject(windsurf) error = %v", err)
+	if _, err := kortexengram.Inject(home, windsurfAdapter()); err != nil {
+		t.Fatalf("kortexengram.Inject(windsurf) error = %v", err)
 	}
 
 	// global_rules.md must contain persona + SDD orchestrator (both appended).
@@ -822,26 +822,26 @@ func TestGoldenPersona_Antigravity_Kortex(t *testing.T) {
 	assertGolden(t, "persona-antigravity-carbon.golden", rulesFile)
 }
 
-func TestGoldenEngram_Antigravity(t *testing.T) {
+func TestGoldenKortexEngram_Antigravity(t *testing.T) {
 	home := t.TempDir()
 
-	engram.SetLookPathForTest(t, "/opt/homebrew/bin/engram", "")
+	kortexengram.SetLookPathForTest(t, "/opt/homebrew/bin/KortexEngram", "")
 
-	result, err := engram.Inject(home, antigravityAdapter())
+	result, err := kortexengram.Inject(home, antigravityAdapter())
 	if err != nil {
-		t.Fatalf("engram.Inject(antigravity) error = %v", err)
+		t.Fatalf("kortexengram.Inject(antigravity) error = %v", err)
 	}
 	if !result.Changed {
-		t.Fatalf("engram.Inject(antigravity) changed = false")
+		t.Fatalf("kortexengram.Inject(antigravity) changed = false")
 	}
 
 	// MCP config written to ~/.gemini/antigravity/mcp_config.json.
 	mcpJSON := readTestFile(t, filepath.Join(home, ".gemini", "antigravity", "mcp_config.json"))
-	assertGolden(t, "engram-antigravity-mcp.golden", mcpJSON)
+	assertGolden(t, "KortexEngram-antigravity-mcp.golden", mcpJSON)
 
-	// GEMINI.md must contain the engram-protocol section.
+	// GEMINI.md must contain the KortexEngram-protocol section.
 	rulesFile := readTestFile(t, filepath.Join(home, ".gemini", "GEMINI.md"))
-	assertGolden(t, "engram-antigravity-rulesmd.golden", rulesFile)
+	assertGolden(t, "KortexEngram-antigravity-rulesmd.golden", rulesFile)
 }
 
 // ---------------------------------------------------------------------------

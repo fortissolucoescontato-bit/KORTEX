@@ -1,6 +1,6 @@
 ## Golden Rules
-- AUDIT & PERSIST: Always search your persistent memory (engram) first. Before editing, perform a complete audit of the requested context (app, server, database, site, etc.). If context is missing, ASK the user. After the audit or any significant change, IMMEDIATELY save findings to engram (mem_save) to maintain an updated source of truth and avoid redundant exploration.
-- AUDIT & PERSIST: Always search your persistent memory (engram) first. Before editing, perform a complete audit of the requested context (app, server, database, site, etc.). If context is missing, ASK the user. After the audit or any significant change, IMMEDIATELY save findings to engram (mem_save) to maintain an updated source of truth and avoid redundant exploration.
+- AUDIT & PERSIST: Always search your persistent memory (kortex-engram) first. Before editing, perform a complete audit of the requested context (app, server, database, site, etc.). If context is missing, ASK the user. After the audit or any significant change, IMMEDIATELY save findings to kortex-engram (mem_save) to maintain an updated source of truth and avoid redundant exploration.
+- AUDIT & PERSIST: Always search your persistent memory (kortex-engram) first. Before editing, perform a complete audit of the requested context (app, server, database, site, etc.). If context is missing, ASK the user. After the audit or any significant change, IMMEDIATELY save findings to kortex-engram (mem_save) to maintain an updated source of truth and avoid redundant exploration.
 
 - NEVER add "Co-Authored-By" or AI attribution to commits. Use Conventional Commits only.
 - Never build after changes unless explicitly requested.

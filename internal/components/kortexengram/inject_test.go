@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"encoding/json"
@@ -53,30 +53,30 @@ func TestInjectClaudeWritesMCPConfig(t *testing.T) {
 	}
 
 	// Check MCP JSON file was created.
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
 	mcpContent, err := os.ReadFile(mcpPath)
 	if err != nil {
-		t.Fatalf("ReadFile(kortex-engram.json) error = %v", err)
+		t.Fatalf("ReadFile(kortexengram.json) error = %v", err)
 	}
 
-	// Parse the JSON and validate the "command" key exists and references engram.
-	// The command may be an absolute path (if engram is on PATH) or the relative
+	// Parse the JSON and validate the "command" key exists and references kortexengram.
+	// The command may be an absolute path (if KortexEngram is on PATH) or the relative
 	// string "kortex-engram" (if not found). Both are valid.
 	var parsed map[string]any
 	if err := json.Unmarshal(mcpContent, &parsed); err != nil {
-		t.Fatalf("Unmarshal(kortex-engram.json) error = %v", err)
+		t.Fatalf("Unmarshal(kortexengram.json) error = %v", err)
 	}
 	cmd, ok := parsed["command"].(string)
 	if !ok || cmd == "" {
-		t.Fatalf("kortex-engram.json missing or empty command field; got: %s", mcpContent)
+		t.Fatalf("kortexengram.json missing or empty command field; got: %s", mcpContent)
 	}
 	// Command must either be the literal "kortex-engram" or an absolute path ending in "kortex-engram".
 	base := filepath.Base(cmd)
-	if !isEngramCommand(base) {
-		t.Fatalf("kortex-engram.json command %q does not reference engram binary; got: %s", cmd, mcpContent)
+	if !iskortexEngramCommand(base) {
+		t.Fatalf("kortexengram.json command %q does not reference KortexEngram binary; got: %s", cmd, mcpContent)
 	}
 	if _, ok := parsed["args"]; !ok {
-		t.Fatal("kortex-engram.json missing args field")
+		t.Fatal("kortexengram.json missing args field")
 	}
 	// RED: must include --tools=agent
 	assertArgsHaveToolsAgent(t, mcpPath)
@@ -97,15 +97,15 @@ func TestInjectClaudeWritesProtocolSection(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "<!-- kortex:engram-protocol -->") {
-		t.Fatal("CLAUDE.md missing open marker for engram-protocol")
+	if !strings.Contains(text, "<!-- kortex:KortexEngram-protocol -->") {
+		t.Fatal("CLAUDE.md missing open marker for KortexEngram-protocol")
 	}
-	if !strings.Contains(text, "<!-- /kortex:engram-protocol -->") {
-		t.Fatal("CLAUDE.md missing close marker for engram-protocol")
+	if !strings.Contains(text, "<!-- /kortex:KortexEngram-protocol -->") {
+		t.Fatal("CLAUDE.md missing close marker for KortexEngram-protocol")
 	}
 	// Real content check.
 	if !strings.Contains(text, "mem_save") {
-		t.Fatal("CLAUDE.md missing real engram protocol content (expected 'mem_save')")
+		t.Fatal("CLAUDE.md missing real KortexEngram protocol content (expected 'mem_save')")
 	}
 }
 
@@ -129,7 +129,7 @@ func TestInjectClaudeIsIdempotent(t *testing.T) {
 	}
 }
 
-func TestInjectOpenCodeMergesEngramToSettings(t *testing.T) {
+func TestInjectOpenCodeMergesKortexEngramToSettings(t *testing.T) {
 	home := t.TempDir()
 
 	result, err := Inject(home, opencodeAdapter())
@@ -153,7 +153,7 @@ func TestInjectOpenCodeMergesEngramToSettings(t *testing.T) {
 
 	text := string(config)
 	if !strings.Contains(text, `"kortex-engram"`) {
-		t.Fatal("opencode.json missing engram server entry")
+		t.Fatal("opencode.json missing KortexEngram server entry")
 	}
 	if !strings.Contains(text, `"mcp"`) {
 		t.Fatal("opencode.json missing mcp key")
@@ -162,7 +162,7 @@ func TestInjectOpenCodeMergesEngramToSettings(t *testing.T) {
 		t.Fatal("opencode.json should use 'mcp' key, not 'mcpServers'")
 	}
 	if !strings.Contains(text, `"type": "local"`) {
-		t.Fatal("opencode.json engram missing type: local")
+		t.Fatal("opencode.json KortexEngram missing type: local")
 	}
 	// OpenCode 1.3.3+: command must be an array, no separate "args" field.
 	if !strings.Contains(text, `"--tools=agent"`) {
@@ -173,7 +173,7 @@ func TestInjectOpenCodeMergesEngramToSettings(t *testing.T) {
 	}
 
 	// Verify NO plugin files or plugin arrays exist.
-	pluginPath := filepath.Join(home, ".config", "opencode", "plugins", "engram.ts")
+	pluginPath := filepath.Join(home, ".config", "opencode", "plugins", "kortexengram.ts")
 	if _, err := os.Stat(pluginPath); err == nil {
 		t.Fatal("plugin file should NOT exist — old approach removed")
 	}
@@ -187,11 +187,11 @@ func TestInjectOpenCodeMergesEngramToSettings(t *testing.T) {
 		t.Fatalf("ReadFile(AGENTS.md) error = %v", err)
 	}
 	agentsText := string(agentsContent)
-	if !strings.Contains(agentsText, "<!-- kortex:engram-protocol -->") {
-		t.Fatal("AGENTS.md missing engram protocol section marker")
+	if !strings.Contains(agentsText, "<!-- kortex:KortexEngram-protocol -->") {
+		t.Fatal("AGENTS.md missing KortexEngram protocol section marker")
 	}
 	if !strings.Contains(agentsText, "mem_save") {
-		t.Fatal("AGENTS.md missing engram protocol content (expected 'mem_save')")
+		t.Fatal("AGENTS.md missing KortexEngram protocol content (expected 'mem_save')")
 	}
 }
 
@@ -217,12 +217,12 @@ func TestInjectOpenCodeIsIdempotent(t *testing.T) {
 
 // TestInjectOpenCodeMigratesFromOldFormat verifies that when a user's
 // opencode.json contains the old v1.11.3 format (separate "args" key),
-// Inject() replaces mcp.engram atomically so that "args" is absent and
+// Inject() replaces mcp.KortexEngram atomically so that "args" is absent and
 // "command" is an array — the format required by OpenCode 1.3.3+.
 func TestInjectOpenCodeMigratesFromOldFormat(t *testing.T) {
 	home := t.TempDir()
 
-	mockEngramLookPath(t, "/opt/homebrew/bin/engram", "")
+	mockkortexEngramLookPath(t, "/opt/homebrew/bin/KortexEngram", "")
 
 	adapter := opencodeAdapter()
 	configPath := adapter.SettingsPath(home)
@@ -231,7 +231,7 @@ func TestInjectOpenCodeMigratesFromOldFormat(t *testing.T) {
 	}
 
 	// Pre-seed with the old v1.11.3 format.
-	oldFormat := `{"mcp": {"kortex-engram": {"command": "/opt/homebrew/bin/engram", "args": ["mcp","--tools=agent"], "type": "local"}}}`
+	oldFormat := `{"mcp": {"kortex-engram": {"command": "/opt/homebrew/bin/KortexEngram", "args": ["mcp","--tools=agent"], "type": "local"}}}`
 	if err := os.WriteFile(configPath, []byte(oldFormat), 0o644); err != nil {
 		t.Fatalf("WriteFile(opencode.json) error = %v", err)
 	}
@@ -249,36 +249,36 @@ func TestInjectOpenCodeMigratesFromOldFormat(t *testing.T) {
 		t.Fatalf("ReadFile(opencode.json) error = %v", err)
 	}
 
-	// (1) "args" key must be absent from mcp.engram.
+	// (1) "args" key must be absent from mcp.kortexengram.
 	if strings.Contains(string(content), `"args"`) {
-		t.Fatalf("mcp.engram still contains 'args' key after migration; got:\n%s", content)
+		t.Fatalf("mcp.KortexEngram still contains 'args' key after migration; got:\n%s", content)
 	}
 
-	// (2) command must be a []any containing the engram binary.
+	// (2) command must be a []any containing the KortexEngram binary.
 	var parsed map[string]any
 	if err := json.Unmarshal(content, &parsed); err != nil {
 		t.Fatalf("Unmarshal(opencode.json) error = %v", err)
 	}
 	mcpMap, _ := parsed["mcp"].(map[string]any)
-	engramMap, _ := mcpMap["kortex-engram"].(map[string]any)
-	cmdRaw, ok := engramMap["command"]
+	KortexEngramMap, _ := mcpMap["kortex-engram"].(map[string]any)
+	cmdRaw, ok := KortexEngramMap["command"]
 	if !ok {
-		t.Fatalf("mcp.engram missing command key; got:\n%s", content)
+		t.Fatalf("mcp.KortexEngram missing command key; got:\n%s", content)
 	}
 	cmdArr, ok := cmdRaw.([]any)
 	if !ok {
-		t.Fatalf("mcp.engram.command must be []any after migration, got %T; got:\n%s", cmdRaw, content)
+		t.Fatalf("mcp.kortexengram.command must be []any after migration, got %T; got:\n%s", cmdRaw, content)
 	}
 	if len(cmdArr) == 0 {
-		t.Fatalf("mcp.engram.command array is empty; got:\n%s", content)
+		t.Fatalf("mcp.kortexengram.command array is empty; got:\n%s", content)
 	}
 	firstElem, _ := cmdArr[0].(string)
 	if firstElem == "" {
-		t.Fatalf("mcp.engram.command[0] is empty or not a string; got:\n%s", content)
+		t.Fatalf("mcp.kortexengram.command[0] is empty or not a string; got:\n%s", content)
 	}
-	// Must be an engram command.
-	if !isEngramCommand(firstElem) {
-		t.Fatalf("mcp.kortex-engram.command[0] = %q does not reference engram binary; got:\n%s", firstElem, content)
+	// Must be an KortexEngram command.
+	if !iskortexEngramCommand(firstElem) {
+		t.Fatalf("mcp.kortexengram.command[0] = %q does not reference KortexEngram binary; got:\n%s", firstElem, content)
 	}
 
 	// (3) Second Inject() call must be idempotent (changed=false).
@@ -291,7 +291,7 @@ func TestInjectOpenCodeMigratesFromOldFormat(t *testing.T) {
 	}
 }
 
-func TestInjectCursorMergesEngramToSettings(t *testing.T) {
+func TestInjectCursorMergesKortexEngramToSettings(t *testing.T) {
 	home := t.TempDir()
 
 	cursorAdapter, err := agents.NewAdapter("cursor")
@@ -304,7 +304,7 @@ func TestInjectCursorMergesEngramToSettings(t *testing.T) {
 		t.Fatalf("Inject(cursor) error = %v", injectErr)
 	}
 
-	// Cursor uses MCPConfigFile strategy — engram gets merged into mcp.json.
+	// Cursor uses MCPConfigFile strategy — KortexEngram gets merged into mcp.json.
 	if !result.Changed {
 		t.Fatalf("Inject(cursor) changed = false")
 	}
@@ -348,11 +348,11 @@ func TestInjectCursorWithMalformedMCPJsonRecovery(t *testing.T) {
 		t.Fatalf("mcp.json missing mcpServers key after recovery; got:\n%s", text)
 	}
 	if !strings.Contains(text, `"kortex-engram"`) {
-		t.Fatalf("mcp.json missing engram server after recovery; got:\n%s", text)
+		t.Fatalf("mcp.json missing KortexEngram server after recovery; got:\n%s", text)
 	}
 }
 
-func TestInjectVSCodeMergesEngramToMCPConfigFile(t *testing.T) {
+func TestInjectVSCodeMergesKortexEngramToMCPConfigFile(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("XDG_CONFIG_HOME", filepath.Join(home, ".config"))
 	adapter := vscode.NewAdapter()
@@ -376,10 +376,10 @@ func TestInjectVSCodeMergesEngramToMCPConfigFile(t *testing.T) {
 		t.Fatal("mcp.json missing servers key")
 	}
 	if !strings.Contains(text, `"kortex-engram"`) {
-		t.Fatal("mcp.json missing engram server")
+		t.Fatal("mcp.json missing KortexEngram server")
 	}
 	if !strings.Contains(text, `"mcp"`) {
-		t.Fatal("mcp.json missing engram args mcp")
+		t.Fatal("mcp.json missing KortexEngram args mcp")
 	}
 	if strings.Contains(text, `"mcpServers"`) {
 		t.Fatal("mcp.json should use 'servers' key, not 'mcpServers'")
@@ -411,7 +411,7 @@ func TestInjectGeminiToolsFlagPresent(t *testing.T) {
 		t.Fatal("settings.json missing mcpServers key")
 	}
 	if !strings.Contains(text, `"kortex-engram"`) {
-		t.Fatal("settings.json missing engram entry")
+		t.Fatal("settings.json missing KortexEngram entry")
 	}
 	// RED: Gemini overlay must use --tools=agent
 	if !strings.Contains(text, `"--tools=agent"`) {
@@ -419,7 +419,7 @@ func TestInjectGeminiToolsFlagPresent(t *testing.T) {
 	}
 }
 
-func TestInjectAntigravityCopiesGeminiSettingsAfterEngramSetup(t *testing.T) {
+func TestInjectAntigravityCopiesGeminiSettingsAfterKortexEngramSetup(t *testing.T) {
 	home := t.TempDir()
 	sourcePath := filepath.Join(home, ".gemini", "settings.json")
 	if err := os.MkdirAll(filepath.Dir(sourcePath), 0o755); err != nil {
@@ -499,11 +499,11 @@ func TestInjectCodexWritesTOMLMCP(t *testing.T) {
 		t.Fatalf("ReadFile(config.toml) error = %v", err)
 	}
 	text := string(content)
-	if !strings.Contains(text, "[mcp_servers.kortex-engram]") {
-		t.Fatalf("config.toml missing [mcp_servers.kortex-engram] block; got:\n%s", text)
+	if !strings.Contains(text, "[mcp_servers.KortexEngram]") {
+		t.Fatalf("config.toml missing [mcp_servers.KortexEngram] block; got:\n%s", text)
 	}
-	// command must reference the engram binary — either relative ("kortex-engram") or an
-	// absolute path (when engram is on PATH). Both are valid.
+	// command must reference the KortexEngram binary — either relative ("kortex-engram") or an
+	// absolute path (when KortexEngram is on PATH). Both are valid.
 	if !strings.Contains(text, "command = ") {
 		t.Fatalf("config.toml missing command field; got:\n%s", text)
 	}
@@ -517,12 +517,12 @@ func TestInjectCodexWritesTOMLMCP(t *testing.T) {
 	if cmdLine == "" {
 		t.Fatalf("config.toml missing command line; got:\n%s", text)
 	}
-	// The command value must end with "kortex-engram" or "engram.exe".
+	// The command value must end with "kortex-engram" or "kortexengram.exe".
 	cmdVal := strings.TrimPrefix(cmdLine, "command = ")
 	cmdVal = strings.Trim(cmdVal, `"`)
 	base := filepath.Base(cmdVal)
-	if !isEngramCommand(base) {
-		t.Fatalf("config.toml command %q does not reference engram binary; got:\n%s", cmdVal, text)
+	if !iskortexEngramCommand(base) {
+		t.Fatalf("config.toml command %q does not reference KortexEngram binary; got:\n%s", cmdVal, text)
 	}
 	if !strings.Contains(text, `"--tools=agent"`) {
 		t.Fatalf("config.toml missing --tools=agent; got:\n%s", text)
@@ -537,22 +537,22 @@ func TestInjectCodexWritesInstructionFiles(t *testing.T) {
 		t.Fatalf("Inject(codex) error = %v", err)
 	}
 
-	instructionsPath := filepath.Join(home, ".codex", "engram-instructions.md")
+	instructionsPath := filepath.Join(home, ".codex", "KortexEngram-instructions.md")
 	content, err := os.ReadFile(instructionsPath)
 	if err != nil {
-		t.Fatalf("ReadFile(engram-instructions.md) error = %v", err)
+		t.Fatalf("ReadFile(KortexEngram-instructions.md) error = %v", err)
 	}
 	if !strings.Contains(string(content), "mem_save") {
-		t.Fatal("engram-instructions.md missing expected content (mem_save)")
+		t.Fatal("KortexEngram-instructions.md missing expected content (mem_save)")
 	}
 
-	compactPath := filepath.Join(home, ".codex", "engram-compact-prompt.md")
+	compactPath := filepath.Join(home, ".codex", "KortexEngram-compact-prompt.md")
 	compactContent, err := os.ReadFile(compactPath)
 	if err != nil {
-		t.Fatalf("ReadFile(engram-compact-prompt.md) error = %v", err)
+		t.Fatalf("ReadFile(KortexEngram-compact-prompt.md) error = %v", err)
 	}
 	if !strings.Contains(string(compactContent), "FIRST ACTION REQUIRED") {
-		t.Fatal("engram-compact-prompt.md missing expected content (FIRST ACTION REQUIRED)")
+		t.Fatal("KortexEngram-compact-prompt.md missing expected content (FIRST ACTION REQUIRED)")
 	}
 }
 
@@ -571,7 +571,7 @@ func TestInjectCodexInjectsTOMLKeys(t *testing.T) {
 	}
 	text := string(content)
 
-	instructionsPath := filepath.Join(home, ".codex", "engram-instructions.md")
+	instructionsPath := filepath.Join(home, ".codex", "KortexEngram-instructions.md")
 	if !strings.Contains(text, `model_instructions_file`) {
 		t.Fatalf("config.toml missing model_instructions_file key; got:\n%s", text)
 	}
@@ -579,7 +579,7 @@ func TestInjectCodexInjectsTOMLKeys(t *testing.T) {
 		t.Fatalf("config.toml model_instructions_file does not reference %q; got:\n%s", instructionsPath, text)
 	}
 
-	compactPath := filepath.Join(home, ".codex", "engram-compact-prompt.md")
+	compactPath := filepath.Join(home, ".codex", "KortexEngram-compact-prompt.md")
 	if !strings.Contains(text, `experimental_compact_prompt_file`) {
 		t.Fatalf("config.toml missing experimental_compact_prompt_file key; got:\n%s", text)
 	}
@@ -588,29 +588,29 @@ func TestInjectCodexInjectsTOMLKeys(t *testing.T) {
 	}
 }
 
-// ─── Engram setup absolute path preservation tests ────────────────────────────
+// ─── KortexEngram setup absolute path preservation tests ────────────────────────────
 
-// TestInjectClaudePreservesAbsoluteCommandFromEngramSetup verifies that when
-// `engram setup claude-code` has already written an absolute-path command to
-// ~/.claude/mcp/kortex-engram.json (Engram v1.10.3+ behaviour), a subsequent call to
+// TestInjectClaudePreservesAbsoluteCommandFromKortexEngramSetup verifies that when
+// `KortexEngram setup claude-code` has already written an absolute-path command to
+// ~/.claude/mcp/kortexengram.json (KortexEngram v1.10.3+ behaviour), a subsequent call to
 // Inject() does NOT overwrite the absolute path with the relative "kortex-engram".
-func TestInjectClaudePreservesAbsoluteCommandFromEngramSetup(t *testing.T) {
+func TestInjectClaudePreservesAbsoluteCommandFromKortexEngramSetup(t *testing.T) {
 	home := t.TempDir()
 
-	// Simulate what `engram setup claude-code` writes on v1.10.3+:
+	// Simulate what `KortexEngram setup claude-code` writes on v1.10.3+:
 	// an absolute path as the command value.
-	absPath := "/opt/homebrew/bin/engram"
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
+	absPath := "/opt/homebrew/bin/KortexEngram"
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
 	if err := os.MkdirAll(filepath.Dir(mcpPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll error = %v", err)
 	}
 	setupContent := []byte(`{
-  "command": "/opt/homebrew/bin/engram",
+  "command": "/opt/homebrew/bin/KortexEngram",
   "args": ["mcp", "--tools=agent"]
 }
 `)
 	if err := os.WriteFile(mcpPath, setupContent, 0o644); err != nil {
-		t.Fatalf("WriteFile(kortex-engram.json) error = %v", err)
+		t.Fatalf("WriteFile(kortexengram.json) error = %v", err)
 	}
 
 	// Now run Inject — should NOT overwrite the absolute command.
@@ -621,7 +621,7 @@ func TestInjectClaudePreservesAbsoluteCommandFromEngramSetup(t *testing.T) {
 
 	content, err := os.ReadFile(mcpPath)
 	if err != nil {
-		t.Fatalf("ReadFile(kortex-engram.json) error = %v", err)
+		t.Fatalf("ReadFile(kortexengram.json) error = %v", err)
 	}
 
 	text := string(content)
@@ -633,23 +633,23 @@ func TestInjectClaudePreservesAbsoluteCommandFromEngramSetup(t *testing.T) {
 }
 
 // TestInjectClaudePreservesAbsoluteCommandIsIdempotent verifies that calling
-// Inject() twice when an absolute-path kortex-engram.json already exists does not
+// Inject() twice when an absolute-path kortexengram.json already exists does not
 // cause repeated writes (idempotency).
 func TestInjectClaudePreservesAbsoluteCommandIsIdempotent(t *testing.T) {
 	home := t.TempDir()
 
-	absPath := "/usr/local/bin/engram"
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
+	absPath := "/usr/local/bin/KortexEngram"
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
 	if err := os.MkdirAll(filepath.Dir(mcpPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll error = %v", err)
 	}
 	setupContent := []byte(`{
-  "command": "/usr/local/bin/engram",
+  "command": "/usr/local/bin/KortexEngram",
   "args": ["mcp", "--tools=agent"]
 }
 `)
 	if err := os.WriteFile(mcpPath, setupContent, 0o644); err != nil {
-		t.Fatalf("WriteFile(kortex-engram.json) error = %v", err)
+		t.Fatalf("WriteFile(kortexengram.json) error = %v", err)
 	}
 
 	first, err := Inject(home, claudeAdapter())
@@ -668,7 +668,7 @@ func TestInjectClaudePreservesAbsoluteCommandIsIdempotent(t *testing.T) {
 	// Absolute path must still be present.
 	content, err := os.ReadFile(mcpPath)
 	if err != nil {
-		t.Fatalf("ReadFile(kortex-engram.json) error = %v", err)
+		t.Fatalf("ReadFile(kortexengram.json) error = %v", err)
 	}
 	if !strings.Contains(string(content), absPath) {
 		t.Fatalf("absolute command path %q was lost after second Inject(); got:\n%s", absPath, string(content))
@@ -677,24 +677,24 @@ func TestInjectClaudePreservesAbsoluteCommandIsIdempotent(t *testing.T) {
 }
 
 // TestInjectClaudeAddsToolsAgentWhenSetupWritesBareArgs verifies that if
-// `engram setup` wrote an absolute command but with bare args (no --tools=agent),
+// `KortexEngram setup` wrote an absolute command but with bare args (no --tools=agent),
 // Inject() adds --tools=agent while preserving the absolute path.
 func TestInjectClaudeAddsToolsAgentWhenSetupWritesBareArgs(t *testing.T) {
 	home := t.TempDir()
 
-	absPath := "/home/user/go/bin/engram"
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
+	absPath := "/home/user/go/bin/KortexEngram"
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
 	if err := os.MkdirAll(filepath.Dir(mcpPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll error = %v", err)
 	}
-	// Bare mcp arg without --tools=agent — older engram setup format.
+	// Bare mcp arg without --tools=agent — older KortexEngram setup format.
 	setupContent := []byte(`{
-  "command": "/home/user/go/bin/engram",
+  "command": "/home/user/go/bin/KortexEngram",
   "args": ["mcp"]
 }
 `)
 	if err := os.WriteFile(mcpPath, setupContent, 0o644); err != nil {
-		t.Fatalf("WriteFile(kortex-engram.json) error = %v", err)
+		t.Fatalf("WriteFile(kortexengram.json) error = %v", err)
 	}
 
 	_, err := Inject(home, claudeAdapter())
@@ -704,7 +704,7 @@ func TestInjectClaudeAddsToolsAgentWhenSetupWritesBareArgs(t *testing.T) {
 
 	content, err := os.ReadFile(mcpPath)
 	if err != nil {
-		t.Fatalf("ReadFile(kortex-engram.json) error = %v", err)
+		t.Fatalf("ReadFile(kortexengram.json) error = %v", err)
 	}
 	text := string(content)
 
@@ -735,41 +735,41 @@ func TestInjectCodexIsIdempotent(t *testing.T) {
 		t.Fatalf("Inject(codex) second changed = true (should be idempotent)")
 	}
 
-	// Verify only one [mcp_servers.kortex-engram] block.
+	// Verify only one [mcp_servers.KortexEngram] block.
 	configPath := filepath.Join(home, ".codex", "config.toml")
 	content, err := os.ReadFile(configPath)
 	if err != nil {
 		t.Fatalf("ReadFile(config.toml) error = %v", err)
 	}
-	count := strings.Count(string(content), "[mcp_servers.kortex-engram]")
+	count := strings.Count(string(content), "[mcp_servers.KortexEngram]")
 	if count != 1 {
-		t.Fatalf("config.toml has %d [mcp_servers.kortex-engram] blocks, want exactly 1; got:\n%s", count, string(content))
+		t.Fatalf("config.toml has %d [mcp_servers.KortexEngram] blocks, want exactly 1; got:\n%s", count, string(content))
 	}
 }
 
 // ─── Absolute path resolution tests ──────────────────────────────────────────
 
-// mockEngramLookPath sets EngramLookPath to a mock and restores it after the test.
-func mockEngramLookPath(t *testing.T, result string, errMsg string) {
+// mockkortexEngramLookPath sets kortexEngramLookPath to a mock and restores it after the test.
+func mockkortexEngramLookPath(t *testing.T, result string, errMsg string) {
 	t.Helper()
-	orig := EngramLookPath
-	EngramLookPath = func(string) (string, error) {
+	orig := kortexEngramLookPath
+	kortexEngramLookPath = func(string) (string, error) {
 		if errMsg != "" {
 			return "", fmt.Errorf("%s", errMsg)
 		}
 		return result, nil
 	}
-	t.Cleanup(func() { EngramLookPath = orig })
+	t.Cleanup(func() { kortexEngramLookPath = orig })
 }
 
-// TestEngramInjectUsesAbsolutePathWhenAvailable verifies that when engram is
+// TestKortexEngramInjectUsesAbsolutePathWhenAvailable verifies that when KortexEngram is
 // resolvable on PATH, its absolute path is written into the MCP config file
 // for agents that use StrategyMCPConfigFile (e.g. Windsurf).
-func TestEngramInjectUsesAbsolutePathWhenAvailable(t *testing.T) {
+func TestKortexEngramInjectUsesAbsolutePathWhenAvailable(t *testing.T) {
 	home := t.TempDir()
 
-	absPath := "/usr/local/bin/engram"
-	mockEngramLookPath(t, absPath, "")
+	absPath := "/usr/local/bin/KortexEngram"
+	mockkortexEngramLookPath(t, absPath, "")
 
 	windsurfAdapter, err := agents.NewAdapter("windsurf")
 	if err != nil {
@@ -804,28 +804,28 @@ func TestEngramInjectUsesAbsolutePathWhenAvailable(t *testing.T) {
 	if !ok {
 		t.Fatalf("mcpServers has unexpected type: %T", mcpServersRaw)
 	}
-	engramServerRaw, ok := mcpServers["kortex-engram"]
+	KortexEngramServerRaw, ok := mcpServers["kortex-engram"]
 	if !ok {
-		t.Fatalf("mcpServers missing engram entry; got:\n%s", content)
+		t.Fatalf("mcpServers missing KortexEngram entry; got:\n%s", content)
 	}
-	engramServer, ok := engramServerRaw.(map[string]any)
+	KortexEngramServer, ok := KortexEngramServerRaw.(map[string]any)
 	if !ok {
-		t.Fatalf("engram server has unexpected type: %T", engramServerRaw)
+		t.Fatalf("KortexEngram server has unexpected type: %T", KortexEngramServerRaw)
 	}
 
-	cmd, _ := engramServer["command"].(string)
+	cmd, _ := KortexEngramServer["command"].(string)
 	if cmd != absPath {
 		t.Fatalf("mcp_config.json command = %q, want absolute path %q", cmd, absPath)
 	}
 }
 
-// TestEngramInjectFallsBackToRelativeWhenNotFound verifies that when engram
+// TestKortexEngramInjectFallsBackToRelativeWhenNotFound verifies that when KortexEngram
 // cannot be resolved on PATH, the config falls back to the relative "kortex-engram"
 // command string.
-func TestEngramInjectFallsBackToRelativeWhenNotFound(t *testing.T) {
+func TestKortexEngramInjectFallsBackToRelativeWhenNotFound(t *testing.T) {
 	home := t.TempDir()
 
-	mockEngramLookPath(t, "", "not found")
+	mockkortexEngramLookPath(t, "", "not found")
 
 	windsurfAdapter, err := agents.NewAdapter("windsurf")
 	if err != nil {
@@ -848,18 +848,18 @@ func TestEngramInjectFallsBackToRelativeWhenNotFound(t *testing.T) {
 
 	text := string(content)
 	if !strings.Contains(text, `"command": "kortex-engram"`) {
-		t.Fatalf("mcp_config.json should use relative fallback 'kortex-engram'; got:\n%s", text)
+		t.Fatalf("mcp_config.json should use relative fallback 'KortexEngram'; got:\n%s", text)
 	}
 }
 
-// TestEngramInjectAbsolutePathForOpenCodeMergeStrategy verifies that the
+// TestKortexEngramInjectAbsolutePathForOpenCodeMergeStrategy verifies that the
 // absolute path is used when the StrategyMergeIntoSettings strategy is
 // applied for OpenCode.
-func TestEngramInjectAbsolutePathForOpenCodeMergeStrategy(t *testing.T) {
+func TestKortexEngramInjectAbsolutePathForOpenCodeMergeStrategy(t *testing.T) {
 	home := t.TempDir()
 
-	absPath := "/usr/local/bin/engram"
-	mockEngramLookPath(t, absPath, "")
+	absPath := "/usr/local/bin/KortexEngram"
+	mockkortexEngramLookPath(t, absPath, "")
 
 	adapter := opencodeAdapter()
 	settingsDir := filepath.Dir(adapter.SettingsPath(home))
@@ -880,7 +880,7 @@ func TestEngramInjectAbsolutePathForOpenCodeMergeStrategy(t *testing.T) {
 	// For standard agents (OpenCode), we now prioritize a stable relative path
 	// "kortex-engram" instead of a dynamic absolute path to ensure idempotency.
 	if !strings.Contains(text, `"kortex-engram"`) {
-		t.Fatalf("OpenCode settings missing stable relative engram path, got: %s", text)
+		t.Fatalf("OpenCode settings missing stable relative KortexEngram path, got: %s", text)
 	}
 	// OpenCode 1.3.3+: command must be an array, no separate "args" field.
 	if strings.Contains(text, `"args"`) {
@@ -900,39 +900,39 @@ func TestEngramInjectAbsolutePathForOpenCodeMergeStrategy(t *testing.T) {
 	if !ok {
 		t.Fatalf("mcp key has unexpected type %T; got:\n%s", mcpRaw, text)
 	}
-	engramRaw, ok := mcpMap["kortex-engram"]
+	KortexEngramRaw, ok := mcpMap["kortex-engram"]
 	if !ok {
-		t.Fatalf("mcp missing engram key; got:\n%s", text)
+		t.Fatalf("mcp missing KortexEngram key; got:\n%s", text)
 	}
-	engramMap, ok := engramRaw.(map[string]any)
+	KortexEngramMap, ok := KortexEngramRaw.(map[string]any)
 	if !ok {
-		t.Fatalf("mcp.engram has unexpected type %T; got:\n%s", engramRaw, text)
+		t.Fatalf("mcp.KortexEngram has unexpected type %T; got:\n%s", KortexEngramRaw, text)
 	}
-	cmdRaw, ok := engramMap["command"]
+	cmdRaw, ok := KortexEngramMap["command"]
 	if !ok {
-		t.Fatalf("mcp.engram missing command key; got:\n%s", text)
+		t.Fatalf("mcp.KortexEngram missing command key; got:\n%s", text)
 	}
 	cmdArr, ok := cmdRaw.([]any)
 	if !ok {
-		t.Fatalf("mcp.engram.command must be an array, got %T; value:\n%s", cmdRaw, text)
+		t.Fatalf("mcp.kortexengram.command must be an array, got %T; value:\n%s", cmdRaw, text)
 	}
 	if len(cmdArr) == 0 {
-		t.Fatalf("mcp.engram.command array is empty; got:\n%s", text)
+		t.Fatalf("mcp.kortexengram.command array is empty; got:\n%s", text)
 	}
 	firstElem, ok := cmdArr[0].(string)
 	if !ok || firstElem != "kortex-engram" {
-		t.Fatalf("mcp.engram.command[0] = %v, want stable relative 'engram'; got:\n%s", cmdArr[0], text)
+		t.Fatalf("mcp.kortexengram.command[0] = %v, want stable relative 'KortexEngram'; got:\n%s", cmdArr[0], text)
 	}
 }
 
-// TestEngramInjectAbsolutePathForGeminiMergeStrategy verifies that the
+// TestKortexEngramInjectAbsolutePathForGeminiMergeStrategy verifies that the
 // absolute path is also used when the StrategyMergeIntoSettings strategy is
 // applied (e.g. Gemini CLI).
-func TestEngramInjectAbsolutePathForGeminiMergeStrategy(t *testing.T) {
+func TestKortexEngramInjectAbsolutePathForGeminiMergeStrategy(t *testing.T) {
 	home := t.TempDir()
 
-	absPath := "/opt/homebrew/bin/engram"
-	mockEngramLookPath(t, absPath, "")
+	absPath := "/opt/homebrew/bin/KortexEngram"
+	mockkortexEngramLookPath(t, absPath, "")
 
 	result, err := Inject(home, geminiAdapter())
 	if err != nil {
@@ -952,13 +952,13 @@ func TestEngramInjectAbsolutePathForGeminiMergeStrategy(t *testing.T) {
 	// For standard agents (Gemini), we now prioritize a stable relative path
 	// "kortex-engram" instead of a dynamic absolute path to ensure idempotency.
 	if !strings.Contains(text, `"kortex-engram"`) {
-		t.Fatalf("settings.json missing stable relative path 'engram'; got:\n%s", text)
+		t.Fatalf("settings.json missing stable relative path 'KortexEngram'; got:\n%s", text)
 	}
 }
 
-func TestQwenEngramIdempotency(t *testing.T) {
-	orig := EngramLookPath
-	t.Cleanup(func() { EngramLookPath = orig })
+func TestQwenKortexEngramIdempotency(t *testing.T) {
+	orig := kortexEngramLookPath
+	t.Cleanup(func() { kortexEngramLookPath = orig })
 
 	homeDir := t.TempDir()
 	adapter := qwenAdapter()
@@ -968,7 +968,7 @@ func TestQwenEngramIdempotency(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	EngramLookPath = func(string) (string, error) {
+	kortexEngramLookPath = func(string) (string, error) {
 		return "", os.ErrNotExist
 	}
 
@@ -982,9 +982,9 @@ func TestQwenEngramIdempotency(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Simulate engram being found later (e.g. after go install or manual install)
-	absPath := "/usr/local/bin/engram"
-	EngramLookPath = func(string) (string, error) {
+	// Simulate KortexEngram being found later (e.g. after go install or manual install)
+	absPath := "/usr/local/bin/KortexEngram"
+	kortexEngramLookPath = func(string) (string, error) {
 		return absPath, nil
 	}
 
@@ -999,6 +999,6 @@ func TestQwenEngramIdempotency(t *testing.T) {
 	}
 
 	if string(content1) != string(content2) {
-		t.Errorf("Idempotency failure! Settings changed between runs despite engram command being stable-relative.\nRun 1:\n%s\nRun 2:\n%s", string(content1), string(content2))
+		t.Errorf("Idempotency failure! Settings changed between runs despite KortexEngram command being stable-relative.\nRun 1:\n%s\nRun 2:\n%s", string(content1), string(content2))
 	}
 }

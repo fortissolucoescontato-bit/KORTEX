@@ -17,7 +17,7 @@ AI-assisted development in 2026 is no longer optional — it's the standard. Eve
 
 A raw AI agent out of the box is like a sports car with no tuning — it runs, but it's nowhere near its potential. To get real value you need:
 
-1. **Persistent memory** (Engram) — so the agent remembers decisions, bugs, and conventions across sessions
+1. **Persistent memory** (Kortex-Engram) — so the agent remembers decisions, bugs, and conventions across sessions
 2. **MCP servers** (Context7, Notion, Jira, etc.) — so the agent can access real documentation and project management tools
 3. **Coding skills** — curated best-practice patterns for React 19, Next.js 15, TypeScript, Tailwind 4, Zod 4, testing, etc.
 4. **SDD workflow** (Spec-Driven Development) — so the agent plans before coding, not the other way around
@@ -40,7 +40,7 @@ Most developers either:
 
 This is NOT an "AI agent installer." Most agents are already easy to install (`npm i -g @anthropic-ai/claude-code`, `brew install opencode`, etc.). This is an **ecosystem configurator**: it takes whatever AI agent(s) you use and supercharges them with the Kortex stack:
 
-- **Engram** — persistent cross-session memory
+- **Kortex-Engram** — persistent cross-session memory
 - **SDD** — Spec-Driven Development workflow (plan before you code)
 - **Skills** — curated coding patterns for modern stacks
 - **MCP servers** — real documentation, Notion, Jira, and more
@@ -114,7 +114,7 @@ The installer follows a **dependency-first** approach:
 │    ◌ OpenCode (native binary)                                    │
 │                                                                  │
 │  Ecosystem:                                                      │
-│    ◌ Engram (via Homebrew — no runtime deps)                     │
+│    ◌ Kortex-Engram (via Homebrew — no runtime deps)                     │
 │    ◌ Kortex CLI (via Homebrew — needs bash + git + provider CLI)        │
 │    ◌ SDD skills (file copy — no deps)                            │
 │    ◌ Skills library (file copy — no deps)                        │
@@ -129,18 +129,18 @@ These are the base tools the installer itself and the ecosystem need.
 
 | Dependency | Min Version | Why | Install Method |
 |-----------|-------------|-----|----------------|
-| `bash` | 3.2+ | Kortex CLI, install scripts, Engram plugin hooks | Pre-installed on all targets |
-| `git` | 2.x | Kortex CLI (diff/staging), Engram (git sync), skills clone, agent integrations | `brew`/`apt`/`pacman`/`dnf`/`pkg` |
+| `bash` | 3.2+ | Kortex CLI, install scripts, Kortex-Engram plugin hooks | Pre-installed on all targets |
+| `git` | 2.x | Kortex CLI (diff/staging), Kortex-Engram (git sync), skills clone, agent integrations | `brew`/`apt`/`pacman`/`dnf`/`pkg` |
 | `curl` | Any | Binary downloads, Kortex CLI providers (lmstudio, github), installer script | Pre-installed on most systems |
 
 #### Conditionally Required (based on user's selections)
 
 | Dependency | Min Version | When Needed | Install Method |
 |-----------|-------------|-------------|----------------|
-| **Homebrew** | Any | macOS (primary pkg manager), Linux (recommended for Engram, agents) | Official install script |
+| **Homebrew** | Any | macOS (primary pkg manager), Linux (recommended for Kortex-Engram, agents) | Official install script |
 | **Node.js** | 20+ | Claude Code (needs 18+), Gemini CLI (needs 20+) — installer picks the highest required version | `brew install node` / `nvm` / `fnm` / distro package |
 | **npm** | Comes with Node.js | Installing Claude Code, Gemini CLI, Codex | Bundled with Node.js |
-| **Go** | 1.25+ | ONLY if building Engram from source (NOT needed for binary/Homebrew install) | `brew install go` / distro package |
+| **Go** | 1.25+ | ONLY if building Kortex-Engram from source (NOT needed for binary/Homebrew install) | `brew install go` / distro package |
 | **python3** | 3.x | Kortex CLI with Ollama API mode or LM Studio provider (has fallback without it) | Pre-installed on macOS, `apt`/`pacman`/`dnf` on Linux |
 | **gh** (GitHub CLI) | Any | Kortex CLI with `github:<model>` provider | `brew install gh` / distro package |
 
@@ -174,7 +174,7 @@ Node.js is the most critical dependency — multiple agents depend on it, and di
 - R-DEP-02: The installer MUST show the complete dependency tree to the user and get confirmation before installing anything
 - R-DEP-03: The installer MUST install missing dependencies automatically (with user consent) using the platform's preferred package manager
 - R-DEP-04: The installer MUST handle Node.js version requirements intelligently — Claude Code needs 18+, Gemini CLI needs 20+, so install 20+ to satisfy both
-- R-DEP-05: The installer MUST NOT install Go unless the user explicitly chooses to build Engram from source (pre-compiled binaries are the default)
+- R-DEP-05: The installer MUST NOT install Go unless the user explicitly chooses to build Kortex-Engram from source (pre-compiled binaries are the default)
 - R-DEP-06: On Linux, the installer MUST NOT use distro-default Node.js if it's below v20 — use NodeSource, fnm, or Homebrew instead
 - R-DEP-07: The installer MUST handle platform-specific differences transparently (BSD sed vs GNU sed, sha256sum vs shasum, Xcode CLT on macOS)
 - R-DEP-08: The installer MUST detect existing version managers (fnm, nvm, n) and use them instead of installing Node.js system-wide
@@ -186,7 +186,7 @@ Node.js is the most critical dependency — multiple agents depend on it, and di
 
 | Component | bash | git | curl | Node.js | Homebrew | python3 | gh CLI |
 |-----------|------|-----|------|---------|----------|---------|--------|
-| **Engram** (binary) | — | — | ✓ (download) | — | ✓ (preferred) | — | — |
+| **Kortex-Engram** (binary) | — | — | ✓ (download) | — | ✓ (preferred) | — | — |
 | **Kortex CLI** | ✓ | ✓ | ◌ (some providers) | — | ✓ (preferred) | ◌ (some providers) | ◌ (github provider) |
 | **Claude Code** | ✓ (hooks) | ✓ | — | ✓ (20+) | ◌ | — | — |
 | **OpenCode** | — | — | ✓ (download) | — | — | — | — |
@@ -231,7 +231,7 @@ The installer supports configuring the Kortex ecosystem into ANY AI coding agent
 
 | Tier | What Gets Configured | Agents |
 |------|---------------------|--------|
-| **Full** | Engram plugin + MCP servers + skills + SDD orchestrator + Kortex CLI integration + persona + theme + permissions + statusline + hooks | Claude Code, OpenCode |
+| **Full** | Kortex-Engram plugin + MCP servers + skills + SDD orchestrator + Kortex CLI integration + persona + theme + permissions + statusline + hooks | Claude Code, OpenCode |
 | **Good** | Skills + MCP servers + SDD (inline mode, no sub-agents) + Kortex CLI as review provider + persona rules | Cursor, VSCode |
 | **Partial** | Skills via system instructions + MCP where supported + Kortex CLI provider config + persona | Gemini CLI, Codex, Windsurf, JetBrains, Zed |
 | **Minimal** | Persona and coding conventions via project/workspace rules | Xcode, Antigravity, any emerging agent |
@@ -248,22 +248,22 @@ The installer supports configuring the Kortex ecosystem into ANY AI coding agent
 - R-AGENT-07: The installer architecture MUST allow adding new agents by implementing a single interface — no changes to TUI or core logic required
 - R-AGENT-08: The installer MUST be forward-compatible: when new AI agents emerge, a community contributor can add support by implementing the Agent interface and submitting a PR
 
-### 6.2 Engram (Persistent Memory System)
+### 6.2 Kortex-Engram (Persistent Memory System)
 
 | Component | Method | Notes |
 |-----------|--------|-------|
-| Engram binary | Go install / Homebrew / direct download | Single binary, no deps |
-| Engram plugin for Claude Code | `claude plugin marketplace add` | Automatic |
-| Engram plugin for OpenCode | Copy `engram.ts` to plugins dir | Automatic |
-| Engram config for Gemini CLI | Write `~/.gemini/settings.json` + `system.md` | Automatic |
-| Engram config for Codex | Write `~/.codex/config.toml` entries | Automatic |
+| Kortex-Engram binary | Go install / Homebrew / direct download | Single binary, no deps |
+| Kortex-Engram plugin for Claude Code | `claude plugin marketplace add` | Automatic |
+| Kortex-Engram plugin for OpenCode | Copy `kortex-engram.ts` to plugins dir | Automatic |
+| Kortex-Engram config for Gemini CLI | Write `~/.gemini/settings.json` + `system.md` | Automatic |
+| Kortex-Engram config for Codex | Write `~/.codex/config.toml` entries | Automatic |
 
 **Requirements:**
-- R-ENGRAM-01: Engram MUST be installed as a prerequisite for any agent that supports it
-- R-ENGRAM-02: The installer MUST configure Engram integration for EVERY selected agent automatically
-- R-ENGRAM-03: The installer MUST verify Engram is running (health check on port 7437) after installation
-- R-ENGRAM-04: The installer SHOULD configure Engram to start automatically on system boot (launchd on macOS, systemd on Linux)
-- R-ENGRAM-05: If Engram is already installed, the installer MUST check the version and offer to upgrade
+- R-KORTEX-ENGRAM-01: Kortex-Engram MUST be installed as a prerequisite for any agent that supports it
+- R-KORTEX-ENGRAM-02: The installer MUST configure Kortex-Engram integration for EVERY selected agent automatically
+- R-KORTEX-ENGRAM-03: The installer MUST verify Kortex-Engram is running (health check on port 7437) after installation
+- R-KORTEX-ENGRAM-04: The installer SHOULD configure Kortex-Engram to start automatically on system boot (launchd on macOS, systemd on Linux)
+- R-KORTEX-ENGRAM-05: If Kortex-Engram is already installed, the installer MUST check the version and offer to upgrade
 
 ### 6.3 SDD (Spec-Driven Development) Skills
 
@@ -422,7 +422,7 @@ curl -sL get.carbon.ai/ai | sh
      │  Detected: Claude Code ✓         │
      │            OpenCode ✓            │
      │            Cursor ✗              │
-     │            Engram ✗              │
+     │            Kortex-Engram ✗              │
      │  OS: macOS (Apple Silicon)       │
      └──────────┬──────────────────────┘
                 │
@@ -453,12 +453,12 @@ curl -sL get.carbon.ai/ai | sh
      ┌─────────────────────────────────┐
      │  Select Ecosystem Preset         │
      │                                  │
-     │  ★ Full Kortex                │  ← Everything: Engram + SDD + Skills
-     │     (Engram + SDD + All Skills   │     + MCP + Theme + Permissions
+     │  ★ Full Kortex                │  ← Everything: Kortex-Engram + SDD + Skills
+     │     (Kortex-Engram + SDD + All Skills   │     + MCP + Theme + Permissions
      │      + MCP + Theme)              │
      │                                  │
      │  ○ Ecosystem Only                │  ← Tools without persona
-     │  ○ Minimal                       │  ← Just Engram + basics
+     │  ○ Minimal                       │  ← Just Kortex-Engram + basics
      │  ○ Custom                        │  ← Pick each component
      └──────────┬──────────────────────┘
                 │
@@ -466,7 +466,7 @@ curl -sL get.carbon.ai/ai | sh
         │ If "Custom":  │
         │               ▼
         │  ┌──────────────────────┐
-        │  │ ☑ Engram (memory)    │
+        │  │ ☑ Kortex-Engram (memory)    │
         │  │ ☑ SDD (workflow)     │
         │  │ ☑ Kortex CLI (code review)  │
         │  │ Select Skills...     │
@@ -482,7 +482,7 @@ curl -sL get.carbon.ai/ai | sh
      │                                  │
      │  Agents: Claude Code, OpenCode   │
      │  Persona: Kortex              │
-     │  Memory: Engram ✓                │
+     │  Memory: Kortex-Engram ✓                │
      │  Workflow: SDD (9 skills) ✓      │
      │  Code Review: Kortex CLI (claude) ✓     │
      │  Coding Skills: 15 skills ✓      │
@@ -496,12 +496,12 @@ curl -sL get.carbon.ai/ai | sh
      ┌─────────────────────────────────┐
      │  Configuring...                  │
      │                                  │
-     │  ✓ Installing Engram             │
+     │  ✓ Installing Kortex-Engram             │
      │  ✓ Installing Kortex CLI               │
      │  ✓ Configuring Claude Code       │
      │    ✓ Skills (22 files)           │
      │    ✓ MCP servers                 │
-     │    ✓ Engram plugin               │
+     │    ✓ Kortex-Engram plugin               │
      │    ✓ Permissions & theme         │
      │  ✓ Configuring Kortex CLI (claude)      │
      │  ◌ Configuring OpenCode...       │
@@ -523,7 +523,7 @@ curl -sL get.carbon.ai/ai | sh
      │                                  │
      │  Agents configured: 2            │
      │  Skills installed: 22            │
-     │  Memory: Engram running ✓        │
+     │  Memory: Kortex-Engram running ✓        │
      └─────────────────────────────────┘
 ```
 
@@ -606,7 +606,7 @@ graph TB
 
     subgraph ECOSYSTEM["⚡ KORTEX ECOSYSTEM (injected into agents)"]
         direction TB
-        ENGRAM[🧠 Engram<br/>Persistent Memory]
+        KORTEX-ENGRAM[🧠 Kortex-Engram<br/>Persistent Memory]
         SDD[📋 SDD Skills<br/>Spec-Driven Development]
         Kortex CLI_COMP[🛡️ Kortex CLI<br/>Guardian Angel Code Review]
         SKILLS[📚 Coding Skills<br/>React, TS, Tailwind, etc.]
@@ -627,9 +627,9 @@ graph TB
     DEV -->|uses| GEM
     DEV -->|commits| Kortex CLI_COMP
 
-    CC -->|remembers via| ENGRAM
-    OC -->|remembers via| ENGRAM
-    GEM -->|remembers via| ENGRAM
+    CC -->|remembers via| KORTEX-ENGRAM
+    OC -->|remembers via| KORTEX-ENGRAM
+    GEM -->|remembers via| KORTEX-ENGRAM
 
     CC -->|follows| SKILLS
     OC -->|follows| SKILLS
@@ -673,11 +673,11 @@ graph LR
         AGENT_CORE --> AGENT_PERSONA
     end
 
-    subgraph MEMORY_LAYER["Engram Memory System"]
+    subgraph MEMORY_LAYER["Kortex-Engram Memory System"]
         direction TB
         MEM_PLUGIN[Agent Plugin<br/>Claude: hooks + MCP<br/>OpenCode: TS plugin<br/>Gemini: system.md]
-        MEM_SERVER[Engram Server<br/>localhost:7437]
-        MEM_DB[(SQLite + FTS5<br/>~/.engram/engram.db)]
+        MEM_SERVER[Kortex-Engram Server<br/>localhost:7437]
+        MEM_DB[(SQLite + FTS5<br/>~/.kortex-engram/kortex-engram.db)]
         MEM_PLUGIN --> MEM_SERVER
         MEM_SERVER --> MEM_DB
     end
@@ -766,18 +766,18 @@ flowchart TD
     subgraph PHASE_5["Phase 5: Core Components"]
         direction TB
         AGENT_INSTALL[Install missing agents<br/>Claude Code / OpenCode / etc.]
-        AGENT_INSTALL --> ENGRAM_INSTALL[Install Engram binary<br/>via Homebrew or download]
-        ENGRAM_INSTALL --> Kortex CLI_INSTALL[Install Kortex CLI binary<br/>via Homebrew or download]
-        Kortex CLI_INSTALL --> ENGRAM_START[Start Engram server<br/>+ configure auto-start]
+        AGENT_INSTALL --> KORTEX-ENGRAM_INSTALL[Install Kortex-Engram binary<br/>via Homebrew or download]
+        KORTEX-ENGRAM_INSTALL --> Kortex CLI_INSTALL[Install Kortex CLI binary<br/>via Homebrew or download]
+        Kortex CLI_INSTALL --> KORTEX-ENGRAM_START[Start Kortex-Engram server<br/>+ configure auto-start]
     end
 
-    ENGRAM_START --> CONFIG_LOOP
+    KORTEX-ENGRAM_START --> CONFIG_LOOP
 
     subgraph PHASE_6["Phase 6: Configure Each Agent"]
         direction TB
         CONFIG_LOOP[For each selected agent:]
-        CONFIG_LOOP --> INJECT_ENGRAM[Inject Engram<br/>plugin / MCP / instructions]
-        INJECT_ENGRAM --> INJECT_SKILLS[Copy skills to<br/>agent's skill directory]
+        CONFIG_LOOP --> INJECT_KORTEX-ENGRAM[Inject Kortex-Engram<br/>plugin / MCP / instructions]
+        INJECT_KORTEX-ENGRAM --> INJECT_SKILLS[Copy skills to<br/>agent's skill directory]
         INJECT_SKILLS --> INJECT_SDD[Configure SDD<br/>orchestrator + commands]
         INJECT_SDD --> INJECT_MCP[Configure MCP servers<br/>Context7, Notion, Jira]
         INJECT_MCP --> INJECT_PERSONA[Inject persona<br/>CLAUDE.md / agents / rules]
@@ -790,8 +790,8 @@ flowchart TD
     subgraph PHASE_7["Phase 7: Verification"]
         direction TB
         VERIFY[Health checks]
-        VERIFY --> CHECK_ENGRAM[Engram: GET /health ✓]
-        CHECK_ENGRAM --> CHECK_SKILLS[Skills: files exist ✓]
+        VERIFY --> CHECK_KORTEX-ENGRAM[Kortex-Engram: GET /health ✓]
+        CHECK_KORTEX-ENGRAM --> CHECK_SKILLS[Skills: files exist ✓]
         CHECK_SKILLS --> CHECK_MCP[MCP: configs valid ✓]
         CHECK_MCP --> CHECK_Kortex CLI[Kortex CLI: kortex --version ✓]
     end
@@ -813,7 +813,7 @@ flowchart TD
 graph TD
     subgraph SOURCES["Source Repositories (fetched at install time)"]
         REPO_SDD[fortissolucoescontato-bit/<br/>sdd-agent-team]
-        REPO_ENGRAM[fortissolucoescontato-bit/<br/>engram]
+        REPO_KORTEX-ENGRAM[fortissolucoescontato-bit/<br/>kortex-engram]
         REPO_Kortex CLI[fortissolucoescontato-bit/<br/>carbon-guardian-angel]
         REPO_SKILLS[Skills Registry<br/>30+ skill files]
     end
@@ -822,15 +822,15 @@ graph TD
         CC_MD[CLAUDE.md<br/>Persona + SDD Orchestrator]
         CC_SETTINGS[settings.json<br/>Permissions, theme, statusline,<br/>thinking verbs, vim mode]
         CC_SKILLS_DIR[skills/<br/>SDD skills + coding skills]
-        CC_PLUGINS[plugins/<br/>Engram plugin]
+        CC_PLUGINS[plugins/<br/>Kortex-Engram plugin]
         CC_JSON[~/.claude.json<br/>MCP servers: Context7, etc.]
     end
 
     subgraph OC_CONFIG["OpenCode (~/.config/opencode/)"]
-        OC_JSON[opencode.json<br/>Agents, MCP servers,<br/>Engram plugin, theme]
+        OC_JSON[opencode.json<br/>Agents, MCP servers,<br/>Kortex-Engram plugin, theme]
         OC_SKILLS_DIR[skill/<br/>SDD skills + coding skills]
         OC_COMMANDS[commands/<br/>SDD slash commands]
-        OC_PLUGINS[plugins/<br/>engram.ts]
+        OC_PLUGINS[plugins/<br/>kortex-engram.ts]
     end
 
     subgraph CUR_CONFIG["Cursor (~/.cursor/)"]
@@ -840,7 +840,7 @@ graph TD
     end
 
     subgraph GEM_CONFIG["Gemini CLI (~/.gemini/)"]
-        GEM_SETTINGS[settings.json<br/>MCP: Engram]
+        GEM_SETTINGS[settings.json<br/>MCP: Kortex-Engram]
         GEM_SYSTEM[system.md<br/>Memory protocol + persona]
         GEM_ENV[.env<br/>GEMINI_SYSTEM_MD=1]
     end
@@ -854,10 +854,10 @@ graph TD
     REPO_SDD -->|"condensed .cursorrules"| CUR_RULES
     REPO_SDD -->|"8 command .md files"| OC_COMMANDS
 
-    REPO_ENGRAM -->|"claude plugin install"| CC_PLUGINS
-    REPO_ENGRAM -->|"copy engram.ts"| OC_PLUGINS
-    REPO_ENGRAM -->|"MCP entry"| GEM_SETTINGS
-    REPO_ENGRAM -->|"memory protocol"| GEM_SYSTEM
+    REPO_KORTEX-ENGRAM -->|"claude plugin install"| CC_PLUGINS
+    REPO_KORTEX-ENGRAM -->|"copy kortex-engram.ts"| OC_PLUGINS
+    REPO_KORTEX-ENGRAM -->|"MCP entry"| GEM_SETTINGS
+    REPO_KORTEX-ENGRAM -->|"memory protocol"| GEM_SYSTEM
 
     REPO_SKILLS -->|"coding skill files"| CC_SKILLS_DIR
     REPO_SKILLS -->|"coding skill files"| OC_SKILLS_DIR
@@ -875,41 +875,41 @@ graph TD
 
 #### 8.0.5 Memory & Knowledge Flow — How the Agent Learns Over Time
 
-This diagram shows the continuous learning loop that Engram enables across sessions:
+This diagram shows the continuous learning loop that Kortex-Engram enables across sessions:
 
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
     participant Agent as AI Agent<br/>(Claude Code / OpenCode)
-    participant Engram as Engram Server<br/>(localhost:7437)
-    participant DB as SQLite + FTS5<br/>(~/.engram/engram.db)
+    participant Kortex-Engram as Kortex-Engram Server<br/>(localhost:7437)
+    participant DB as SQLite + FTS5<br/>(~/.kortex-engram/kortex-engram.db)
     participant MCP as MCP Servers<br/>(Context7, Notion, Jira)
     participant SDD as SDD Workflow
     participant Kortex CLI as Kortex CLI<br/>(Pre-commit Hook)
 
     Note over Dev,Kortex CLI: === SESSION START ===
 
-    Agent->>Engram: mem_session_start(project)
-    Engram->>DB: INSERT session
-    Engram-->>Agent: Previous context injected<br/>(recent sessions, decisions, bugs)
+    Agent->>Kortex-Engram: mem_session_start(project)
+    Kortex-Engram->>DB: INSERT session
+    Kortex-Engram-->>Agent: Previous context injected<br/>(recent sessions, decisions, bugs)
 
     Note over Dev,Kortex CLI: === DEVELOPMENT LOOP ===
 
     Dev->>Agent: "Add auth to the API"
     Agent->>MCP: Query Context7 for JWT docs
     MCP-->>Agent: Latest library documentation
-    Agent->>Engram: mem_search("auth patterns")
-    Engram->>DB: FTS5 MATCH query
-    DB-->>Engram: Past decisions about auth
-    Engram-->>Agent: "Last time we used JWT with httpOnly cookies"
+    Agent->>Kortex-Engram: mem_search("auth patterns")
+    Kortex-Engram->>DB: FTS5 MATCH query
+    DB-->>Kortex-Engram: Past decisions about auth
+    Kortex-Engram-->>Agent: "Last time we used JWT with httpOnly cookies"
 
     Agent->>SDD: Detects substantial feature,<br/>initiates SDD workflow
     Note over SDD: explore → propose → spec<br/>→ design → tasks → apply
 
     Agent->>Dev: Implementation + explanation
 
-    Agent->>Engram: mem_save("JWT auth middleware",<br/>type: decision)
-    Engram->>DB: INSERT observation<br/>(with topic_key upsert)
+    Agent->>Kortex-Engram: mem_save("JWT auth middleware",<br/>type: decision)
+    Kortex-Engram->>DB: INSERT observation<br/>(with topic_key upsert)
 
     Note over Dev,Kortex CLI: === COMMIT ===
 
@@ -922,13 +922,13 @@ sequenceDiagram
 
     Note over Dev,Kortex CLI: === SESSION END ===
 
-    Agent->>Engram: mem_session_summary(goal,<br/>discoveries, accomplished, files)
-    Engram->>DB: INSERT summary observation
+    Agent->>Kortex-Engram: mem_session_summary(goal,<br/>discoveries, accomplished, files)
+    Kortex-Engram->>DB: INSERT summary observation
 
     Note over Dev,Kortex CLI: === NEXT SESSION (days later) ===
 
-    Agent->>Engram: mem_context(project)
-    Engram-->>Agent: "Last session: added JWT auth<br/>to src/middleware/auth.ts.<br/>Decision: httpOnly cookies,<br/>refresh token rotation."
+    Agent->>Kortex-Engram: mem_context(project)
+    Kortex-Engram-->>Agent: "Last session: added JWT auth<br/>to src/middleware/auth.ts.<br/>Decision: httpOnly cookies,<br/>refresh token rotation."
     Note over Agent: Agent resumes WITH FULL CONTEXT<br/>as if it never left
 ```
 
@@ -939,38 +939,38 @@ When a developer uses multiple agents, the ecosystem keeps them in sync:
 ```mermaid
 graph TB
     subgraph SHARED["Shared Layer (single source of truth)"]
-        ENGRAM_DB[(Engram DB<br/>~/.engram/engram.db<br/>All memories, all sessions)]
+        KORTEX-ENGRAM_DB[(Kortex-Engram DB<br/>~/.kortex-engram/kortex-engram.db<br/>All memories, all sessions)]
         SKILLS_SOURCE[Skills Files<br/>Identical copies in<br/>each agent's skill dir]
         Kortex CLI_RULES[AGENTS.md<br/>Per-project standards]
     end
 
     subgraph AGENT_CC["Claude Code Session"]
         CC_AGENT[Agent + Persona]
-        CC_ENGRAM_PLUGIN[Engram Plugin<br/>hooks + MCP]
+        CC_KORTEX-ENGRAM_PLUGIN[Kortex-Engram Plugin<br/>hooks + MCP]
     end
 
     subgraph AGENT_OC["OpenCode Session"]
         OC_AGENT[Agent + Persona]
-        OC_ENGRAM_PLUGIN[Engram Plugin<br/>TS plugin + MCP]
+        OC_KORTEX-ENGRAM_PLUGIN[Kortex-Engram Plugin<br/>TS plugin + MCP]
     end
 
     subgraph AGENT_GEM["Gemini CLI Session"]
         GEM_AGENT[Agent + system.md]
-        GEM_ENGRAM_MCP[Engram MCP]
+        GEM_KORTEX-ENGRAM_MCP[Kortex-Engram MCP]
     end
 
-    CC_ENGRAM_PLUGIN <-->|"read/write memories"| ENGRAM_DB
-    OC_ENGRAM_PLUGIN <-->|"read/write memories"| ENGRAM_DB
-    GEM_ENGRAM_MCP <-->|"read/write memories"| ENGRAM_DB
+    CC_KORTEX-ENGRAM_PLUGIN <-->|"read/write memories"| KORTEX-ENGRAM_DB
+    OC_KORTEX-ENGRAM_PLUGIN <-->|"read/write memories"| KORTEX-ENGRAM_DB
+    GEM_KORTEX-ENGRAM_MCP <-->|"read/write memories"| KORTEX-ENGRAM_DB
 
     CC_AGENT -->|"follows"| SKILLS_SOURCE
     OC_AGENT -->|"follows"| SKILLS_SOURCE
     GEM_AGENT -->|"follows"| SKILLS_SOURCE
 
-    CC_AGENT -.->|"decisions saved in session 1"| ENGRAM_DB
-    ENGRAM_DB -.->|"recalled in session 2"| OC_AGENT
-    OC_AGENT -.->|"new decisions saved"| ENGRAM_DB
-    ENGRAM_DB -.->|"full context available"| GEM_AGENT
+    CC_AGENT -.->|"decisions saved in session 1"| KORTEX-ENGRAM_DB
+    KORTEX-ENGRAM_DB -.->|"recalled in session 2"| OC_AGENT
+    OC_AGENT -.->|"new decisions saved"| KORTEX-ENGRAM_DB
+    KORTEX-ENGRAM_DB -.->|"full context available"| GEM_AGENT
 
     style SHARED fill:#1a1b26,stroke:#E0C15A,color:#E0C15A
     style AGENT_CC fill:#1a1b26,stroke:#7FB4CA,color:#7FB4CA
@@ -978,7 +978,7 @@ graph TB
     style AGENT_GEM fill:#1a1b26,stroke:#FF9E64,color:#FF9E64
 ```
 
-**Key architectural principle:** Engram is the **shared brain** across all agents. A decision made in Claude Code is available in OpenCode and Gemini CLI. Skills are identical copies. The developer can switch agents freely without losing context.
+**Key architectural principle:** Kortex-Engram is the **shared brain** across all agents. A decision made in Claude Code is available in OpenCode and Gemini CLI. Skills are identical copies. The developer can switch agents freely without losing context.
 
 #### 8.0.7 Component Ownership & Boundaries
 
@@ -994,7 +994,7 @@ graph TB
         I6[Health verification]
     end
 
-    subgraph ENGRAM_OWNS["Engram Owns (runtime)"]
+    subgraph KORTEX-ENGRAM_OWNS["Kortex-Engram Owns (runtime)"]
         direction LR
         E1[Memory persistence]
         E2[Session tracking]
@@ -1028,14 +1028,14 @@ graph TB
         U4[Which agents to use]
     end
 
-    INSTALLER_OWNS -->|"sets up"| ENGRAM_OWNS
+    INSTALLER_OWNS -->|"sets up"| KORTEX-ENGRAM_OWNS
     INSTALLER_OWNS -->|"sets up"| Kortex CLI_OWNS
     INSTALLER_OWNS -->|"configures"| AGENT_OWNS
     USER_OWNS -->|"provides to"| AGENT_OWNS
     USER_OWNS -->|"provides to"| Kortex CLI_OWNS
 
     style INSTALLER_OWNS fill:#1a1b26,stroke:#E0C15A,color:#E0C15A
-    style ENGRAM_OWNS fill:#1a1b26,stroke:#B7CC85,color:#B7CC85
+    style KORTEX-ENGRAM_OWNS fill:#1a1b26,stroke:#B7CC85,color:#B7CC85
     style Kortex CLI_OWNS fill:#1a1b26,stroke:#CB7C94,color:#CB7C94
     style AGENT_OWNS fill:#1a1b26,stroke:#7FB4CA,color:#7FB4CA
     style USER_OWNS fill:#1a1b26,stroke:#957FB8,color:#957FB8
@@ -1047,7 +1047,7 @@ graph TB
 
 | Layer | Technology | Rationale |
 |-------|-----------|-----------|
-| Language | Go | Same as Kortex.Dots + Engram. Single binary, cross-compile, no runtime deps |
+| Language | Go | Same as Kortex.Dots + Kortex-Engram. Single binary, cross-compile, no runtime deps |
 | TUI | Bubbletea + Lipgloss | Proven in Kortex.Dots. Elm architecture, excellent terminal support |
 | Distribution | Homebrew tap + direct binary download + curl installer | Same as Kortex.Dots |
 | Skills source | Git clone from repos at install time | Always latest version |
@@ -1074,7 +1074,7 @@ kortex/
 │   │   ├── codex.go                # Codex install + config
 │   │   └── windsurf.go             # Windsurf install + config
 │   ├── components/
-│   │   ├── engram.go               # Engram install + config per agent
+│   │   ├── kortex-engram.go               # Kortex-Engram install + config per agent
 │   │   ├── kortex.go                  # Kortex CLI install + provider config
 │   │   ├── sdd.go                  # SDD skills install + orchestrator config
 │   │   ├── mcp.go                  # MCP server configuration per agent
@@ -1130,7 +1130,7 @@ type Agent interface {
     Install(ctx context.Context) error     // Install the agent binary (optional — user may already have it)
 
     // Ecosystem configuration (each returns ErrNotSupported if agent can't do it)
-    ConfigureEngram() error                // Set up Engram integration (plugin, MCP, or instructions)
+    ConfigureKortex-Engram() error                // Set up Kortex-Engram integration (plugin, MCP, or instructions)
     ConfigureMCP(servers []MCPServer) error // Add MCP server entries
     ConfigureSkills(skills []Skill) error  // Install skill files to correct paths
     ConfigureSDD() error                   // Set up SDD orchestrator + commands/slash-commands
@@ -1168,9 +1168,9 @@ type Preset struct {
 
 | Preset | What's Included | Persona | Description |
 |--------|----------------|---------|-------------|
-| `full-carbon` | All agents detected + Engram + SDD + all skills + MCP + theme | "Your own Kortex!" | The complete experience. Everything configured, Kortex persona, dark theme, the works. |
-| `ecosystem-only` | Engram + SDD + skills + MCP for selected agents | Neutral (no persona) | All the tools and workflow, zero personality. For developers who want the ecosystem but prefer their agent's default behavior. |
-| `minimal` | Engram + basic skills for selected agents | Neutral | Just memory and essential skills. Quick and lean. |
+| `full-carbon` | All agents detected + Kortex-Engram + SDD + all skills + MCP + theme | "Your own Kortex!" | The complete experience. Everything configured, Kortex persona, dark theme, the works. |
+| `ecosystem-only` | Kortex-Engram + SDD + skills + MCP for selected agents | Neutral (no persona) | All the tools and workflow, zero personality. For developers who want the ecosystem but prefer their agent's default behavior. |
+| `minimal` | Kortex-Engram + basic skills for selected agents | Neutral | Just memory and essential skills. Quick and lean. |
 | `custom` | User picks each component | User picks | Full control over every aspect. |
 
 ---
@@ -1215,7 +1215,7 @@ type Preset struct {
 **Requirements:**
 - R-UPDATE-01: The installer MUST support `kortex update` to check for and install newer versions of itself
 - R-UPDATE-02: The installer MUST support `kortex update --skills` to pull latest skill versions for all configured agents
-- R-UPDATE-03: The installer MUST support `kortex update --engram` to update Engram to the latest version
+- R-UPDATE-03: The installer MUST support `kortex update --kortex-engram` to update Kortex-Engram to the latest version
 - R-UPDATE-04: The installer SHOULD check for updates on launch and notify (not auto-update)
 
 ### 10.2 Config Sync
@@ -1238,19 +1238,19 @@ When the installer completes with "Full Kortex" preset + Claude Code + OpenCode:
 - `~/.claude/CLAUDE.md` — Kortex persona with SDD orchestrator
 - `~/.claude/settings.json` — Security-first permissions, Kortex theme, vim mode, custom statusline, thinking verbs
 - `~/.claude/skills/` — All selected skills (SDD + coding skills)
-- `~/.claude/plugins/` — Engram plugin installed and active
+- `~/.claude/plugins/` — Kortex-Engram plugin installed and active
 - `~/.claude.json` — Context7 MCP server configured
 
 **OpenCode:**
-- `~/.config/opencode/opencode.json` — Agents (carbon, sdd-orchestrator), MCP servers (engram, context7), Engram plugin, Kortex theme
+- `~/.config/opencode/opencode.json` — Agents (carbon, sdd-orchestrator), MCP servers (kortex-engram, context7), Kortex-Engram plugin, Kortex theme
 - `~/.config/opencode/skills/` — All selected skills mirrored
 - `~/.config/opencode/commands/` — SDD slash commands
-- `~/.config/opencode/plugins/` — Engram TypeScript plugin
+- `~/.config/opencode/plugins/` — Kortex-Engram TypeScript plugin
 
-**Engram:**
-- `engram` binary in PATH
+**Kortex-Engram:**
+- `kortex-engram` binary in PATH
 - Running as background service (port 7437)
-- Database initialized at `~/.engram/engram.db`
+- Database initialized at `~/.kortex-engram/kortex-engram.db`
 - Integrated with all selected agents
 
 **Kortex CLI (Guardian Angel):**
@@ -1260,7 +1260,7 @@ When the installer completes with "Full Kortex" preset + Claude Code + OpenCode:
 - Ready for per-project setup via `kortex install`
 
 **Verification:**
-- The installer runs a health check: `engram serve` responds, MCP tools are callable, skills are in correct paths
+- The installer runs a health check: `kortex-engram serve` responds, MCP tools are callable, skills are in correct paths
 - Clear output: "You're ready. Run `claude` or `opencode` and start building."
 
 ### 11.2 Next Steps Guide
@@ -1315,7 +1315,7 @@ The completion screen MUST show:
 | Aspect | Kortex.Dots | Kortex AI Installer |
 |--------|---------------|----------------------|
 | Purpose | Dev environment (editors, shells, terminals) | AI development layer (agents, memory, skills) |
-| What it installs | Neovim, Fish/Zsh/Nushell, Tmux/Zellij, Ghostty/Kitty/etc. | Claude Code, OpenCode, Engram, SDD, MCP servers, skills |
+| What it installs | Neovim, Fish/Zsh/Nushell, Tmux/Zellij, Ghostty/Kitty/etc. | Claude Code, OpenCode, Kortex-Engram, SDD, MCP servers, skills |
 | Overlap | None — complementary tools | None — different layer |
 | Can use together | Yes — install Kortex.Dots first for dev env, then Kortex AI for AI layer | Same |
 | Shared patterns | Go + Bubbletea + Lipgloss, multi-OS detection, backup system | Same architecture, consistent UX |
@@ -1333,7 +1333,7 @@ These are NOT requirements for v1 but should inform architectural decisions:
 
 1. **Team profiles** — Shareable config profiles for standardizing AI setup across a team
 2. **Plugin marketplace** — Browse and install community-created skills from a central registry
-3. **AI agent health dashboard** — TUI screen showing status of all installed agents, Engram memory stats, MCP server connectivity
+3. **AI agent health dashboard** — TUI screen showing status of all installed agents, Kortex-Engram memory stats, MCP server connectivity
 4. **Auto-detection of project stack** — When entering a project directory, suggest relevant skills to install
 5. **Migration tool** — Import settings from one agent to another (e.g., Cursor user switching to Claude Code)
 6. **Kortex.Dots integration** — Combined installer that does BOTH dev environment + AI layer in one flow
@@ -1371,12 +1371,12 @@ These are NOT requirements for v1 but should inform architectural decisions:
 |------|-------------|------------|
 | `claude` CLI setup | Installs Claude Code only | Single tool, no skills/memory/MCP |
 | `opencode` install | Installs OpenCode only | Single tool, manual config |
-| `engram setup` | Installs Engram for one agent | Memory only, no skills/agents |
+| `kortex-engram setup` | Installs Kortex-Engram for one agent | Memory only, no skills/agents |
 | `sdd-agent-team/install.sh` | Installs SDD skills | Skills only, no agents/memory |
 | `kortex` install | Installs Kortex CLI for one project | Code review only, no ecosystem |
 | Various dotfile managers | Stow, chezmoi, etc. | Generic, not AI-specific |
 
-**None of these solve the full problem.** Each handles one piece. This installer orchestrates ALL of them — Engram, SDD, Kortex CLI, skills, MCP, persona, theme — into a coherent, working AI development ecosystem across any agent the user chooses.
+**None of these solve the full problem.** Each handles one piece. This installer orchestrates ALL of them — Kortex-Engram, SDD, Kortex CLI, skills, MCP, persona, theme — into a coherent, working AI development ecosystem across any agent the user chooses.
 
 ---
 
@@ -1395,8 +1395,8 @@ kortex install --profile ./team-ai-config.yaml
 # Update all skills to latest
 kortex update --skills
 
-# Update Engram
-kortex update --engram
+# Update Kortex-Engram
+kortex update --kortex-engram
 
 # Backup current configs
 kortex backup

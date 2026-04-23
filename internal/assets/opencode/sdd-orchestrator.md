@@ -34,10 +34,10 @@ SDD is the structured planning layer for substantial changes.
 
 ### Artifact Store Policy
 
-- `engram` -> default when available; persistent memory across sessions
+- `kortex-engram` -> default when available; persistent memory across sessions
 - `openspec` -> file-based artifacts; use only when the user explicitly requests it
 - `hybrid` -> both backends; cross-session recovery + local files; more tokens per operation
-- `none` -> return results inline only; recommend enabling engram or openspec
+- `none` -> return results inline only; recommend enabling kortex-engram or openspec
 
 ### Commands
 
@@ -86,11 +86,11 @@ Cache the mode choice for the session - do not ask again unless the user explici
 
 When the user invokes `/sdd-new`, `/sdd-ff`, or `/sdd-continue` for the first time in a session, ALSO ASK which artifact store they want for this change:
 
-- **`engram`**: Fast, no files created. Artifacts live in engram only.
+- **`kortex-engram`**: Fast, no files created. Artifacts live in kortex-engram only.
 - **`openspec`**: File-based. Creates `openspec/` with a shareable artifact trail.
-- **`hybrid`**: Both - files for team sharing + engram for cross-session recovery.
+- **`hybrid`**: Both - files for team sharing + kortex-engram for cross-session recovery.
 
-If the user doesn't specify, detect: if kortex-engram is available -> default to `engram`. Otherwise -> `none`.
+If the user doesn't specify, detect: if kortex-engram is available -> default to `kortex-engram`. Otherwise -> `none`.
 
 Cache the artifact store choice for the session. Pass it as `artifact_store.mode` to every sub-agent launch.
 
@@ -125,7 +125,7 @@ The orchestrator resolves skills from the registry ONCE (at session start or fir
 
 Orchestrator skill resolution (do once per session):
 1. `mem_search(query: "skill-registry", project: "{project}")` -> `mem_get_observation(id)` for full registry content
-2. Fallback: read `.atl/skill-registry.md` if engram is not available
+2. Fallback: read `.atl/skill-registry.md` if kortex-engram is not available
 3. Cache the Compact Rules section and the User Skills trigger table
 4. If no registry exists, warn the user and proceed without project-specific standards
 
@@ -146,9 +146,9 @@ Sub-agents get a fresh context with NO memory. The orchestrator controls context
 
 #### Non-SDD Tasks (general delegation)
 
-- Read context: orchestrator searches engram (`mem_search`) for relevant prior context and passes it in the sub-agent prompt. Sub-agent does NOT search engram itself.
-- Write context: sub-agent MUST save significant discoveries, decisions, or bug fixes to engram via `mem_save` before returning.
-- Always add to the sub-agent prompt: `"If you make important discoveries, decisions, or fix bugs, save them to engram via mem_save with project: '{project}'."`
+- Read context: orchestrator searches kortex-engram (`mem_search`) for relevant prior context and passes it in the sub-agent prompt. Sub-agent does NOT search kortex-engram itself.
+- Write context: sub-agent MUST save significant discoveries, decisions, or bug fixes to kortex-engram via `mem_save` before returning.
+- Always add to the sub-agent prompt: `"If you make important discoveries, decisions, or fix bugs, save them to kortex-engram via mem_save with project: '{project}'."`
 
 #### SDD Phases
 

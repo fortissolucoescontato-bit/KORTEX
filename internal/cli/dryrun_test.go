@@ -13,7 +13,7 @@ func TestRenderDryRunIncludesPlatformDecision(t *testing.T) {
 		Selection: model.Selection{Persona: model.PersonaKortex, Preset: model.PresetFullKortex},
 		Resolved: planner.ResolvedPlan{
 			Agents:            []model.AgentID{model.AgentClaudeCode},
-			OrderedComponents: []model.ComponentID{model.ComponentEngram},
+			OrderedComponents: []model.ComponentID{model.ComponentKortexEngram},
 		},
 		Review: planner.ReviewPayload{
 			PlatformDecision: planner.PlatformDecision{

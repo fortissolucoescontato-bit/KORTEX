@@ -12,7 +12,7 @@ func TestParseInstallFlagsSupportsCSVAndRepeated(t *testing.T) {
 	flags, err := ParseInstallFlags([]string{
 		"--agent", "claude-code,opencode",
 		"--agent", "cursor",
-		"--component", "engram,sdd",
+		"--component", "KortexEngram,sdd",
 		"--component", "skills",
 		"--skill", "sdd-apply",
 		"--persona", "neutral",
@@ -27,7 +27,7 @@ func TestParseInstallFlagsSupportsCSVAndRepeated(t *testing.T) {
 		t.Fatalf("agents = %v", flags.Agents)
 	}
 
-	if !reflect.DeepEqual(flags.Components, []string{"engram", "sdd", "skills"}) {
+	if !reflect.DeepEqual(flags.Components, []string{"kortex-engram", "sdd", "skills"}) {
 		t.Fatalf("components = %v", flags.Components)
 	}
 
@@ -47,7 +47,7 @@ func TestNormalizeInstallFlagsDefaults(t *testing.T) {
 		Persona: model.PersonaKortex,
 		Preset:  model.PresetFullKortex,
 		Components: []model.ComponentID{
-			model.ComponentEngram,
+			model.ComponentKortexEngram,
 			model.ComponentSDD,
 			model.ComponentSkills,
 			model.ComponentContext7,

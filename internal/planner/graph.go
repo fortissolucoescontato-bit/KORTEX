@@ -35,8 +35,8 @@ func (g Graph) DependenciesOf(component model.ComponentID) []model.ComponentID {
 
 func MVPGraph() Graph {
 	return NewGraph(map[model.ComponentID][]model.ComponentID{
-		model.ComponentEngram:     nil,
-		model.ComponentSDD:        {model.ComponentEngram},
+		model.ComponentKortexEngram:     nil,
+		model.ComponentSDD:        {model.ComponentKortexEngram},
 		model.ComponentSkills:     {model.ComponentSDD},
 		model.ComponentContext7:   nil,
 		model.ComponentPersona:    nil,
@@ -51,13 +51,13 @@ func MVPGraph() Graph {
 // dependencies — selecting one does not force-install the other.
 //
 // This exists because StrategyFileReplace agents (OpenCode, Cursor, Gemini,
-// Codex) have Persona write the base file and SDD/Engram append to it. If
+// Codex) have Persona write the base file and SDD/KortexEngram append to it. If
 // SDD ran before Persona, Persona would overwrite the SDD sections.
 //
 // INVARIANT: the `first` element in every pair must have nil deps in MVPGraph.
 // See applySoftOrdering() safety contract in order.go.
 var softOrderingPairs = [][2]model.ComponentID{
-	{model.ComponentPersona, model.ComponentEngram},
+	{model.ComponentPersona, model.ComponentKortexEngram},
 	{model.ComponentPersona, model.ComponentSDD},
 }
 

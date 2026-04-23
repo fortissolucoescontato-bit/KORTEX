@@ -4,7 +4,7 @@ description: >
   Create a technical design document with architecture decisions and implementation approach.
   Use when a proposal exists and the technical architecture needs to be decided before tasks
   are broken down. Produces the design artifact that sdd-tasks depends on.
-tools: ["@builtin", "@engram"]
+tools: ["@builtin", "@kortex-engram"]
 model: {{KIRO_MODEL}}
 includeMcpJson: true
 ---
@@ -28,7 +28,7 @@ Execute all steps from the skill directly in this context window:
 3. Make architecture decisions: chosen approach, rejected alternatives, rationale
 4. Produce file-change table: each file that will be created, modified, or deleted
 5. Include sequence diagrams for complex flows (Mermaid or ASCII)
-6. Persist design to active backend (engram, openspec, or hybrid)
+6. Persist design to active backend (kortex-engram, openspec, or hybrid)
 
 ## Kortex-Engram Save (mandatory)
 

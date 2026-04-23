@@ -78,7 +78,7 @@ func statusIcon(status UpdateStatus) string {
 }
 
 // UpdateSummaryLine returns a short one-liner for TUI banners, e.g.
-// "engram 1.7.0 -> 1.8.1, kortex 1.0.0 -> 2.0.0".
+// "KortexEngram 1.7.0 -> 1.8.1, kortex 1.0.0 -> 2.0.0".
 // Returns empty string if no updates are available.
 func UpdateSummaryLine(results []UpdateResult) string {
 	var parts []string

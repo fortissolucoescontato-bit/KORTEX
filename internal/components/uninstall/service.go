@@ -53,9 +53,9 @@ type Service struct {
 	profileNamesToRemove   []string
 	profileSelectionScoped bool
 
-	// engramUninstallScope controls whether Engram cleanup removes global
-	// integration files/config (global) or project-local .engram data only.
-	engramUninstallScope model.EngramUninstallScope
+	// KortexEngramUninstallScope controls whether KortexEngram cleanup removes global
+	// integration files/config (global) or project-local .KortexEngram data only.
+	KortexEngramUninstallScope model.KortexEngramUninstallScope
 }
 
 type workflowCapability interface {
@@ -82,7 +82,7 @@ const (
 var (
 	allManagedComponents = []model.ComponentID{
 		model.ComponentPersona,
-		model.ComponentEngram,
+		model.ComponentKortexEngram,
 		model.ComponentContext7,
 		model.ComponentPermission,
 		model.ComponentSDD,
@@ -92,7 +92,7 @@ var (
 	}
 	fullAgentRemovalComponents = []model.ComponentID{
 		model.ComponentPersona,
-		model.ComponentEngram,
+		model.ComponentKortexEngram,
 		model.ComponentContext7,
 		model.ComponentPermission,
 		model.ComponentSDD,
@@ -140,7 +140,7 @@ func NewService(homeDir, workspaceDir, appVersion string) (*Service, error) {
 		snapshotter:          backup.NewSnapshotter(),
 		registry:             registry,
 		now:                  time.Now,
-		engramUninstallScope: model.EngramUninstallScopeGlobal,
+		KortexEngramUninstallScope: model.KortexEngramUninstallScopeGlobal,
 	}, nil
 }
 
@@ -163,7 +163,7 @@ func PartialUninstall(homeDir, workspaceDir, appVersion string, agentIDs []strin
 	return svc.PartialUninstall(agentsTyped, componentsTyped)
 }
 
-func PartialUninstallWithProfileSelection(homeDir, workspaceDir, appVersion string, agentIDs []string, componentIDs []string, profileNames []string, engramScope model.EngramUninstallScope) (Result, error) {
+func PartialUninstallWithProfileSelection(homeDir, workspaceDir, appVersion string, agentIDs []string, componentIDs []string, profileNames []string, KortexEngramScope model.KortexEngramUninstallScope) (Result, error) {
 	svc, err := NewService(homeDir, workspaceDir, appVersion)
 	if err != nil {
 		return Result{}, err
@@ -179,7 +179,7 @@ func PartialUninstallWithProfileSelection(homeDir, workspaceDir, appVersion stri
 		componentsTyped = append(componentsTyped, model.ComponentID(componentID))
 	}
 
-	return svc.PartialUninstallWithProfiles(agentsTyped, componentsTyped, profileNames, engramScope)
+	return svc.PartialUninstallWithProfiles(agentsTyped, componentsTyped, profileNames, KortexEngramScope)
 }
 
 func CompleteUninstall(homeDir, workspaceDir, appVersion string) (Result, error) {
@@ -193,7 +193,7 @@ func CompleteUninstall(homeDir, workspaceDir, appVersion string) (Result, error)
 func (s *Service) PartialUninstall(agentIDs []model.AgentID, componentIDs []model.ComponentID) (Result, error) {
 	s.profileNamesToRemove = nil
 	s.profileSelectionScoped = false
-	s.engramUninstallScope = model.EngramUninstallScopeGlobal
+	s.KortexEngramUninstallScope = model.KortexEngramUninstallScopeGlobal
 
 	if len(agentIDs) == 0 {
 		return Result{}, fmt.Errorf("partial uninstall requires at least one agent")
@@ -213,13 +213,13 @@ func (s *Service) PartialUninstall(agentIDs []model.AgentID, componentIDs []mode
 	return s.executePlan(plan, stateRemovals)
 }
 
-func (s *Service) PartialUninstallWithProfiles(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, engramScope model.EngramUninstallScope) (Result, error) {
+func (s *Service) PartialUninstallWithProfiles(agentIDs []model.AgentID, componentIDs []model.ComponentID, profileNames []string, KortexEngramScope model.KortexEngramUninstallScope) (Result, error) {
 	s.SetProfileNamesToRemove(profileNames)
-	s.SetEngramUninstallScope(engramScope)
+	s.SetKortexEngramUninstallScope(KortexEngramScope)
 	defer func() {
 		s.profileNamesToRemove = nil
 		s.profileSelectionScoped = false
-		s.engramUninstallScope = model.EngramUninstallScopeGlobal
+		s.KortexEngramUninstallScope = model.KortexEngramUninstallScopeGlobal
 	}()
 
 	if len(agentIDs) == 0 {
@@ -245,18 +245,18 @@ func (s *Service) SetProfileNamesToRemove(profileNames []string) {
 	s.profileSelectionScoped = true
 }
 
-func (s *Service) SetEngramUninstallScope(scope model.EngramUninstallScope) {
-	if scope == model.EngramUninstallScopeProject {
-		s.engramUninstallScope = model.EngramUninstallScopeProject
+func (s *Service) SetKortexEngramUninstallScope(scope model.KortexEngramUninstallScope) {
+	if scope == model.KortexEngramUninstallScopeProject {
+		s.KortexEngramUninstallScope = model.KortexEngramUninstallScopeProject
 		return
 	}
-	s.engramUninstallScope = model.EngramUninstallScopeGlobal
+	s.KortexEngramUninstallScope = model.KortexEngramUninstallScopeGlobal
 }
 
 func (s *Service) CompleteUninstall() (Result, error) {
 	s.profileNamesToRemove = nil
 	s.profileSelectionScoped = false
-	s.engramUninstallScope = model.EngramUninstallScopeGlobal
+	s.KortexEngramUninstallScope = model.KortexEngramUninstallScopeGlobal
 
 	allAgents := s.registry.SupportedAgents()
 	plan, err := s.buildPlan(allAgents, allManagedComponents)
@@ -305,7 +305,7 @@ func (s *Service) buildPlan(agentIDs []model.AgentID, componentIDs []model.Compo
 				key := operationKey(op)
 				if existing, ok := operationsByKey[key]; ok && op.typeID == opRewriteFile {
 					// Merge rewrite operations on the same file so both
-					// mutations apply (e.g. persona + engram on system prompt).
+					// mutations apply (e.g. persona + KortexEngram on system prompt).
 					operationsByKey[key] = mergeRewriteOps(existing, op)
 				} else {
 					operationsByKey[key] = op
@@ -454,9 +454,9 @@ func (s *Service) componentOperations(adapter agents.Adapter, componentID model.
 	case model.ComponentContext7:
 		targets = append(targets, context7Targets(adapter, homeDir)...)
 		ops = append(ops, context7Operations(adapter, homeDir)...)
-	case model.ComponentEngram:
-		if s.engramUninstallScope == model.EngramUninstallScopeProject {
-			projectDataPath := filepath.Join(s.workspaceDir, ".engram")
+	case model.ComponentKortexEngram:
+		if s.KortexEngramUninstallScope == model.KortexEngramUninstallScopeProject {
+			projectDataPath := filepath.Join(s.workspaceDir, ".KortexEngram")
 			if strings.TrimSpace(s.workspaceDir) != "" {
 				targets = append(targets, projectDataPath)
 				ops = append(ops, removeTree(projectDataPath))
@@ -464,13 +464,13 @@ func (s *Service) componentOperations(adapter agents.Adapter, componentID model.
 			break
 		}
 
-		targets = append(targets, engramTargets(adapter, homeDir)...)
-		ops = append(ops, engramOperations(adapter, homeDir)...)
+		targets = append(targets, KortexEngramTargets(adapter, homeDir)...)
+		ops = append(ops, KortexEngramOperations(adapter, homeDir)...)
 		if adapter.SupportsSystemPrompt() {
 			path := adapter.SystemPromptFile(homeDir)
 			targets = append(targets, path)
 			ops = append(ops, rewriteMarkdownFile(path, func(content string) (string, bool) {
-				return removeMarkdownSections(content, "engram-protocol")
+				return removeMarkdownSections(content, "KortexEngram-protocol")
 			}))
 		}
 	case model.ComponentPermission:
@@ -665,46 +665,46 @@ func context7Operations(adapter agents.Adapter, homeDir string) []operation {
 	}
 }
 
-func engramTargets(adapter agents.Adapter, homeDir string) []string {
+func KortexEngramTargets(adapter agents.Adapter, homeDir string) []string {
 	targets := make([]string, 0, 3)
 	switch adapter.MCPStrategy() {
 	case model.StrategySeparateMCPFiles:
-		targets = append(targets, adapter.MCPConfigPath(homeDir, "engram"))
+		targets = append(targets, adapter.MCPConfigPath(homeDir, "kortex-engram"))
 	case model.StrategyMergeIntoSettings:
 		targets = append(targets, adapter.SettingsPath(homeDir))
 	case model.StrategyMCPConfigFile:
-		targets = append(targets, adapter.MCPConfigPath(homeDir, "engram"))
+		targets = append(targets, adapter.MCPConfigPath(homeDir, "kortex-engram"))
 	case model.StrategyTOMLFile:
 		targets = append(targets,
-			adapter.MCPConfigPath(homeDir, "engram"),
-			filepath.Join(homeDir, ".codex", "engram-instructions.md"),
-			filepath.Join(homeDir, ".codex", "engram-compact-prompt.md"),
+			adapter.MCPConfigPath(homeDir, "kortex-engram"),
+			filepath.Join(homeDir, ".codex", "KortexEngram-instructions.md"),
+			filepath.Join(homeDir, ".codex", "KortexEngram-compact-prompt.md"),
 		)
 	}
 	return targets
 }
 
-func engramOperations(adapter agents.Adapter, homeDir string) []operation {
+func KortexEngramOperations(adapter agents.Adapter, homeDir string) []operation {
 	switch adapter.MCPStrategy() {
 	case model.StrategySeparateMCPFiles:
-		path := adapter.MCPConfigPath(homeDir, "engram")
+		path := adapter.MCPConfigPath(homeDir, "kortex-engram")
 		return []operation{removeFile(path), removeDirIfEmpty(filepath.Dir(path))}
 	case model.StrategyMergeIntoSettings:
 		path := adapter.SettingsPath(homeDir)
 		if adapter.Agent() == model.AgentOpenCode {
-			return []operation{rewriteJSONFile(path, jsonPath{"mcp", "engram"})}
+			return []operation{rewriteJSONFile(path, jsonPath{"mcp", "kortex-engram"})}
 		}
-		return []operation{rewriteJSONFile(path, jsonPath{"mcpServers", "engram"})}
+		return []operation{rewriteJSONFile(path, jsonPath{"mcpServers", "kortex-engram"})}
 	case model.StrategyMCPConfigFile:
-		path := adapter.MCPConfigPath(homeDir, "engram")
+		path := adapter.MCPConfigPath(homeDir, "kortex-engram")
 		if adapter.Agent() == model.AgentVSCodeCopilot {
-			return []operation{rewriteJSONFile(path, jsonPath{"servers", "engram"})}
+			return []operation{rewriteJSONFile(path, jsonPath{"servers", "kortex-engram"})}
 		}
-		return []operation{rewriteJSONFile(path, jsonPath{"mcpServers", "engram"})}
+		return []operation{rewriteJSONFile(path, jsonPath{"mcpServers", "kortex-engram"})}
 	case model.StrategyTOMLFile:
-		configPath := adapter.MCPConfigPath(homeDir, "engram")
-		instructionsPath := filepath.Join(homeDir, ".codex", "engram-instructions.md")
-		compactPath := filepath.Join(homeDir, ".codex", "engram-compact-prompt.md")
+		configPath := adapter.MCPConfigPath(homeDir, "kortex-engram")
+		instructionsPath := filepath.Join(homeDir, ".codex", "KortexEngram-instructions.md")
+		compactPath := filepath.Join(homeDir, ".codex", "KortexEngram-compact-prompt.md")
 		return []operation{
 			rewriteTOMLFile(configPath, cleanCodexTOML),
 			removeFile(instructionsPath),

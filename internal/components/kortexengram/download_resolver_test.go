@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"strings"
@@ -7,9 +7,9 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/system"
 )
 
-// TestResolveEngramInstallNonBrewReturnsError verifies that after the fix,
+// TestResolveKortexEngramInstallNonBrewReturnsError verifies that after the fix,
 // resolver.go only handles brew. Non-brew cases handled by DownloadLatestBinary.
-// This is tested indirectly via the engram package — after our change,
+// This is tested indirectly via the KortexEngram package — after our change,
 // InstallCommand for linux/windows returns an error (those cases removed).
 func TestInstallCommandNonBrewReturnsError(t *testing.T) {
 	tests := []struct {
@@ -58,12 +58,12 @@ func TestInstallCommandBrewStillWorks(t *testing.T) {
 	found := false
 	for _, cmd := range cmds {
 		for _, arg := range cmd {
-			if strings.Contains(arg, "engram") {
+			if strings.Contains(arg, "kortex-engram") {
 				found = true
 			}
 		}
 	}
 	if !found {
-		t.Fatalf("InstallCommand(brew) commands don't reference engram: %v", cmds)
+		t.Fatalf("InstallCommand(brew) commands don't reference KortexEngram: %v", cmds)
 	}
 }

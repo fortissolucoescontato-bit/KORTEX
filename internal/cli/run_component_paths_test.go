@@ -77,7 +77,7 @@ func TestComponentPathsSDDIncludesSkillsAndSharedConventions(t *testing.T) {
 	// Verify all four shared convention files are reported.
 	for _, sharedFile := range []string{
 		"persistence-contract.md",
-		"engram-convention.md",
+		"KortexEngram-convention.md",
 		"openspec-convention.md",
 		"sdd-phase-common.md",
 		"skill-resolver.md",
@@ -109,7 +109,7 @@ func TestComponentPathsSDDKimiIncludesAgentFilesAndGlobalSkills(t *testing.T) {
 		filepath.Join(home, ".kimi", "agents", "sdd-verify.md"),
 		filepath.Join(home, ".kimi", "agents", "sdd-archive.yaml"),
 		filepath.Join(home, ".config", "agents", "skills", "sdd-init", "SKILL.md"),
-		filepath.Join(home, ".config", "agents", "skills", "_shared", "engram-convention.md"),
+		filepath.Join(home, ".config", "agents", "skills", "_shared", "KortexEngram-convention.md"),
 	} {
 		if !containsPath(paths, want) {
 			t.Fatalf("componentPaths(sdd,kimi) missing %q\npaths=%v", want, paths)
@@ -129,17 +129,17 @@ func TestComponentPathsContext7KimiIncludesMCPConfig(t *testing.T) {
 	}
 }
 
-// TestComponentPathsEngramCodexIncludesConfigTOML verifies that componentPaths
-// for ComponentEngram + Codex reports ~/.codex/config.toml as a backup target.
-func TestComponentPathsEngramCodexIncludesConfigTOML(t *testing.T) {
+// TestComponentPathsKortexEngramCodexIncludesConfigTOML verifies that componentPaths
+// for ComponentKortexEngram + Codex reports ~/.codex/config.toml as a backup target.
+func TestComponentPathsKortexEngramCodexIncludesConfigTOML(t *testing.T) {
 	home := t.TempDir()
 	adapters := resolveAdapters([]model.AgentID{model.AgentCodex})
 
-	paths := componentPaths(home, model.Selection{}, adapters, model.ComponentEngram)
+	paths := componentPaths(home, model.Selection{}, adapters, model.ComponentKortexEngram)
 
 	want := filepath.Join(home, ".codex", "config.toml")
 	if !containsPath(paths, want) {
-		t.Fatalf("componentPaths(engram,codex) missing %q\npaths=%v", want, paths)
+		t.Fatalf("componentPaths(KortexEngram,codex) missing %q\npaths=%v", want, paths)
 	}
 }
 

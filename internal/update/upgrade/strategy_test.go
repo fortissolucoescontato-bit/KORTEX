@@ -23,12 +23,12 @@ func TestRunStrategy_BrewUpgrade(t *testing.T) {
 	execCommand = func(name string, args ...string) *exec.Cmd {
 		gotName = name
 		gotArgs = args
-		return exec.Command("echo", "Upgraded engram")
+		return exec.Command("echo", "Upgraded KortexEngram")
 	}
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			InstallMethod: update.InstallBrew,
 		},
 		LatestVersion: "0.4.0",
@@ -43,8 +43,8 @@ func TestRunStrategy_BrewUpgrade(t *testing.T) {
 	if gotName != "brew" {
 		t.Errorf("exec name = %q, want %q", gotName, "brew")
 	}
-	if len(gotArgs) < 2 || gotArgs[0] != "upgrade" || gotArgs[1] != "engram" {
-		t.Errorf("exec args = %v, want [upgrade engram]", gotArgs)
+	if len(gotArgs) < 2 || gotArgs[0] != "upgrade" || gotArgs[1] != "kortex-engram" {
+		t.Errorf("exec args = %v, want [upgrade KortexEngram]", gotArgs)
 	}
 }
 
@@ -64,9 +64,9 @@ func TestRunStrategy_GoInstallUpgrade(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			InstallMethod: update.InstallGoInstall,
-			GoImportPath:  "github.com/fortissolucoescontato-bit/engram/cmd/engram",
+			GoImportPath:  "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram",
 		},
 		LatestVersion: "0.4.0",
 	}
@@ -80,8 +80,8 @@ func TestRunStrategy_GoInstallUpgrade(t *testing.T) {
 	if gotName != "go" {
 		t.Errorf("exec name = %q, want %q", gotName, "go")
 	}
-	// Expected: go install github.com/fortissolucoescontato-bit/engram/cmd/engram@v0.4.0
-	wantArg0, wantArg1 := "install", "github.com/fortissolucoescontato-bit/engram/cmd/engram@v0.4.0"
+	// Expected: go install github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram@v0.4.0
+	wantArg0, wantArg1 := "install", "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram@v0.4.0"
 	if len(gotArgs) < 2 || gotArgs[0] != wantArg0 || gotArgs[1] != wantArg1 {
 		t.Errorf("exec args = %v, want [%s %s]", gotArgs, wantArg0, wantArg1)
 	}
@@ -92,7 +92,7 @@ func TestRunStrategy_GoInstallUpgrade(t *testing.T) {
 func TestRunStrategy_GoInstallMissingImportPath(t *testing.T) {
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			InstallMethod: update.InstallGoInstall,
 			GoImportPath:  "", // missing
 		},
@@ -137,7 +137,7 @@ func TestRunStrategy_BrewUpgradeFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			InstallMethod: update.InstallBrew,
 		},
 		LatestVersion: "0.4.0",
@@ -162,9 +162,9 @@ func TestRunStrategy_GoInstallFailure(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			InstallMethod: update.InstallGoInstall,
-			GoImportPath:  "github.com/fortissolucoescontato-bit/engram/cmd/engram",
+			GoImportPath:  "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram",
 		},
 		LatestVersion: "0.4.0",
 	}
@@ -223,7 +223,7 @@ func TestEffectiveMethod(t *testing.T) {
 	}{
 		{
 			name:    "brew profile overrides go-install",
-			tool:    update.ToolInfo{Name: "engram", InstallMethod: update.InstallGoInstall},
+			tool:    update.ToolInfo{Name: "kortex-engram", InstallMethod: update.InstallGoInstall},
 			profile: system.PlatformProfile{PackageManager: "brew"},
 			want:    update.InstallBrew,
 		},
@@ -241,7 +241,7 @@ func TestEffectiveMethod(t *testing.T) {
 		},
 		{
 			name:    "apt profile respects declared method (go-install)",
-			tool:    update.ToolInfo{Name: "engram", InstallMethod: update.InstallGoInstall},
+			tool:    update.ToolInfo{Name: "kortex-engram", InstallMethod: update.InstallGoInstall},
 			profile: system.PlatformProfile{PackageManager: "apt"},
 			want:    update.InstallGoInstall,
 		},
@@ -396,7 +396,7 @@ func TestRunStrategy_ExecErrorWrapped(t *testing.T) {
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			InstallMethod: update.InstallBrew,
 		},
 		LatestVersion: "0.4.0",
@@ -726,17 +726,17 @@ func TestInstallScriptURL(t *testing.T) {
 	}
 }
 
-// --- TestEngramUpgradeUsesDownloadNotGoInstall ---
+// --- TestKortexEngramUpgradeUsesDownloadNotGoInstall ---
 
-// TestEngramUpgradeUsesDownloadNotGoInstall verifies that on Windows (non-brew),
-// engram upgrade calls the binary download function, NOT go install.
+// TestKortexEngramUpgradeUsesDownloadNotGoInstall verifies that on Windows (non-brew),
+// KortexEngram upgrade calls the binary download function, NOT go install.
 // This is the regression test for issue #160.
-func TestEngramUpgradeUsesDownloadNotGoInstall(t *testing.T) {
+func TestKortexEngramUpgradeUsesDownloadNotGoInstall(t *testing.T) {
 	origExecCommand := execCommand
-	origEngramDownloadFn := engramDownloadFn
+	origKortexEngramDownloadFn := KortexEngramDownloadFn
 	t.Cleanup(func() {
 		execCommand = origExecCommand
-		engramDownloadFn = origEngramDownloadFn
+		KortexEngramDownloadFn = origKortexEngramDownloadFn
 	})
 
 	execCalled := false
@@ -746,16 +746,16 @@ func TestEngramUpgradeUsesDownloadNotGoInstall(t *testing.T) {
 	}
 
 	downloadCalled := false
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
 		downloadCalled = true
-		return "/fake/path/engram.exe", nil
+		return "/fake/path/kortexengram.exe", nil
 	}
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			Owner:         "fortissolucoescontato-bit",
-			Repo:          "engram",
+			Repo:          "kortex-engram",
 			InstallMethod: update.InstallBinary, // should be InstallBinary after fix
 		},
 		LatestVersion: "0.5.0",
@@ -764,28 +764,28 @@ func TestEngramUpgradeUsesDownloadNotGoInstall(t *testing.T) {
 
 	err := runStrategy(context.Background(), r, profile)
 	if err != nil {
-		t.Fatalf("runStrategy engram windows: unexpected error: %v", err)
+		t.Fatalf("runStrategy KortexEngram windows: unexpected error: %v", err)
 	}
 
 	// Must call binary download, NOT go install.
 	if !downloadCalled {
-		t.Errorf("expected engramDownloadFn to be called, but it was not")
+		t.Errorf("expected KortexEngramDownloadFn to be called, but it was not")
 	}
 	if execCalled {
-		t.Errorf("exec (go install) should NOT be called for engram on Windows — use binary download")
+		t.Errorf("exec (go install) should NOT be called for KortexEngram on Windows — use binary download")
 	}
 }
 
-// --- TestEngramUpgradeLinuxUsesDownload ---
+// --- TestKortexEngramUpgradeLinuxUsesDownload ---
 
-// TestEngramUpgradeLinuxUsesDownload verifies that on Linux (non-brew),
-// engram upgrade uses the binary download function, not go install.
-func TestEngramUpgradeLinuxUsesDownload(t *testing.T) {
+// TestKortexEngramUpgradeLinuxUsesDownload verifies that on Linux (non-brew),
+// KortexEngram upgrade uses the binary download function, not go install.
+func TestKortexEngramUpgradeLinuxUsesDownload(t *testing.T) {
 	origExecCommand := execCommand
-	origEngramDownloadFn := engramDownloadFn
+	origKortexEngramDownloadFn := KortexEngramDownloadFn
 	t.Cleanup(func() {
 		execCommand = origExecCommand
-		engramDownloadFn = origEngramDownloadFn
+		KortexEngramDownloadFn = origKortexEngramDownloadFn
 	})
 
 	execCalled := false
@@ -795,16 +795,16 @@ func TestEngramUpgradeLinuxUsesDownload(t *testing.T) {
 	}
 
 	downloadCalled := false
-	engramDownloadFn = func(profile system.PlatformProfile) (string, error) {
+	KortexEngramDownloadFn = func(profile system.PlatformProfile) (string, error) {
 		downloadCalled = true
-		return "/home/user/.local/bin/engram", nil
+		return "/home/user/.local/bin/KortexEngram", nil
 	}
 
 	r := update.UpdateResult{
 		Tool: update.ToolInfo{
-			Name:          "engram",
+			Name:          "kortex-engram",
 			Owner:         "fortissolucoescontato-bit",
-			Repo:          "engram",
+			Repo:          "kortex-engram",
 			InstallMethod: update.InstallBinary, // should be InstallBinary after fix
 		},
 		LatestVersion: "0.5.0",
@@ -813,14 +813,14 @@ func TestEngramUpgradeLinuxUsesDownload(t *testing.T) {
 
 	err := runStrategy(context.Background(), r, profile)
 	if err != nil {
-		t.Fatalf("runStrategy engram linux: unexpected error: %v", err)
+		t.Fatalf("runStrategy KortexEngram linux: unexpected error: %v", err)
 	}
 
 	if !downloadCalled {
-		t.Errorf("expected engramDownloadFn to be called for engram on Linux, but it was not")
+		t.Errorf("expected KortexEngramDownloadFn to be called for KortexEngram on Linux, but it was not")
 	}
 	if execCalled {
-		t.Errorf("exec (go install) should NOT be called for engram on Linux — use binary download")
+		t.Errorf("exec (go install) should NOT be called for KortexEngram on Linux — use binary download")
 	}
 }
 

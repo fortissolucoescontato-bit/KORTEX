@@ -20,7 +20,7 @@ internal/
   backup/                  Snapshot de configuração + restauração
   assets/                  Arquivos de skill embutidos + templates de persona
   components/              Lógica de instalação/injeção por componente
-    engram/  sdd/  skills/  mcp/  persona/  theme/  permissions/  kortex/
+    kortex-engram/  sdd/  skills/  mcp/  persona/  theme/  permissions/  kortex/
     filemerge/             Mesclagem de arquivos baseada em marcadores (injeção sem sobrescrever)
   agents/                  Adaptadores de agentes (estratégia de config por agente)
     claude/  opencode/  gemini/  cursor/  vscode/  codex/  windsurf/  antigravity/

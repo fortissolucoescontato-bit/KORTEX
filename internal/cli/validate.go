@@ -96,9 +96,9 @@ func normalizeComponents(values []string, preset model.PresetID) ([]model.Compon
 	components := []model.ComponentID{}
 	for _, raw := range values {
 		component := model.ComponentID(raw)
-		// Backward compatibility mapping for 'engram' -> 'kortex-engram'
-		if raw == "engram" {
-			component = model.ComponentEngram
+		// Backward compatibility mapping for 'KortexEngram' -> 'KortexEngram'
+		if raw == "kortex-engram" {
+			component = model.ComponentKortexEngram
 		}
 
 		if _, ok := allowed[component]; !ok {
@@ -148,14 +148,14 @@ func normalizeSDDMode(value string) (model.SDDModeID, error) {
 func componentsForPreset(preset model.PresetID) []model.ComponentID {
 	switch preset {
 	case model.PresetMinimal:
-		return []model.ComponentID{model.ComponentEngram}
+		return []model.ComponentID{model.ComponentKortexEngram}
 	case model.PresetEcosystemOnly:
-		return []model.ComponentID{model.ComponentEngram, model.ComponentSDD, model.ComponentSkills, model.ComponentContext7, model.ComponentKortexCLI}
+		return []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD, model.ComponentSkills, model.ComponentContext7, model.ComponentKortexCLI}
 	case model.PresetCustom:
 		return nil
 	default:
 		return []model.ComponentID{
-			model.ComponentEngram,
+			model.ComponentKortexEngram,
 			model.ComponentSDD,
 			model.ComponentSkills,
 			model.ComponentContext7,

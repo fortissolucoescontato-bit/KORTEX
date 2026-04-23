@@ -29,7 +29,7 @@ Todos os agentes recebem o **orquestrador SDD completo** injetado em seu prompt 
 | Modelo                | Como Funciona                                                                                                                         | Agentes                                                           |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | **Total (subagentes)**| Cada fase do SDD roda em uma janela de contexto isolada via delegação nativa de subagentes. O orquestrador coordena; subagentes executam. | Claude Code, OpenCode, Gemini CLI, Cursor, VS Code Copilot, Kimi, Kiro IDE, Qwen Code |
-| **Agente solo**       | Todas as fases do SDD rodam na mesma conversa. O orquestrador É o executor. O Engram fornece persistência entre as fases.             | Codex, Windsurf, Antigravity                                      |
+| **Agente solo**       | Todas as fases do SDD rodam na mesma conversa. O orquestrador É o executor. O Kortex-Engram fornece persistência entre as fases.             | Codex, Windsurf, Antigravity                                      |
 
 ### Subagentes Nativos do Cursor
 
@@ -115,7 +115,7 @@ O Kiro usa agentes personalizados nativos em `~/.kiro/agents/`. O `kortex` grava
 - Agente nativo CLI com configuração TOML em `~/.codex/config.toml`
 - Skills em `~/.codex/skills/`
 - Prompt de sistema em `~/.codex/agents.md`
-- Arquivos de instrução Engram em `~/.codex/engram-instructions.md`
+- Arquivos de instrução Kortex-Engram em `~/.codex/kortex-engram-instructions.md`
 
 ### Windsurf
 
@@ -137,7 +137,7 @@ O Kiro usa agentes personalizados nativos em `~/.kiro/agents/`. O `kortex` grava
 - A instalação requer o gerenciador de pacotes Python `uv` (`uv tool install kimi-cli`).
 - Agente personalizado raiz em `~/.kimi/agents/carbon.yaml` com `system_prompt_path: ../KIMI.md`
 - `KIMI.md` é um template Jinja que inclui arquivos de prompt modulares:
-  `persona.md`, `output-style.md`, `engram-protocol.md`, `sdd-orchestrator.md`
+  `persona.md`, `output-style.md`, `kortex-engram-protocol.md`, `sdd-orchestrator.md`
 - Variáveis embutidas do Kimi são preservadas no `KIMI.md`: `${KIMI_AGENTS_MD}` e `${KIMI_SKILLS}`
 
 ### Kiro IDE
@@ -160,5 +160,5 @@ O Kiro usa agentes personalizados nativos em `~/.kiro/agents/`. O `kortex` grava
 - **Comandos Slash**: `~/.qwen/commands/*.md` — suporta comandos slash personalizados com namespace (ex: `commands/sdd/init.md` → `/sdd:init`)
 - **Permissões**: modo `auto_edit` — aprova automaticamente edições de arquivo, aprovação manual para comandos de shell
 - **Instalação**: via npm — `npm install -g @qwen-code/qwen-code@latest`
-- **Slug Engram**: `"qwen-code"` para integração com `engram setup`
+- **Slug Kortex-Engram**: `"qwen-code"` para integração com `kortex-engram setup`
 - **Orquestrador SDD**: `internal/assets/qwen/sdd-orchestrator.md` com referências de caminho específicas do Qwen

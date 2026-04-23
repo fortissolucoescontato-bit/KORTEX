@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"reflect"
@@ -17,7 +17,7 @@ func TestInstallCommandByProfile(t *testing.T) {
 		{
 			name:    "darwin uses brew tap and install",
 			profile: system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
-			want:    [][]string{{"brew", "tap", "fortissolucoescontato-bit/homebrew-tap"}, {"brew", "install", "engram"}},
+			want:    [][]string{{"brew", "tap", "fortissolucoescontato-bit/homebrew-tap"}, {"brew", "install", "kortex-engram"}},
 		},
 		// Linux and Windows now use DownloadLatestBinary() — InstallCommand returns an error
 		// to signal that callers must use the direct download path instead.

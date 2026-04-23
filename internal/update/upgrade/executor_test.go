@@ -47,7 +47,7 @@ func makeResult(name string, status update.UpdateStatus, oldVer, newVer string, 
 func TestExecute_NoopWhenNothingIsExecutable(t *testing.T) {
 	results := []update.UpdateResult{
 		makeResult("kortex", update.UpToDate, "1.0.0", "1.0.0", update.InstallBinary),
-		makeResult("engram", update.NotInstalled, "", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.NotInstalled, "", "0.4.0", update.InstallGoInstall),
 		// kortex: CheckFailed — should also be omitted from results.
 		makeResult("kortex", update.CheckFailed, "", "", update.InstallScript),
 	}
@@ -108,9 +108,9 @@ func TestExecute_DevBuildOnlyNoBackupCreated(t *testing.T) {
 
 func TestExecute_VersionUnknownIsSurfacedAsSkipped(t *testing.T) {
 	results := []update.UpdateResult{
-		makeResult("engram", update.VersionUnknown, "", "1.2.0", update.InstallBinary),
+		makeResult("kortex-engram", update.VersionUnknown, "", "1.2.0", update.InstallBinary),
 	}
-	results[0].Tool.DetectCmd = []string{"engram", "version"}
+	results[0].Tool.DetectCmd = []string{"kortex-engram", "version"}
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -123,7 +123,7 @@ func TestExecute_VersionUnknownIsSurfacedAsSkipped(t *testing.T) {
 	if report.Results[0].ManualHint == "" {
 		t.Fatal("ManualHint must be populated for version-unknown tools")
 	}
-	if !strings.Contains(report.Results[0].ManualHint, "`engram version`") {
+	if !strings.Contains(report.Results[0].ManualHint, "`KortexEngram version`") {
 		t.Fatalf("ManualHint = %q, want detect command hint", report.Results[0].ManualHint)
 	}
 	if report.BackupID != "" {
@@ -137,7 +137,7 @@ func TestRenderUpgradeReport_DryRunManualHintNotCountedAsPending(t *testing.T) {
 	report := UpgradeReport{
 		DryRun: true,
 		Results: []ToolUpgradeResult{
-			{ToolName: "engram", Status: UpgradeSkipped, ManualHint: "source build — upgrade manually"},
+			{ToolName: "kortex-engram", Status: UpgradeSkipped, ManualHint: "source build — upgrade manually"},
 		},
 	}
 
@@ -169,9 +169,9 @@ func TestExecute_BackupBeforeExecution(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -201,9 +201,9 @@ func TestExecute_DryRunNeverExecs(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), true)
 
@@ -233,7 +233,7 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 	t.Cleanup(func() { execCommand = origExecCommand })
 
 	execCommand = func(name string, args ...string) *exec.Cmd {
-		// engram go install succeeds, kortex curl/download attempt fails — we simulate
+		// KortexEngram go install succeeds, kortex curl/download attempt fails — we simulate
 		// the failure by having execCommand return false for "kortex" detection.
 		if name == "go" {
 			return exec.Command("echo", "go install ok")
@@ -243,9 +243,9 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -253,9 +253,9 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 		t.Fatalf("len(Results) = %d, want 1", len(report.Results))
 	}
 
-	// engram should succeed (go install echo'd "ok")
+	// KortexEngram should succeed (go install echo'd "ok")
 	if report.Results[0].Status != UpgradeSucceeded {
-		t.Errorf("engram status = %q, want UpgradeSucceeded", report.Results[0].Status)
+		t.Errorf("KortexEngram status = %q, want UpgradeSucceeded", report.Results[0].Status)
 	}
 }
 
@@ -264,7 +264,7 @@ func TestExecute_PerToolSuccessAndFailure(t *testing.T) {
 // TestExecute_DevBuildIsSkipped verifies the spec requirement:
 // kortex with DevBuild status must appear in Results as UpgradeSkipped
 // with a non-empty ManualHint explaining it is a source/dev build.
-// DevBuild tools must NOT be auto-executed, and engram/kortex remain eligible.
+// DevBuild tools must NOT be auto-executed, and KortexEngram/kortex remain eligible.
 func TestExecute_DevBuildIsSkipped(t *testing.T) {
 	origExecCommand := execCommand
 	t.Cleanup(func() { execCommand = origExecCommand })
@@ -274,9 +274,9 @@ func TestExecute_DevBuildIsSkipped(t *testing.T) {
 
 	results := []update.UpdateResult{
 		makeResult("kortex", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[1].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[1].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -298,18 +298,18 @@ func TestExecute_DevBuildIsSkipped(t *testing.T) {
 		t.Errorf("kortex DevBuild ManualHint must be non-empty")
 	}
 
-	// engram should still be processed as succeeded.
+	// KortexEngram should still be processed as succeeded.
 	found := false
 	for _, r := range report.Results {
-		if r.ToolName == "engram" {
+		if r.ToolName == "kortex-engram" {
 			found = true
 			if r.Status != UpgradeSucceeded {
-				t.Errorf("engram status = %q, want UpgradeSucceeded", r.Status)
+				t.Errorf("KortexEngram status = %q, want UpgradeSucceeded", r.Status)
 			}
 		}
 	}
 	if !found {
-		t.Errorf("engram not found in Results")
+		t.Errorf("KortexEngram not found in Results")
 	}
 }
 
@@ -327,9 +327,9 @@ func TestExecute_FailureDoesNotImplyConfigLoss(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -370,9 +370,9 @@ func TestExecute_DevBuildSurfacedAsSkipped(t *testing.T) {
 
 	results := []update.UpdateResult{
 		makeResult("kortex", update.DevBuild, "dev", "1.0.0", update.InstallBinary),
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[1].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[1].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -397,18 +397,18 @@ func TestExecute_DevBuildSurfacedAsSkipped(t *testing.T) {
 		t.Errorf("kortex DevBuild ManualHint must be non-empty — should explain dev/source build")
 	}
 
-	// engram (UpdateAvailable) must still be processed normally.
+	// KortexEngram (UpdateAvailable) must still be processed normally.
 	found := false
 	for _, r := range report.Results {
-		if r.ToolName == "engram" {
+		if r.ToolName == "kortex-engram" {
 			found = true
 			if r.Status != UpgradeSucceeded {
-				t.Errorf("engram status = %q, want UpgradeSucceeded", r.Status)
+				t.Errorf("KortexEngram status = %q, want UpgradeSucceeded", r.Status)
 			}
 		}
 	}
 	if !found {
-		t.Errorf("engram not found in Results")
+		t.Errorf("KortexEngram not found in Results")
 	}
 }
 
@@ -498,9 +498,9 @@ func TestExecute_ConfigNotMutatedDuringUpgrade(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	profile := linuxProfile()
 
@@ -512,7 +512,7 @@ func TestExecute_ConfigNotMutatedDuringUpgrade(t *testing.T) {
 		t.Fatalf("len(Results) = %d, want 1", len(report.Results))
 	}
 	if report.Results[0].Status != UpgradeSucceeded {
-		t.Errorf("engram status = %q, want UpgradeSucceeded", report.Results[0].Status)
+		t.Errorf("KortexEngram status = %q, want UpgradeSucceeded", report.Results[0].Status)
 	}
 
 	// Verify config files are byte-identical after upgrade.
@@ -532,7 +532,7 @@ func TestExecute_ConfigNotMutatedDuringUpgrade(t *testing.T) {
 func TestToolUpgradeResult_ErrorWrapping(t *testing.T) {
 	sentinel := errors.New("sentinel error")
 	r := ToolUpgradeResult{
-		ToolName: "engram",
+		ToolName: "kortex-engram",
 		Status:   UpgradeFailed,
 		Err:      sentinel,
 	}
@@ -631,9 +631,9 @@ func TestExecute_ForcedSnapshotFailureSurfacesWarningEndToEnd(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 
@@ -700,9 +700,9 @@ func TestExecute_UpgradeBackupManifestHasUpgradeMetadata(t *testing.T) {
 	}
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), homeDir, false)
 
@@ -749,9 +749,9 @@ func TestExecute_SuccessfulSnapshotHasNoWarning(t *testing.T) {
 	// snapshotCreator is intentionally left at its real default.
 
 	results := []update.UpdateResult{
-		makeResult("engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
+		makeResult("kortex-engram", update.UpdateAvailable, "0.3.0", "0.4.0", update.InstallGoInstall),
 	}
-	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/engram/cmd/engram"
+	results[0].Tool.GoImportPath = "github.com/fortissolucoescontato-bit/KortexEngram/cmd/KortexEngram"
 
 	report := Execute(context.Background(), results, linuxProfile(), t.TempDir(), false)
 

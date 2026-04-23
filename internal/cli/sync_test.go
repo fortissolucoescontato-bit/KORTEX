@@ -192,10 +192,10 @@ func TestBuildSyncSelectionDefaultScopeIncludesManagedComponents(t *testing.T) {
 
 	sel := BuildSyncSelection(flags, agents)
 
-	// Default sync must include: SDD, Engram, Context7, KortexCLI, Skills
+	// Default sync must include: SDD, KortexEngram, Context7, KortexCLI, Skills
 	mandatoryComponents := []model.ComponentID{
 		model.ComponentSDD,
-		model.ComponentEngram,
+		model.ComponentKortexEngram,
 		model.ComponentContext7,
 		model.ComponentKortexCLI,
 		model.ComponentSkills,
@@ -420,7 +420,7 @@ func TestDiscoverAgentsDelegatesCanonicalDiscovery(t *testing.T) {
 
 // ─── Phase 3: componentSyncStep ───────────────────────────────────────────
 
-func TestComponentSyncStepSkipsEngramBinaryInstall(t *testing.T) {
+func TestComponentSyncStepSkipsKortexEngramBinaryInstall(t *testing.T) {
 	home := t.TempDir()
 	restoreCommand := runCommand
 	restoreLookPath := cmdLookPath
@@ -429,7 +429,7 @@ func TestComponentSyncStepSkipsEngramBinaryInstall(t *testing.T) {
 		cmdLookPath = restoreLookPath
 	})
 
-	// Simulate engram NOT on PATH — install logic should NOT be triggered.
+	// Simulate KortexEngram NOT on PATH — install logic should NOT be triggered.
 	cmdLookPath = func(name string) (string, error) {
 		return "", os.ErrNotExist
 	}
@@ -441,8 +441,8 @@ func TestComponentSyncStepSkipsEngramBinaryInstall(t *testing.T) {
 	}
 
 	step := componentSyncStep{
-		id:        "sync:engram",
-		component: model.ComponentEngram,
+		id:        "sync:KortexEngram",
+		component: model.ComponentKortexEngram,
 		homeDir:   home,
 		agents:    []model.AgentID{model.AgentOpenCode},
 		selection: model.Selection{SDDMode: model.SDDModeSingle},
@@ -452,13 +452,13 @@ func TestComponentSyncStepSkipsEngramBinaryInstall(t *testing.T) {
 		t.Fatalf("componentSyncStep.Run() error = %v", err)
 	}
 
-	// No binary install or engram setup commands should have been recorded.
+	// No binary install or KortexEngram setup commands should have been recorded.
 	for _, cmd := range commandsCalled {
 		if strings.Contains(cmd, "brew install") || strings.Contains(cmd, "go install") {
 			t.Errorf("componentSyncStep must not run binary install, got command: %s", cmd)
 		}
-		if strings.Contains(cmd, "engram setup") {
-			t.Errorf("componentSyncStep must not run engram setup, got command: %s", cmd)
+		if strings.Contains(cmd, "KortexEngram setup") {
+			t.Errorf("componentSyncStep must not run KortexEngram setup, got command: %s", cmd)
 		}
 	}
 }
@@ -586,7 +586,7 @@ func TestRunSyncAppliesManagedFilesystemChanges(t *testing.T) {
 	}
 }
 
-func TestRunSyncDoesNotInvokeEngramSetup(t *testing.T) {
+func TestRunSyncDoesNotInvokeKortexEngramSetup(t *testing.T) {
 	home := t.TempDir()
 	restoreHome := osUserHomeDir
 	restoreCommand := runCommand
@@ -612,8 +612,8 @@ func TestRunSyncDoesNotInvokeEngramSetup(t *testing.T) {
 	}
 
 	for _, cmd := range commandsCalled {
-		if strings.Contains(cmd, "engram setup") {
-			t.Errorf("RunSync must NOT invoke engram setup, got command: %s", cmd)
+		if strings.Contains(cmd, "KortexEngram setup") {
+			t.Errorf("RunSync must NOT invoke KortexEngram setup, got command: %s", cmd)
 		}
 	}
 }
@@ -1080,7 +1080,7 @@ func TestRunSyncWithProfilesIntegration(t *testing.T) {
 		Agents: []model.AgentID{model.AgentOpenCode},
 		Components: []model.ComponentID{
 			model.ComponentSDD,
-			model.ComponentEngram,
+			model.ComponentKortexEngram,
 			model.ComponentContext7,
 			model.ComponentKortexCLI,
 			model.ComponentSkills,
@@ -1199,7 +1199,7 @@ func TestRunSyncDetectsExistingProfilesOnRegularSync(t *testing.T) {
 		Agents: []model.AgentID{model.AgentOpenCode},
 		Components: []model.ComponentID{
 			model.ComponentSDD,
-			model.ComponentEngram,
+			model.ComponentKortexEngram,
 			model.ComponentContext7,
 			model.ComponentKortexCLI,
 			model.ComponentSkills,
@@ -1238,7 +1238,7 @@ func TestRunSyncDetectsExistingProfilesOnRegularSync(t *testing.T) {
 		Agents: []model.AgentID{model.AgentOpenCode},
 		Components: []model.ComponentID{
 			model.ComponentSDD,
-			model.ComponentEngram,
+			model.ComponentKortexEngram,
 			model.ComponentContext7,
 			model.ComponentKortexCLI,
 			model.ComponentSkills,
@@ -1360,7 +1360,7 @@ func TestRunSyncWithSelection_NoAgentsIsNoOp(t *testing.T) {
 
 	sel := model.Selection{
 		Agents:     nil,
-		Components: []model.ComponentID{model.ComponentSDD, model.ComponentEngram},
+		Components: []model.ComponentID{model.ComponentSDD, model.ComponentKortexEngram},
 	}
 
 	result, err := RunSyncWithSelection(home, sel)
@@ -1388,7 +1388,7 @@ func TestRunSyncWithSelection_WritesExpectedFiles(t *testing.T) {
 
 	sel := model.Selection{
 		Agents:     []model.AgentID{model.AgentOpenCode},
-		Components: []model.ComponentID{model.ComponentSDD, model.ComponentEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
+		Components: []model.ComponentID{model.ComponentSDD, model.ComponentKortexEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
 		SDDMode:    model.SDDModeSingle,
 	}
 
@@ -1424,7 +1424,7 @@ func TestRunSyncWithSelection_FilesChangedOnFreshHome(t *testing.T) {
 
 	sel := model.Selection{
 		Agents:     []model.AgentID{model.AgentOpenCode},
-		Components: []model.ComponentID{model.ComponentSDD, model.ComponentEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
+		Components: []model.ComponentID{model.ComponentSDD, model.ComponentKortexEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
 		SDDMode:    model.SDDModeSingle,
 	}
 
@@ -1454,7 +1454,7 @@ func TestRunSyncWithSelection_IsIdempotent(t *testing.T) {
 
 	sel := model.Selection{
 		Agents:     []model.AgentID{model.AgentOpenCode},
-		Components: []model.ComponentID{model.ComponentSDD, model.ComponentEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
+		Components: []model.ComponentID{model.ComponentSDD, model.ComponentKortexEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
 		SDDMode:    model.SDDModeSingle,
 	}
 
@@ -1496,7 +1496,7 @@ func TestRunSyncWithSelection_SelectionAgentsForwarded(t *testing.T) {
 
 	sel := model.Selection{
 		Agents:     []model.AgentID{model.AgentOpenCode},
-		Components: []model.ComponentID{model.ComponentSDD, model.ComponentEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
+		Components: []model.ComponentID{model.ComponentSDD, model.ComponentKortexEngram, model.ComponentContext7, model.ComponentKortexCLI, model.ComponentSkills},
 	}
 
 	result, err := RunSyncWithSelection(home, sel)

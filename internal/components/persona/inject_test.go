@@ -509,7 +509,7 @@ func TestInjectOpenCodePreservesUserPrefaceAboveManagedMarkers(t *testing.T) {
 	// existing managed markers. This is the exact scenario where aggressive
 	// legacy stripping would destroy user content.
 	existing := "## Rules\n\n- My team's custom rules.\n\n## Personality\n\nSenior Architect in my org.\n\n" +
-		"<!-- kortex:engram-protocol -->\nEngram protocol here.\n<!-- /kortex:engram-protocol -->\n"
+		"<!-- kortex:KortexEngram-protocol -->\nKortexEngram protocol here.\n<!-- /kortex:KortexEngram-protocol -->\n"
 	if err := os.WriteFile(path, []byte(existing), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -531,15 +531,15 @@ func TestInjectOpenCodePreservesUserPrefaceAboveManagedMarkers(t *testing.T) {
 	if !strings.Contains(text, "<!-- kortex:persona -->") {
 		t.Fatal("AGENTS.md missing managed persona section after inject")
 	}
-	if !strings.Contains(text, "<!-- kortex:engram-protocol -->") {
-		t.Fatal("existing engram section was lost")
+	if !strings.Contains(text, "<!-- kortex:KortexEngram-protocol -->") {
+		t.Fatal("existing KortexEngram section was lost")
 	}
 }
 
 func TestInjectOpenCodeNeutralPreservesManagedSections(t *testing.T) {
 	home := t.TempDir()
 
-	// First install carbon persona + simulate SDD/engram sections
+	// First install carbon persona + simulate SDD/KortexEngram sections
 	_, err := Inject(home, opencodeAdapter(), model.PersonaKortex)
 	if err != nil {
 		t.Fatalf("Inject(carbon) error = %v", err)
@@ -547,12 +547,12 @@ func TestInjectOpenCodeNeutralPreservesManagedSections(t *testing.T) {
 
 	path := filepath.Join(home, ".config", "opencode", "AGENTS.md")
 
-	// Simulate SDD and engram sections appended by sdd.Inject and engram.Inject
+	// Simulate SDD and KortexEngram sections appended by sdd.Inject and kortexengram.Inject
 	existing, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("ReadFile() error = %v", err)
 	}
-	withSections := string(existing) + "\n\n<!-- kortex:sdd-orchestrator -->\nSDD orchestrator content here\n<!-- /kortex:sdd-orchestrator -->\n\n<!-- kortex:engram-protocol -->\nEngram protocol content here\n<!-- /kortex:engram-protocol -->\n"
+	withSections := string(existing) + "\n\n<!-- kortex:sdd-orchestrator -->\nSDD orchestrator content here\n<!-- /kortex:sdd-orchestrator -->\n\n<!-- kortex:KortexEngram-protocol -->\nKortexEngram protocol content here\n<!-- /kortex:KortexEngram-protocol -->\n"
 	if err := os.WriteFile(path, []byte(withSections), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -584,8 +584,8 @@ func TestInjectOpenCodeNeutralPreservesManagedSections(t *testing.T) {
 	if !strings.Contains(text, "<!-- kortex:sdd-orchestrator -->") {
 		t.Fatal("AGENTS.md lost SDD orchestrator section after switching to neutral persona")
 	}
-	if !strings.Contains(text, "<!-- kortex:engram-protocol -->") {
-		t.Fatal("AGENTS.md lost engram protocol section after switching to neutral persona")
+	if !strings.Contains(text, "<!-- kortex:KortexEngram-protocol -->") {
+		t.Fatal("AGENTS.md lost KortexEngram protocol section after switching to neutral persona")
 	}
 
 	// Kortex-specific language should be gone — neutral has the same personality but no regional language
@@ -698,7 +698,7 @@ func TestInjectNeutralIdempotentWithManagedSections(t *testing.T) {
 	// Simulate a file with neutral persona + managed sections.
 	// Use a fingerprint from the real neutral asset so the test is realistic.
 	neutralContent := assets.MustRead("generic/persona-neutral.md")
-	initial := neutralContent + "\n\n<!-- kortex:sdd-orchestrator -->\nSDD content\n<!-- /kortex:sdd-orchestrator -->\n\n<!-- kortex:engram-protocol -->\nEngram content\n<!-- /kortex:engram-protocol -->\n"
+	initial := neutralContent + "\n\n<!-- kortex:sdd-orchestrator -->\nSDD content\n<!-- /kortex:sdd-orchestrator -->\n\n<!-- kortex:KortexEngram-protocol -->\nKortexEngram content\n<!-- /kortex:KortexEngram-protocol -->\n"
 	if err := os.WriteFile(promptPath, []byte(initial), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -732,8 +732,8 @@ func TestInjectNeutralIdempotentWithManagedSections(t *testing.T) {
 	if strings.Count(text, "## Rules") != 1 {
 		t.Fatal("neutral persona duplicated after idempotent inject")
 	}
-	if strings.Count(text, "<!-- kortex:engram-protocol -->") != 1 {
-		t.Fatal("engram section duplicated after idempotent neutral inject")
+	if strings.Count(text, "<!-- kortex:KortexEngram-protocol -->") != 1 {
+		t.Fatal("KortexEngram section duplicated after idempotent neutral inject")
 	}
 }
 

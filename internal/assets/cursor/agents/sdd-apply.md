@@ -36,7 +36,7 @@ After completing work, call `mem_save` with:
 - type: `"architecture"`
 - project: `{project-name from context}`
 
-Also update the tasks artifact with `[x]` marks via `mem_update` (engram) or file edit (openspec/hybrid).
+Also update the tasks artifact with `[x]` marks via `mem_update` (kortex-engram) or file edit (openspec/hybrid).
 
 ## Result Contract
 

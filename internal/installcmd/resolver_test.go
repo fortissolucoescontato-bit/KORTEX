@@ -124,7 +124,7 @@ func TestValidateGoForModuleInstall(t *testing.T) {
 	}
 }
 
-func TestResolveEngramBrewBypassesGoValidation(t *testing.T) {
+func TestResolveKortexEngramBrewBypassesGoValidation(t *testing.T) {
 	// On macOS, brew manages Go — validation must be skipped entirely.
 	origLookPath := cmdLookPath
 	cmdLookPath = func(file string) (string, error) {
@@ -133,12 +133,12 @@ func TestResolveEngramBrewBypassesGoValidation(t *testing.T) {
 	t.Cleanup(func() { cmdLookPath = origLookPath })
 
 	profile := system.PlatformProfile{OS: "darwin", PackageManager: "brew"}
-	cmds, err := resolveEngramInstall(profile)
+	cmds, err := resolveKortexEngramInstall(profile)
 	if err != nil {
-		t.Fatalf("resolveEngramInstall() unexpected error = %v", err)
+		t.Fatalf("resolveKortexEngramInstall() unexpected error = %v", err)
 	}
 	if len(cmds) == 0 {
-		t.Fatal("resolveEngramInstall() returned empty CommandSequence")
+		t.Fatal("resolveKortexEngramInstall() returned empty CommandSequence")
 	}
 }
 
@@ -514,29 +514,29 @@ func TestResolveComponentInstall(t *testing.T) {
 		wantErr   bool
 	}{
 		{
-			name:      "engram on darwin uses brew tap and install",
+			name:      "KortexEngram on darwin uses brew tap and install",
 			profile:   system.PlatformProfile{OS: "darwin", PackageManager: "brew"},
-			component: model.ComponentEngram,
-			want:      CommandSequence{{"brew", "tap", "fortissolucoescontato-bit/homebrew-tap"}, {"brew", "install", "engram"}},
+			component: model.ComponentKortexEngram,
+			want:      CommandSequence{{"brew", "tap", "fortissolucoescontato-bit/homebrew-tap"}, {"brew", "install", "kortex-engram"}},
 		},
-		// Linux and Windows engram now use DownloadLatestBinary() — resolver returns error.
+		// Linux and Windows KortexEngram now use DownloadLatestBinary() — resolver returns error.
 		// These cases are handled by run.go's componentApplyStep directly.
 		{
-			name:      "engram on ubuntu returns error (uses DownloadLatestBinary instead)",
+			name:      "KortexEngram on ubuntu returns error (uses DownloadLatestBinary instead)",
 			profile:   system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroUbuntu, PackageManager: "apt"},
-			component: model.ComponentEngram,
+			component: model.ComponentKortexEngram,
 			wantErr:   true,
 		},
 		{
-			name:      "engram on arch returns error (uses DownloadLatestBinary instead)",
+			name:      "KortexEngram on arch returns error (uses DownloadLatestBinary instead)",
 			profile:   system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroArch, PackageManager: "pacman"},
-			component: model.ComponentEngram,
+			component: model.ComponentKortexEngram,
 			wantErr:   true,
 		},
 		{
-			name:      "engram on fedora returns error (uses DownloadLatestBinary instead)",
+			name:      "KortexEngram on fedora returns error (uses DownloadLatestBinary instead)",
 			profile:   system.PlatformProfile{OS: "linux", LinuxDistro: system.LinuxDistroFedora, PackageManager: "dnf"},
-			component: model.ComponentEngram,
+			component: model.ComponentKortexEngram,
 			wantErr:   true,
 		},
 		{
@@ -576,9 +576,9 @@ func TestResolveComponentInstall(t *testing.T) {
 			},
 		},
 		{
-			name:      "engram on windows returns error (uses DownloadLatestBinary instead)",
+			name:      "KortexEngram on windows returns error (uses DownloadLatestBinary instead)",
 			profile:   system.PlatformProfile{OS: "windows", PackageManager: "winget"},
-			component: model.ComponentEngram,
+			component: model.ComponentKortexEngram,
 			wantErr:   true,
 		},
 		{

@@ -17,7 +17,7 @@ You are an EXECUTOR for this phase, not the orchestrator. Do the initialization 
 
 ## Execution and Persistence Contract
 
-- If mode is `engram`:
+- If mode is `kortex-engram`:
   Do NOT create `openspec/` directory.
 
   **Save project context**:
@@ -32,7 +32,7 @@ You are an EXECUTOR for this phase, not the orchestrator. Do the initialization 
   ```
   `topic_key` enables upserts — re-running init updates the existing context, not duplicates.
 
-  (See `skills/_shared/engram-convention.md` for full naming conventions.)
+  (See `skills/_shared/kortex-engram-convention.md` for full naming conventions.)
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Run full bootstrap.
 - If mode is `hybrid`: Read and follow BOTH convention files. Run openspec bootstrap AND persist context to Kortex-Engram.
 - If mode is `none`: Return detected context without writing project files.
@@ -175,7 +175,7 @@ rules:
 
 Persist detected testing capabilities as a separate Kortex-Engram observation (or section in config.yaml for openspec). This cache prevents re-detection on every `sdd-apply` and `sdd-verify` run.
 
-If mode is `engram` or `hybrid`:
+If mode is `kortex-engram` or `hybrid`:
 ```
 mem_save(
   title: "sdd/{project-name}/testing-capabilities",
@@ -226,7 +226,7 @@ Follow the same logic as the `skill-registry` skill (`skills/skill-registry/SKIL
 1. Scan user skills: glob `*/SKILL.md` across ALL known skill directories. **User-level**: `~/.claude/skills/`, `~/.config/opencode/skills/`, `~/.gemini/skills/`, `~/.cursor/skills/`, `~/.copilot/skills/`, parent of this skill file. **Project-level**: `.claude/skills/`, `.gemini/skills/`, `.agent/skills/`, `skills/`. Skip `sdd-*`, `_shared`, `skill-registry`. Deduplicate by name (project-level wins). Read frontmatter triggers.
 2. Scan project conventions: check for `agents.md`, `AGENTS.md`, `CLAUDE.md` (project-level), `.cursorrules`, `GEMINI.md`, `copilot-instructions.md` in the project root. If an index file is found (e.g., `agents.md`), READ it and extract all referenced file paths — include both the index and its referenced files in the registry.
 3. **ALWAYS write `.atl/skill-registry.md`** in the project root (create `.atl/` if needed). This file is mode-independent — it's infrastructure, not an SDD artifact.
-4. If engram is available, **ALSO save to engram**: `mem_save(title: "skill-registry", topic_key: "skill-registry", type: "config", project: "{project}", content: "{registry markdown}")`
+4. If kortex-engram is available, **ALSO save to kortex-engram**: `mem_save(title: "skill-registry", topic_key: "skill-registry", type: "config", project: "{project}", content: "{registry markdown}")`
 
 See `skills/skill-registry/SKILL.md` for the full registry format and scanning details.
 
@@ -234,7 +234,7 @@ See `skills/skill-registry/SKILL.md` for the full registry format and scanning d
 
 **This step is MANDATORY — do NOT skip it.**
 
-If mode is `engram`:
+If mode is `kortex-engram`:
 ```
 mem_save(
   title: "sdd-init/{project-name}",
@@ -253,9 +253,9 @@ If mode is `hybrid`: also call `mem_save` as above (write to BOTH backends).
 
 Return a structured summary adapted to the resolved mode:
 
-#### If mode is `engram`:
+#### If mode is `kortex-engram`:
 
-Persist project context following `skills/_shared/engram-convention.md` with title and topic_key `sdd-init/{project-name}`.
+Persist project context following `skills/_shared/kortex-engram-convention.md` with title and topic_key `sdd-init/{project-name}`.
 
 Return:
 ```
@@ -263,7 +263,7 @@ Return:
 
 **Projeto**: {project name}
 **Stack**: {detected stack}
-**Persistência**: engram
+**Persistência**: kortex-engram
 **Modo TDD Estrito**: {ativado ✅ / desativado ❌ / indisponível (sem runner de testes)}
 
 ### Capacidades de Teste
@@ -289,10 +289,10 @@ Nenhum arquivo de projeto foi criado.
 ### ⚠️ Notas do Modo Kortex-Engram
 O modo Kortex-Engram é ideal para **desenvolvedores solo** que buscam iteração rápida. Esteja ciente:
 - **Sem histórico de iteração**: rodar uma fase novamente (ex: `sdd-spec`) sobrescreve a versão anterior. Apenas o artefato mais recente é mantido.
-- **Não compartilhável**: o engram é um banco de dados local — outros membros da equipe não verão seus artefatos SDD.
+- **Não compartilhável**: o kortex-engram é um banco de dados local — outros membros da equipe não verão seus artefatos SDD.
 - **Trilha de auditoria parcial**: a fase de arquivamento salva um relatório de resumo, mas não a pasta completa de artefatos.
 
-Para **projetos em equipe** ou trabalhos que exigem trilha completa de auditoria, considere mudar para `openspec` (baseado em arquivos, amigável ao git) ou `hybrid` (arquivos + recuperação via engram).
+Para **projetos em equipe** ou trabalhos que exigem trilha completa de auditoria, considere mudar para `openspec` (baseado em arquivos, amigável ao git) ou `hybrid` (arquivos + recuperação via kortex-engram).
 
 ### Próximos Passos
 Pronto para /sdd-explore <tópico> ou /sdd-new <nome-da-mudança>.
@@ -335,7 +335,7 @@ Pronto para /sdd-explore <tópico> ou /sdd-new <nome-da-mudança>.
 {resumo da stack e convenções detectadas}
 
 ### Recomendação
-Ative o `engram` ou `openspec` para persistência de artefatos entre sessões. Sem persistência, todos os artefatos SDD serão perdidos quando a conversa terminar.
+Ative o `kortex-engram` ou `openspec` para persistência de artefatos entre sessões. Sem persistência, todos os artefatos SDD serão perdidos quando a conversa terminar.
 
 ### Próximos Passos
 Pronto para /sdd-explore <tópico> ou /sdd-new <nome-da-mudança>.

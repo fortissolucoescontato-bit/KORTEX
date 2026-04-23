@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"archive/tar"
@@ -18,81 +18,81 @@ import (
 )
 
 const (
-	engramOwner = "fortissolucoescontato-bit"
-	engramRepo  = "engram"
-	engramName  = "engram"
+	KortexEngramOwner = "fortissolucoescontato-bit"
+	KortexEngramRepo  = "kortex-engram"
+	KortexEngramName  = "kortex-engram"
 )
 
 // Package-level vars for testability.
 var (
-	engramHTTPClient    = &http.Client{Timeout: 5 * time.Minute}
-	engramGitHubBaseURL = "https://github.com"
-	engramInstallDirFn  = engramInstallDir
+	KortexEngramHTTPClient    = &http.Client{Timeout: 5 * time.Minute}
+	KortexEngramGitHubBaseURL = "https://github.com"
+	KortexEngramInstallDirFn  = KortexEngramInstallDir
 )
 
-// DownloadLatestBinary fetches the latest engram release from GitHub and
+// DownloadLatestBinary fetches the latest KortexEngram release from GitHub and
 // installs it to the appropriate directory for the given platform.
 // It returns the full path to the installed binary.
 //
 // This is the non-brew installation method for Linux and Windows.
-// On macOS, brew handles engram transitively and this should not be called.
+// On macOS, brew handles KortexEngram transitively and this should not be called.
 func DownloadLatestBinary(profile system.PlatformProfile) (string, error) {
 	// 1. Fetch the latest version tag from GitHub API.
-	version, err := fetchLatestEngramVersion()
+	version, err := fetchLatestKortexEngramVersion()
 	if err != nil {
-		return "", fmt.Errorf("fetch latest engram version: %w", err)
+		return "", fmt.Errorf("fetch latest KortexEngram version: %w", err)
 	}
 
 	// 2. Determine binary name and archive URL.
 	goos := profile.OS
 	goarch := normalizeArch(runtime.GOARCH)
-	assetURL := engramAssetURL(engramGitHubBaseURL, version, goos, goarch)
+	assetURL := KortexEngramAssetURL(KortexEngramGitHubBaseURL, version, goos, goarch)
 
 	// 3. Determine install directory.
-	installDir := engramInstallDirFn(goos)
+	installDir := KortexEngramInstallDirFn(goos)
 	if err := os.MkdirAll(installDir, 0o755); err != nil {
-		return "", fmt.Errorf("create engram install dir %q: %w", installDir, err)
+		return "", fmt.Errorf("create KortexEngram install dir %q: %w", installDir, err)
 	}
 
 	// 4. Download and extract binary.
-	// The binary inside the archive is still named "engram" (or "engram.exe").
+	// The binary inside the archive is still named "kortex-engram" (or "kortexengram.exe").
 	// We extract it to outPath which uses the new rebranded name "kortex-engram".
-	searchName := engramName
+	searchName := KortexEngramName
 	localName := "kortex-engram"
 	if goos == "windows" {
-		searchName = engramName + ".exe"
-		localName = "kortex-engram.exe"
+		searchName = KortexEngramName + ".exe"
+		localName = "kortexengram.exe"
 	}
 	outPath := filepath.Join(installDir, localName)
 
 	if strings.HasSuffix(assetURL, ".zip") {
 		if err := downloadAndExtractZip(assetURL, searchName, outPath); err != nil {
-			return "", fmt.Errorf("download engram zip: %w", err)
+			return "", fmt.Errorf("download KortexEngram zip: %w", err)
 		}
 	} else {
 		if err := downloadAndExtractTarGz(assetURL, searchName, outPath); err != nil {
-			return "", fmt.Errorf("download engram tar.gz: %w", err)
+			return "", fmt.Errorf("download KortexEngram tar.gz: %w", err)
 		}
 	}
 
 	return outPath, nil
 }
 
-// fetchLatestEngramVersion queries the GitHub Releases API for the latest engram
+// fetchLatestKortexEngramVersion queries the GitHub Releases API for the latest KortexEngram
 // release and returns the version string (without leading "v").
-func fetchLatestEngramVersion() (string, error) {
+func fetchLatestKortexEngramVersion() (string, error) {
 	token := githubToken()
-	version, status, err := fetchLatestEngramVersionRequest(token)
+	version, status, err := fetchLatestKortexEngramVersionRequest(token)
 	if err == nil {
 		return version, nil
 	}
 
 	// GitHub Actions injects a repository-scoped GITHUB_TOKEN into CI. When that
-	// token is forwarded into our Linux E2E containers, the public engram releases
+	// token is forwarded into our Linux E2E containers, the public KortexEngram releases
 	// endpoint can respond 401/403 for a different repository. Retry anonymously
 	// before failing because the release metadata is public.
 	if token != "" && (status == http.StatusUnauthorized || status == http.StatusForbidden) {
-		version, _, retryErr := fetchLatestEngramVersionRequest("")
+		version, _, retryErr := fetchLatestKortexEngramVersionRequest("")
 		if retryErr == nil {
 			return version, nil
 		}
@@ -101,9 +101,9 @@ func fetchLatestEngramVersion() (string, error) {
 	return "", err
 }
 
-func fetchLatestEngramVersionRequest(token string) (string, int, error) {
+func fetchLatestKortexEngramVersionRequest(token string) (string, int, error) {
 	apiURL := fmt.Sprintf("%s/repos/%s/%s/releases/latest",
-		engramAPIBaseURL(), engramOwner, engramRepo)
+		KortexEngramAPIBaseURL(), KortexEngramOwner, KortexEngramRepo)
 
 	req, err := http.NewRequest(http.MethodGet, apiURL, nil)
 	if err != nil {
@@ -114,7 +114,7 @@ func fetchLatestEngramVersionRequest(token string) (string, int, error) {
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
 
-	resp, err := engramHTTPClient.Do(req)
+	resp, err := KortexEngramHTTPClient.Do(req)
 	if err != nil {
 		return "", 0, fmt.Errorf("call GitHub API: %w", err)
 	}
@@ -149,9 +149,9 @@ func githubToken() string {
 }
 
 // normalizeArch maps Go's runtime.GOARCH to the architecture names used in
-// engram release assets. Engram only publishes amd64 and arm64 binaries.
+// KortexEngram release assets. KortexEngram only publishes amd64 and arm64 binaries.
 // If the current process runs as 386 (32-bit Go on a 64-bit system), we
-// map to amd64 since engram doesn't publish 386 builds.
+// map to amd64 since KortexEngram doesn't publish 386 builds.
 func normalizeArch(goarch string) string {
 	switch goarch {
 	case "386":
@@ -163,40 +163,40 @@ func normalizeArch(goarch string) string {
 	}
 }
 
-// engramAPIBaseURL returns the GitHub API base URL for fetching release info.
+// KortexEngramAPIBaseURL returns the GitHub API base URL for fetching release info.
 // In tests, the mock server handles both API and download under the same URL,
-// so we derive the API base from engramGitHubBaseURL.
-func engramAPIBaseURL() string {
-	base := engramGitHubBaseURL
+// so we derive the API base from KortexEngramGitHubBaseURL.
+func KortexEngramAPIBaseURL() string {
+	base := KortexEngramGitHubBaseURL
 	if strings.Contains(base, "127.0.0.1") || strings.Contains(base, "localhost") {
 		return base
 	}
 	return "https://api.github.com"
 }
 
-// engramAssetURL constructs the download URL for the engram release asset.
-func engramAssetURL(baseURL, version, goos, goarch string) string {
+// KortexEngramAssetURL constructs the download URL for the KortexEngram release asset.
+func KortexEngramAssetURL(baseURL, version, goos, goarch string) string {
 	ext := ".tar.gz"
 	if goos == "windows" {
 		ext = ".zip"
 	}
-	filename := fmt.Sprintf("%s_%s_%s_%s%s", engramRepo, version, goos, goarch, ext)
+	filename := fmt.Sprintf("%s_%s_%s_%s%s", KortexEngramRepo, version, goos, goarch, ext)
 	return fmt.Sprintf("%s/%s/%s/releases/download/v%s/%s",
-		baseURL, engramOwner, engramRepo, version, filename)
+		baseURL, KortexEngramOwner, KortexEngramRepo, version, filename)
 }
 
-// engramInstallDir returns the directory where the engram binary should be installed
+// KortexEngramInstallDir returns the directory where the KortexEngram binary should be installed
 // for the given OS.
 //   - Linux/macOS: /usr/local/bin (fallback: ~/.local/bin if not writable)
-//   - Windows: %LOCALAPPDATA%\engram\bin
-func engramInstallDir(goos string) string {
+//   - Windows: %LOCALAPPDATA%\KortexEngram\bin
+func KortexEngramInstallDir(goos string) string {
 	if goos == "windows" {
 		localAppData := os.Getenv("LOCALAPPDATA")
 		if localAppData == "" {
 			home, _ := os.UserHomeDir()
 			localAppData = filepath.Join(home, "AppData", "Local")
 		}
-		return filepath.Join(localAppData, "engram", "bin")
+		return filepath.Join(localAppData, "kortex-engram", "bin")
 	}
 
 	// Linux/macOS: try /usr/local/bin first.
@@ -219,7 +219,7 @@ func isWritableDir(dir string) bool {
 	if err != nil || !info.IsDir() {
 		return false
 	}
-	tmp, err := os.CreateTemp(dir, ".engram-write-test-*")
+	tmp, err := os.CreateTemp(dir, ".KortexEngram-write-test-*")
 	if err != nil {
 		return false
 	}
@@ -236,7 +236,7 @@ func downloadAndExtractTarGz(url, binaryName, outPath string) error {
 		return fmt.Errorf("build request: %w", err)
 	}
 
-	resp, err := engramHTTPClient.Do(req)
+	resp, err := KortexEngramHTTPClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("download %s: %w", url, err)
 	}
@@ -286,7 +286,7 @@ func downloadAndExtractZip(url, binaryName, outPath string) error {
 		return fmt.Errorf("build request: %w", err)
 	}
 
-	resp, err := engramHTTPClient.Do(req)
+	resp, err := KortexEngramHTTPClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("download %s: %w", url, err)
 	}
@@ -340,7 +340,7 @@ func (b *byteReaderAt) ReadAt(p []byte, off int64) (int, error) {
 // writeExecutable writes the content from r to outPath with executable permissions.
 // writeExecutable writes a binary to outPath using an atomic rename to avoid
 // ETXTBSY ("text file busy") errors on Linux when the target binary is
-// currently running (e.g. engram as an MCP server). The rename trick works
+// currently running (e.g. KortexEngram as an MCP server). The rename trick works
 // because os.Rename replaces the directory entry — the running process keeps
 // its open file descriptor to the old inode, while new executions pick up
 // the new binary.
@@ -352,7 +352,7 @@ func writeExecutable(r io.Reader, outPath string) error {
 
 	// Write to a temp file in the same directory so Rename is always
 	// same-filesystem (atomic on POSIX).
-	tmp, err := os.CreateTemp(dir, ".engram-upgrade-*.tmp")
+	tmp, err := os.CreateTemp(dir, ".KortexEngram-upgrade-*.tmp")
 	if err != nil {
 		return fmt.Errorf("create temp file: %w", err)
 	}

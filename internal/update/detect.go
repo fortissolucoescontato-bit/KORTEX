@@ -19,7 +19,7 @@ var (
 var versionRegexp = regexp.MustCompile(`(\d+\.\d+(?:\.\d+)?)`)
 
 // devVersionRegexp matches common unversioned source-build output like
-// "engram dev" or "version: dev".
+// "KortexEngram dev" or "version: dev".
 var devVersionRegexp = regexp.MustCompile(`(?i)(?:^|\s)dev(?:$|\s)`)
 
 // detectInstalledVersion determines the installed version of a tool.
@@ -39,7 +39,7 @@ func detectInstalledVersion(ctx context.Context, tool ToolInfo, currentBuildVers
 		return "" // binary not found
 	}
 
-	// Apply a bounded timeout so a hanging binary (e.g. engram stuck on DB
+	// Apply a bounded timeout so a hanging binary (e.g. KortexEngram stuck on DB
 	// lock) cannot block update/upgrade flows forever.
 	detectCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()

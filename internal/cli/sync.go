@@ -12,7 +12,7 @@ import (
 
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
-	"github.com/fortissolucoescontato-bit/kortex/internal/components/engram"
+	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortexengram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-cli"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/mcp"
 	"github.com/fortissolucoescontato-bit/kortex/internal/components/permissions"
@@ -263,7 +263,7 @@ func parseModelSpec(spec string) (model.ModelAssignment, error) {
 
 // BuildSyncSelection builds a model.Selection for the sync command.
 //
-// Default sync scope: SDD, Engram, Context7, KortexCLI, Skills.
+// Default sync scope: SDD, KortexEngram, Context7, KortexCLI, Skills.
 // Excluded by default: Persona, Permissions, Theme (user-config-adjacent).
 // Permissions and Theme can be opted-in via flags.
 //
@@ -272,7 +272,7 @@ func parseModelSpec(spec string) (model.ModelAssignment, error) {
 func BuildSyncSelection(flags SyncFlags, agentIDs []model.AgentID) model.Selection {
 	components := []model.ComponentID{
 		model.ComponentSDD,
-		model.ComponentEngram,
+		model.ComponentKortexEngram,
 		model.ComponentContext7,
 		model.ComponentKortexCLI,
 		model.ComponentSkills,
@@ -353,7 +353,7 @@ func DiscoverAgents(homeDir string) []model.AgentID {
 
 // syncRuntime mirrors installRuntime but builds a sync-scoped StagePlan.
 // It reuses backup/rollback infrastructure but only calls inject functions —
-// no agentInstallStep, no engram setup, no persona.
+// no agentInstallStep, no KortexEngram setup, no persona.
 type syncRuntime struct {
 	homeDir      string
 	workspaceDir string
@@ -438,7 +438,7 @@ func syncBackupTargets(homeDir string, selection model.Selection, adapters []age
 
 // componentSyncStep is the sync-specific apply step.
 // Unlike componentApplyStep, it ONLY calls inject functions —
-// no binary install, no engram setup, no persona injection.
+// no binary install, no KortexEngram setup, no persona injection.
 //
 // filesChanged is a shared counter pointer. Each step increments it by the
 // number of files that were actually written (i.e., whose content changed).
@@ -461,13 +461,13 @@ func (s componentSyncStep) Run() error {
 	adapters := resolveAdapters(s.agents)
 
 	switch s.component {
-	case model.ComponentEngram:
+	case model.ComponentKortexEngram:
 		// Sync: inject MCP config + system prompt protocol only.
-		// NO binary install. NO engram setup.
+		// NO binary install. NO KortexEngram setup.
 		for _, adapter := range adapters {
-			res, err := engram.Inject(s.homeDir, adapter)
+			res, err := kortexengram.Inject(s.homeDir, adapter)
 			if err != nil {
-				return fmt.Errorf("falha ao sincronizar engram para %q: %w", adapter.Agent(), err)
+				return fmt.Errorf("falha ao sincronizar KortexEngram para %q: %w", adapter.Agent(), err)
 			}
 			s.countChanged(boolToInt(res.Changed))
 		}

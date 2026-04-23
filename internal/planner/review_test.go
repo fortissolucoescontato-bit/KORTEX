@@ -16,7 +16,7 @@ func TestBuildReviewPayloadIncludesPlatformDecision(t *testing.T) {
 
 	resolved := ResolvedPlan{
 		Agents:            []model.AgentID{model.AgentClaudeCode},
-		OrderedComponents: []model.ComponentID{model.ComponentEngram},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram},
 		PlatformDecision: PlatformDecision{
 			OS:             "linux",
 			LinuxDistro:    "arch",
@@ -129,7 +129,7 @@ func TestBuildReviewPayloadIncludesSkills(t *testing.T) {
 	}
 	resolved := ResolvedPlan{
 		Agents:            []model.AgentID{model.AgentClaudeCode},
-		OrderedComponents: []model.ComponentID{model.ComponentEngram, model.ComponentSkills},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSkills},
 	}
 
 	payload := BuildReviewPayload(selection, resolved)
@@ -157,7 +157,7 @@ func TestBuildReviewPayloadSkillsNilWhenNotSelected(t *testing.T) {
 	}
 	resolved := ResolvedPlan{
 		Agents:            []model.AgentID{model.AgentClaudeCode},
-		OrderedComponents: []model.ComponentID{model.ComponentEngram},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram},
 	}
 
 	payload := BuildReviewPayload(selection, resolved)
@@ -181,7 +181,7 @@ func TestBuildReviewPayloadIncludesStrictTDD(t *testing.T) {
 	}
 	resolved := ResolvedPlan{
 		Agents:            []model.AgentID{model.AgentClaudeCode},
-		OrderedComponents: []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD},
 	}
 
 	payload := BuildReviewPayload(selection, resolved)
@@ -206,7 +206,7 @@ func TestBuildReviewPayloadStrictTDDFalseWhenDisabled(t *testing.T) {
 	}
 	resolved := ResolvedPlan{
 		Agents:            []model.AgentID{model.AgentClaudeCode},
-		OrderedComponents: []model.ComponentID{model.ComponentEngram, model.ComponentSDD},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram, model.ComponentSDD},
 	}
 
 	payload := BuildReviewPayload(selection, resolved)
@@ -231,7 +231,7 @@ func TestBuildReviewPayloadHasSDDFalseWithoutSDDComponent(t *testing.T) {
 	}
 	resolved := ResolvedPlan{
 		Agents:            []model.AgentID{model.AgentClaudeCode},
-		OrderedComponents: []model.ComponentID{model.ComponentEngram}, // no SDD
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram}, // no SDD
 	}
 
 	payload := BuildReviewPayload(selection, resolved)
@@ -247,7 +247,7 @@ func TestResolverOutputIsPlatformAgnostic(t *testing.T) {
 	resolver := NewResolver(MVPGraph())
 	selection := model.Selection{
 		Agents:     []model.AgentID{model.AgentClaudeCode},
-		Components: []model.ComponentID{model.ComponentEngram},
+		Components: []model.ComponentID{model.ComponentKortexEngram},
 	}
 
 	plan, err := resolver.Resolve(selection)

@@ -244,13 +244,13 @@ test_dry_run_full_preset_persona_before_sdd() {
     local order_str
     order_str=$(echo "$components_line" | sed 's/.*Ordem dos componentes: *//')
 
-    local persona_idx kortex_engram_idx sdd_idx
+    local persona_idx kortex_kortex-engram_idx sdd_idx
     persona_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^persona$' | cut -d: -f1)
-    kortex_engram_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^kortex-engram$' | cut -d: -f1)
+    kortex_kortex-engram_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^kortex-engram$' | cut -d: -f1)
     sdd_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^sdd$' | cut -d: -f1)
 
-    if [ -n "$persona_idx" ] && [ -n "$kortex_engram_idx" ] && [ "$persona_idx" -lt "$kortex_engram_idx" ]; then
-        log_pass "Persona ($persona_idx) before kortex-engram ($kortex_engram_idx)"
+    if [ -n "$persona_idx" ] && [ -n "$kortex_kortex-engram_idx" ] && [ "$persona_idx" -lt "$kortex_kortex-engram_idx" ]; then
+        log_pass "Persona ($persona_idx) before kortex-engram ($kortex_kortex-engram_idx)"
     else
         log_fail "Persona must appear before kortex-engram in component order: $order_str"
     fi
@@ -440,8 +440,8 @@ test_cc_kortex-engram_injection() {
 
         # CLAUDE.md section
         assert_file_exists "$HOME/.claude/CLAUDE.md" "CLAUDE.md exists"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "kortex:engram-protocol" "CLAUDE.md has kortex-engram-protocol section marker"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "mem_save" "CLAUDE.md has real Engram content (mem_save)"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "kortex:kortex-engram-protocol" "CLAUDE.md has kortex-engram-protocol section marker"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "mem_save" "CLAUDE.md has real Kortex-Engram content (mem_save)"
         assert_file_size_min "$HOME/.claude/CLAUDE.md" 500 "CLAUDE.md has substantial content"
     else
         log_fail "kortex-engram install command failed"
@@ -735,12 +735,12 @@ test_oc_kortex-engram_injection() {
         assert_file_contains "$settings" '"mcp"' "Has mcp key"
         assert_file_contains "$settings" '"kortex-engram"' "Has kortex-engram MCP entry"
         assert_file_contains "$settings" '"command"' "Has command key"
-        assert_file_contains "$settings" '"type": "local"' "Engram uses local MCP type"
+        assert_file_contains "$settings" '"type": "local"' "Kortex-Engram uses local MCP type"
         assert_valid_json "$settings" "opencode.json is valid JSON"
 
         # Fallback safety: AGENTS.md must include kortex-engram protocol section.
         assert_file_exists "$agents_md" "OpenCode AGENTS.md"
-        assert_file_contains "$agents_md" 'kortex:engram-protocol' "AGENTS.md has kortex-engram-protocol section"
+        assert_file_contains "$agents_md" 'kortex:kortex-engram-protocol' "AGENTS.md has kortex-engram-protocol section"
         assert_file_contains "$agents_md" 'mem_save' "AGENTS.md has memory protocol content"
     else
         log_fail "OpenCode kortex-engram install command failed"
@@ -940,7 +940,7 @@ test_full_preset_claude_code() {
     cleanup_test_env
 
     # full-carbon has: kortex-engram, sdd, skills, context7, persona, permissions, kortex
-    # Engram/Kortex CLI need binary install (go install) — may fail but injection components
+    # Kortex-Engram/Kortex CLI need binary install (go install) — may fail but injection components
     # that don't need binary install should be tested.
     # We test injection-only components first, then try the full preset.
     # If full preset fails due to binary install, we fall back to individual injection-only test.
@@ -995,7 +995,7 @@ test_full_preset_opencode() {
         # AGENTS.md for persona + kortex-engram (SDD orchestrator is in opencode.json for OpenCode, NOT AGENTS.md)
         assert_file_exists "$agents_md" "AGENTS.md exists"
         assert_file_contains "$agents_md" "Senior Architect" "Kortex persona"
-        assert_file_contains "$agents_md" "kortex:engram-protocol" "AGENTS.md has kortex-engram protocol"
+        assert_file_contains "$agents_md" "kortex:kortex-engram-protocol" "AGENTS.md has kortex-engram protocol"
         assert_no_duplicate_section "$agents_md" "kortex-engram-protocol" "No duplicate kortex-engram section in AGENTS.md"
         # SDD orchestrator for OpenCode lives in opencode.json as an agent definition (not AGENTS.md)
         assert_file_contains "$settings" '"sdd-orchestrator"' "opencode.json has sdd-orchestrator agent"
@@ -1042,9 +1042,9 @@ test_minimal_preset_claude_only_kortex-engram() {
     cleanup_test_env
 
     if $BINARY install --agent claude-code --preset minimal --persona neutral 2>&1; then
-        # Engram should be installed (MCP + CLAUDE.md)
+        # Kortex-Engram should be installed (MCP + CLAUDE.md)
         assert_file_exists "$HOME/.claude/CLAUDE.md" "CLAUDE.md exists"
-        assert_file_contains "$HOME/.claude/CLAUDE.md" "kortex:engram-protocol" "Engram protocol section"
+        assert_file_contains "$HOME/.claude/CLAUDE.md" "kortex:kortex-engram-protocol" "Kortex-Engram protocol section"
 
         # SDD should NOT be in CLAUDE.md
         assert_file_not_contains "$HOME/.claude/CLAUDE.md" "kortex:sdd-orchestrator" "No SDD in minimal"
@@ -1287,7 +1287,7 @@ test_gemini_kortex-engram_tools_flag() {
         assert_file_exists "$settings" "Gemini settings.json"
         assert_file_contains "$settings" '"mcpServers"' "Has mcpServers key"
         assert_file_contains "$settings" '"kortex-engram"' "Has kortex-engram entry"
-        assert_file_contains "$settings" '"--tools=agent"' "Engram args include --tools=agent"
+        assert_file_contains "$settings" '"--tools=agent"' "Kortex-Engram args include --tools=agent"
         assert_valid_json "$settings" "settings.json is valid JSON"
     else
         log_fail "Gemini kortex-engram install command failed"
@@ -1474,7 +1474,7 @@ test_edge_persona_switch_preserves_sections_opencode() {
 
     local agents_md="$HOME/.config/opencode/AGENTS.md"
     assert_file_exists "$agents_md" "AGENTS.md after full install"
-    assert_file_contains "$agents_md" "kortex:engram-protocol" "Engram section present before switch"
+    assert_file_contains "$agents_md" "kortex:kortex-engram-protocol" "Kortex-Engram section present before switch"
 
     # Step 2: Switch to neutral persona
     $BINARY install --agent opencode --component persona --persona neutral 2>&1 || true
@@ -1482,7 +1482,7 @@ test_edge_persona_switch_preserves_sections_opencode() {
     # Step 3: Verify sections survived
     assert_file_contains "$agents_md" "Senior Architect" "Neutral persona present after switch"
     assert_file_not_contains "$agents_md" "Rioplatense" "Regional language removed after switch"
-    assert_file_contains "$agents_md" "kortex:engram-protocol" "Engram section survived persona switch"
+    assert_file_contains "$agents_md" "kortex:kortex-engram-protocol" "Kortex-Engram section survived persona switch"
     assert_no_duplicate_section "$agents_md" "kortex-engram-protocol" "No duplicate kortex-engram after switch"
 }
 
@@ -1676,8 +1676,8 @@ test_windsurf_persona_and_sdd_content() {
         assert_file_contains "$rules" "Senior Architect" "Persona injected"
         assert_file_contains "$rules" "kortex:sdd-orchestrator" "SDD orchestrator marker present"
         assert_file_contains "$rules" "skill_resolution" "SDD has skill_resolution field"
-        assert_file_contains "$rules" "Engram Topic Key" "SDD has Engram Topic Key section"
-        assert_file_contains "$rules" "kortex:engram-protocol" "Engram protocol marker present"
+        assert_file_contains "$rules" "Kortex-Engram Topic Key" "SDD has Kortex-Engram Topic Key section"
+        assert_file_contains "$rules" "kortex:kortex-engram-protocol" "Kortex-Engram protocol marker present"
         assert_file_size_min "$rules" 2000 "global_rules.md has substantial content"
     else
         log_fail "Windsurf persona+SDD install command failed"
@@ -1695,7 +1695,7 @@ test_codex_context7_not_in_toml() {
 
     local config_toml="$HOME/.codex/config.toml"
     if [ -f "$config_toml" ]; then
-        # Engram created config.toml — now try context7 on top
+        # Kortex-Engram created config.toml — now try context7 on top
         $BINARY install --agent codex --component context7 --persona neutral 2>&1 || true
         assert_file_not_contains "$config_toml" "context7" "Codex config.toml does NOT get context7 entry"
     else

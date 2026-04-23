@@ -10,12 +10,12 @@ CONTEXT:
 - Working directory: !`echo -n "$(pwd)"`
 - Current project: !`echo -n "$(basename $(pwd))"`
 - Topic to explore: $ARGUMENTS
-- Artifact store mode: engram
+- Artifact store mode: kortex-engram
 
 TASK:
 Explore the topic "$ARGUMENTS" in this codebase. Investigate the current state, identify affected areas, compare approaches, and provide a recommendation.
 
-ENGRAM PERSISTENCE (artifact store mode: engram):
+KORTEX-ENGRAM PERSISTENCE (artifact store mode: kortex-engram):
 Read project context (optional):
   mem_search(query: "sdd-init/{project}", project: "{project}") → if found, mem_get_observation(id) for full content
 Save exploration:

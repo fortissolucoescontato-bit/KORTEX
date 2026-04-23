@@ -8,12 +8,12 @@ Otherwise, read the skill file at `~/.claude/skills/sdd-verify/SKILL.md` FIRST, 
 CONTEXT:
 - Working directory: !`echo -n "$(pwd)"`
 - Current project: !`echo -n "$(basename $(pwd))"`
-- Artifact store mode: engram
+- Artifact store mode: kortex-engram
 
 TASK:
 Verify the active SDD change. Read the proposal, specs, design, and tasks artifacts. Then:
 
-ENGRAM PERSISTENCE (artifact store mode: engram):
+KORTEX-ENGRAM PERSISTENCE (artifact store mode: kortex-engram):
 CRITICAL: mem_search returns 300-char PREVIEWS, not full content. You MUST call mem_get_observation(id) for EVERY artifact.
 STEP A — SEARCH (get IDs only):
   mem_search(query: "sdd/{change-name}/spec", project: "{project}") → save spec_id

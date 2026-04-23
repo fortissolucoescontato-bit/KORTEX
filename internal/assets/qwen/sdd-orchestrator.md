@@ -34,10 +34,10 @@ SDD is the structured planning layer for substantial changes.
 
 ### Artifact Store Policy
 
-- `engram` — default when available; persistent memory across sessions
+- `kortex-engram` — default when available; persistent memory across sessions
 - `openspec` — file-based artifacts; use only when user explicitly requests
 - `hybrid` — both backends; cross-session recovery + local files; more tokens per op
-- `none` — return results inline only; recommend enabling engram or openspec
+- `none` — return results inline only; recommend enabling kortex-engram or openspec
 
 ### Commands
 
@@ -94,11 +94,11 @@ For this agent (sub-agent delegation): **Automatic** means phases run back-to-ba
 
 When the user invokes `/sdd-new`, `/sdd-ff`, or `/sdd-continue` for the first time in a session, ALSO ASK which artifact store they want for this change:
 
-- **`engram`**: Fast, no files created. Artifacts live in engram only. Best for solo work and quick iteration. Note: re-running a phase overwrites the previous version (no history).
+- **`kortex-engram`**: Fast, no files created. Artifacts live in kortex-engram only. Best for solo work and quick iteration. Note: re-running a phase overwrites the previous version (no history).
 - **`openspec`**: File-based. Creates `openspec/` directory with full artifact trail. Committable, shareable with team, full git history.
-- **`hybrid`**: Both — files for team sharing + engram for cross-session recovery. Higher token cost.
+- **`hybrid`**: Both — files for team sharing + kortex-engram for cross-session recovery. Higher token cost.
 
-If the user doesn't specify, detect: if kortex-engram is available → default to `engram`. Otherwise → `none`.
+If the user doesn't specify, detect: if kortex-engram is available → default to `kortex-engram`. Otherwise → `none`.
 
 Cache the artifact store choice for the session. Pass it as `artifact_store.mode` to every sub-agent launch.
 
@@ -121,7 +121,7 @@ The orchestrator resolves skills from the registry ONCE (at session start or fir
 
 Orchestrator skill resolution (do once per session):
 1. `mem_search(query: "skill-registry", project: "{project}")` → `mem_get_observation(id)` for full registry content
-2. Fallback: read `.atl/skill-registry.md` if engram not available
+2. Fallback: read `.atl/skill-registry.md` if kortex-engram not available
 3. Cache the **Compact Rules** section and the **User Skills** trigger table
 4. If no registry exists, warn user and proceed without project-specific standards
 
@@ -146,9 +146,9 @@ Sub-agents get a fresh context with NO memory. The orchestrator controls context
 
 #### Non-SDD Tasks (general delegation)
 
-- Read context: orchestrator searches engram (`mem_search`) for relevant prior context and passes it in the sub-agent prompt. Sub-agent does NOT search engram itself.
-- Write context: sub-agent MUST save significant discoveries, decisions, or bug fixes to engram via `mem_save` before returning. Sub-agent has full detail — save before returning, not after.
-- Always add to sub-agent prompt: `"If you make important discoveries, decisions, or fix bugs, save them to engram via mem_save with project: '{project}'."`
+- Read context: orchestrator searches kortex-engram (`mem_search`) for relevant prior context and passes it in the sub-agent prompt. Sub-agent does NOT search kortex-engram itself.
+- Write context: sub-agent MUST save significant discoveries, decisions, or bug fixes to kortex-engram via `mem_save` before returning. Sub-agent has full detail — save before returning, not after.
+- Always add to sub-agent prompt: `"If you make important discoveries, decisions, or fix bugs, save them to kortex-engram via mem_save with project: '{project}'."`
 - Skills: orchestrator resolves compact rules from the registry and injects them as `## Project Standards (auto-resolved)` in the sub-agent prompt. Sub-agents do NOT read SKILL.md files or the registry — they receive rules pre-digested.
 
 #### SDD Phases
@@ -192,7 +192,7 @@ This prevents progress loss across batches. The sub-agent is responsible for rea
 
 #### Kortex-Engram Topic Key Format
 
-When launching sub-agents for SDD phases with engram mode, pass these exact topic_keys as artifact references:
+When launching sub-agents for SDD phases with kortex-engram mode, pass these exact topic_keys as artifact references:
 
 | Artifact | Topic Key |
 |----------|-----------|
@@ -213,10 +213,10 @@ Sub-agents retrieve full content via two steps:
 
 ### State and Conventions
 
-Convention files under `~/.qwen/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
+Convention files under `~/.qwen/skills/_shared/` (global) or `.agent/skills/_shared/` (workspace): `kortex-engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
 
 ### Recovery Rule
 
-- `engram` → `mem_search(...)` → `mem_get_observation(...)`
+- `kortex-engram` → `mem_search(...)` → `mem_get_observation(...)`
 - `openspec` → read `openspec/changes/*/state.yaml`
 - `none` → state not persisted — explain to user

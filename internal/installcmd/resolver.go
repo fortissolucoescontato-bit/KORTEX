@@ -21,7 +21,7 @@ var cmdGoVersion = func() ([]byte, error) {
 }
 
 // CommandSequence represents an ordered list of commands to run in sequence.
-// Each inner slice is a single command with its arguments (e.g., ["brew", "install", "engram"]).
+// Each inner slice is a single command with its arguments (e.g., ["brew", "install", "kortex-engram"]).
 // Multi-step installs (e.g., tap + install) are expressed as multiple entries.
 type CommandSequence = [][]string
 
@@ -133,8 +133,8 @@ func uvInstallHint(profile system.PlatformProfile) string {
 
 func (profileResolver) ResolveComponentInstall(profile system.PlatformProfile, component model.ComponentID) (CommandSequence, error) {
 	switch component {
-	case model.ComponentEngram:
-		return resolveEngramInstall(profile)
+	case model.ComponentKortexEngram:
+		return resolveKortexEngramInstall(profile)
 	case model.ComponentKortexCLI:
 		return resolveKortexCLIInstall(profile)
 	default:
@@ -293,7 +293,7 @@ func gitBashPath() string {
 func validateGoForModuleInstall(profile system.PlatformProfile) error {
 	if _, err := cmdLookPath("go"); err != nil {
 		return fmt.Errorf(
-			"Go 1.24+ is required to install Engram but was not found in PATH.\n" +
+			"Go 1.24+ is required to install KortexEngram but was not found in PATH.\n" +
 				"Please install Go from https://go.dev/dl/ and restart your terminal.")
 	}
 
@@ -314,7 +314,7 @@ func validateGoForModuleInstall(profile system.PlatformProfile) error {
 			minor, _ := strconv.Atoi(versionParts[1])
 			if major < 1 || (major == 1 && minor < 24) {
 				return fmt.Errorf(
-					"Go 1.24+ is required to install Engram, but found go%s.\n"+
+					"Go 1.24+ is required to install KortexEngram, but found go%s.\n"+
 						"Please update Go: https://go.dev/dl/", versionStr)
 			}
 		}
@@ -331,24 +331,24 @@ func validateGoForModuleInstall(profile system.PlatformProfile) error {
 	return nil
 }
 
-// resolveEngramInstall returns the correct install command sequence for Engram per platform.
+// resolveKortexEngramInstall returns the correct install command sequence for KortexEngram per platform.
 // - darwin (brew): brew tap + brew install (via fortissolucoescontato-bit/homebrew-tap)
-// - linux/windows: returns an error — callers must use engram.DownloadLatestBinary() instead.
+// - linux/windows: returns an error — callers must use kortexengram.DownloadLatestBinary() instead.
 //
 // The go install method has been removed because it required Go 1.24+ which most
 // users on Linux/Windows don't have. Pre-built binaries are available at:
-// https://github.com/fortissolucoescontato-bit/engram/releases
-func resolveEngramInstall(profile system.PlatformProfile) (CommandSequence, error) {
+// https://github.com/fortissolucoescontato-bit/KortexEngram/releases
+func resolveKortexEngramInstall(profile system.PlatformProfile) (CommandSequence, error) {
 	switch profile.PackageManager {
 	case "brew":
 		// macOS (or Linux with Homebrew): brew manages Go transitively — no preflight needed.
 		return CommandSequence{
 			{"brew", "tap", "fortissolucoescontato-bit/homebrew-tap"},
-			{"brew", "install", "engram"},
+			{"brew", "install", "kortex-engram"},
 		}, nil
 	default:
 		return nil, fmt.Errorf(
-			"engram on %q/%q uses direct binary download — use engram.DownloadLatestBinary() instead of CommandSequence",
+			"KortexEngram on %q/%q uses direct binary download — use kortexengram.DownloadLatestBinary() instead of CommandSequence",
 			profile.OS, profile.PackageManager,
 		)
 	}

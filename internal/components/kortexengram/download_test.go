@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"archive/tar"
@@ -20,10 +20,10 @@ import (
 
 // makeServerWithFakeTarGz returns an httptest.Server that serves:
 //   - GET /releases/latest  → GitHub API JSON with the given version
-//   - GET /releases/download/…  → a real .tar.gz containing "engram" binary
+//   - GET /releases/download/…  → a real .tar.gz containing "kortex-engram" binary
 func makeServerWithFakeTarGz(t *testing.T, version string) *httptest.Server {
 	t.Helper()
-	tarContent := buildFakeTarGz(t, "engram")
+	tarContent := buildFakeTarGz(t, "kortex-engram")
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "releases/latest") {
 			payload := map[string]string{"tag_name": "v" + version}
@@ -39,10 +39,10 @@ func makeServerWithFakeTarGz(t *testing.T, version string) *httptest.Server {
 }
 
 // makeServerWithFakeZip returns a server that serves a zip archive containing
-// "engram.exe" (Windows).
+// "kortexengram.exe" (Windows).
 func makeServerWithFakeZip(t *testing.T, version string) *httptest.Server {
 	t.Helper()
-	zipContent := buildFakeZip(t, "engram.exe")
+	zipContent := buildFakeZip(t, "kortexengram.exe")
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "releases/latest") {
 			payload := map[string]string{"tag_name": "v" + version}
@@ -68,7 +68,7 @@ func buildFakeTarGz(t *testing.T, binaryName string) []byte {
 	gw := gzip.NewWriter(f)
 	tw := tar.NewWriter(gw)
 
-	content := []byte("#!/bin/sh\necho engram fake binary")
+	content := []byte("#!/bin/sh\necho KortexEngram fake binary")
 	tw.WriteHeader(&tar.Header{Name: binaryName, Mode: 0o755, Size: int64(len(content))})
 	tw.Write(content)
 	tw.Close()
@@ -93,7 +93,7 @@ func buildFakeZip(t *testing.T, binaryName string) []byte {
 	}
 	zw := zip.NewWriter(f)
 
-	content := []byte("fake engram.exe binary")
+	content := []byte("fake kortexengram.exe binary")
 	fw, err := zw.Create(binaryName)
 	if err != nil {
 		t.Fatalf("create zip entry: %v", err)
@@ -109,9 +109,9 @@ func buildFakeZip(t *testing.T, binaryName string) []byte {
 	return data
 }
 
-// --- TestEngramAssetURL ---
+// --- TestKortexEngramAssetURL ---
 
-func TestEngramAssetURL(t *testing.T) {
+func TestKortexEngramAssetURL(t *testing.T) {
 	tests := []struct {
 		name       string
 		version    string
@@ -164,20 +164,20 @@ func TestEngramAssetURL(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			url := engramAssetURL("https://github.com", tt.version, tt.goos, tt.goarch)
+			url := KortexEngramAssetURL("https://github.com", tt.version, tt.goos, tt.goarch)
 			if !strings.Contains(url, tt.wantSubstr) {
-				t.Errorf("engramAssetURL(%s, %s) = %q, want it to contain %q", tt.goos, tt.goarch, url, tt.wantSubstr)
+				t.Errorf("KortexEngramAssetURL(%s, %s) = %q, want it to contain %q", tt.goos, tt.goarch, url, tt.wantSubstr)
 			}
 			if !strings.HasSuffix(url, tt.wantExt) {
-				t.Errorf("engramAssetURL(%s) = %q, want suffix %q", tt.goos, url, tt.wantExt)
+				t.Errorf("KortexEngramAssetURL(%s) = %q, want suffix %q", tt.goos, url, tt.wantExt)
 			}
 		})
 	}
 }
 
-// --- TestEngramInstallDir ---
+// --- TestKortexEngramInstallDir ---
 
-func TestEngramInstallDir(t *testing.T) {
+func TestKortexEngramInstallDir(t *testing.T) {
 	tests := []struct {
 		name       string
 		goos       string
@@ -189,9 +189,9 @@ func TestEngramInstallDir(t *testing.T) {
 			wantSubstr: "bin",
 		},
 		{
-			name:       "windows returns LOCALAPPDATA engram bin",
+			name:       "windows returns LOCALAPPDATA KortexEngram bin",
 			goos:       "windows",
-			wantSubstr: "engram",
+			wantSubstr: "kortex-engram",
 		},
 		{
 			name:       "darwin returns /usr/local/bin",
@@ -202,9 +202,9 @@ func TestEngramInstallDir(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dir := engramInstallDir(tt.goos)
+			dir := KortexEngramInstallDir(tt.goos)
 			if !strings.Contains(dir, tt.wantSubstr) {
-				t.Errorf("engramInstallDir(%s) = %q, want it to contain %q", tt.goos, dir, tt.wantSubstr)
+				t.Errorf("KortexEngramInstallDir(%s) = %q, want it to contain %q", tt.goos, dir, tt.wantSubstr)
 			}
 		})
 	}
@@ -221,20 +221,20 @@ func TestDownloadLatestBinaryLinux(t *testing.T) {
 	defer server.Close()
 
 	// Override the HTTP client and the base URL for GitHub API.
-	origClient := engramHTTPClient
-	origBaseURL := engramGitHubBaseURL
-	engramHTTPClient = server.Client()
-	engramGitHubBaseURL = server.URL
+	origClient := KortexEngramHTTPClient
+	origBaseURL := KortexEngramGitHubBaseURL
+	KortexEngramHTTPClient = server.Client()
+	KortexEngramGitHubBaseURL = server.URL
 	t.Cleanup(func() {
-		engramHTTPClient = origClient
-		engramGitHubBaseURL = origBaseURL
+		KortexEngramHTTPClient = origClient
+		KortexEngramGitHubBaseURL = origBaseURL
 	})
 
 	// Override install dir to a temp directory (avoids needing root).
 	tmpDir := t.TempDir()
-	origInstallDirFn := engramInstallDirFn
-	engramInstallDirFn = func(goos string) string { return tmpDir }
-	t.Cleanup(func() { engramInstallDirFn = origInstallDirFn })
+	origInstallDirFn := KortexEngramInstallDirFn
+	KortexEngramInstallDirFn = func(goos string) string { return tmpDir }
+	t.Cleanup(func() { KortexEngramInstallDirFn = origInstallDirFn })
 
 	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
 	installedPath, err := DownloadLatestBinary(profile)
@@ -266,19 +266,19 @@ func TestDownloadLatestBinaryWindows(t *testing.T) {
 	server := makeServerWithFakeZip(t, "1.3.0")
 	defer server.Close()
 
-	origClient := engramHTTPClient
-	origBaseURL := engramGitHubBaseURL
-	engramHTTPClient = server.Client()
-	engramGitHubBaseURL = server.URL
+	origClient := KortexEngramHTTPClient
+	origBaseURL := KortexEngramGitHubBaseURL
+	KortexEngramHTTPClient = server.Client()
+	KortexEngramGitHubBaseURL = server.URL
 	t.Cleanup(func() {
-		engramHTTPClient = origClient
-		engramGitHubBaseURL = origBaseURL
+		KortexEngramHTTPClient = origClient
+		KortexEngramGitHubBaseURL = origBaseURL
 	})
 
 	tmpDir := t.TempDir()
-	origInstallDirFn := engramInstallDirFn
-	engramInstallDirFn = func(goos string) string { return tmpDir }
-	t.Cleanup(func() { engramInstallDirFn = origInstallDirFn })
+	origInstallDirFn := KortexEngramInstallDirFn
+	KortexEngramInstallDirFn = func(goos string) string { return tmpDir }
+	t.Cleanup(func() { KortexEngramInstallDirFn = origInstallDirFn })
 
 	profile := system.PlatformProfile{OS: "windows", PackageManager: "winget"}
 	installedPath, err := DownloadLatestBinary(profile)
@@ -311,13 +311,13 @@ func TestDownloadLatestBinaryAPIError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	origClient := engramHTTPClient
-	origBaseURL := engramGitHubBaseURL
-	engramHTTPClient = server.Client()
-	engramGitHubBaseURL = server.URL
+	origClient := KortexEngramHTTPClient
+	origBaseURL := KortexEngramGitHubBaseURL
+	KortexEngramHTTPClient = server.Client()
+	KortexEngramGitHubBaseURL = server.URL
 	t.Cleanup(func() {
-		engramHTTPClient = origClient
-		engramGitHubBaseURL = origBaseURL
+		KortexEngramHTTPClient = origClient
+		KortexEngramGitHubBaseURL = origBaseURL
 	})
 
 	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
@@ -345,26 +345,26 @@ func TestDownloadLatestBinaryFallsBackToAnonymousWhenTokenGets403(t *testing.T) 
 
 		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(http.StatusOK)
-		w.Write(buildFakeTarGz(t, "engram"))
+		w.Write(buildFakeTarGz(t, "kortex-engram"))
 	}))
 	defer server.Close()
 
-	origClient := engramHTTPClient
-	origBaseURL := engramGitHubBaseURL
-	engramHTTPClient = server.Client()
-	engramGitHubBaseURL = server.URL
+	origClient := KortexEngramHTTPClient
+	origBaseURL := KortexEngramGitHubBaseURL
+	KortexEngramHTTPClient = server.Client()
+	KortexEngramGitHubBaseURL = server.URL
 	t.Cleanup(func() {
-		engramHTTPClient = origClient
-		engramGitHubBaseURL = origBaseURL
+		KortexEngramHTTPClient = origClient
+		KortexEngramGitHubBaseURL = origBaseURL
 	})
 
 	t.Setenv("GITHUB_TOKEN", fakeToken)
 	t.Setenv("GH_TOKEN", "")
 
 	tmpDir := t.TempDir()
-	origInstallDirFn := engramInstallDirFn
-	engramInstallDirFn = func(goos string) string { return tmpDir }
-	t.Cleanup(func() { engramInstallDirFn = origInstallDirFn })
+	origInstallDirFn := KortexEngramInstallDirFn
+	KortexEngramInstallDirFn = func(goos string) string { return tmpDir }
+	t.Cleanup(func() { KortexEngramInstallDirFn = origInstallDirFn })
 
 	profile := system.PlatformProfile{OS: "linux", PackageManager: "apt"}
 	installedPath, err := DownloadLatestBinary(profile)

@@ -36,7 +36,7 @@ type ToolInfo struct {
 	DetectCmd     []string      // command to detect installed version; nil = use build var
 	VersionPrefix string        // prefix to strip from version output (e.g., "v")
 	InstallMethod InstallMethod // how this tool is installed (used by upgrade executor)
-	GoImportPath  string        // for go-install tools (e.g. "github.com/.../cmd/engram")
+	GoImportPath  string        // for go-install tools (e.g. "github.com/.../cmd/KortexEngram")
 }
 
 // UpdateResult holds the result of checking a single tool for updates.

@@ -8,7 +8,7 @@
 
 | Componente | ID | Descrição |
 |-----------|-----|-------------|
-| Engram | `engram` | Memória persistente entre sessões via MCP — detecção automática de nome de projeto, busca em texto completo, sincronização git, consolidação de projeto. Veja o [repositório do engram](https://github.com/fortissolucoescontato-bit/engram) |
+| Kortex-Engram | `kortex-engram` | Memória persistente entre sessões via MCP — detecção automática de nome de projeto, busca em texto completo, sincronização git, consolidação de projeto. Veja o [repositório do kortex-engram](https://github.com/fortissolucoescontato-bit/kortex-engram) |
 | SDD | `sdd` | Fluxo de trabalho de Desenvolvimento Orientado a Especificações (9 fases) — o agente lida com o SDD organicamente quando a tarefa exige, ou quando você solicita; não é necessário aprender os comandos |
 | Skills | `skills` | Biblioteca curada de habilidades de codificação |
 | Context7 | `context7` | Servidor MCP para documentação ao vivo de frameworks/bibliotecas |
@@ -74,7 +74,7 @@ Para skills específicas de frameworks (React 19, Angular, TypeScript, Tailwind 
 
 | Preset | ID | O Que Está Incluído |
 |--------|-----|-------------------|
-| Kortex Completo | `full-carbon` | Todos os componentes (Engram + SDD + Skills + Context7 + Kortex CLI + Persona + Permissões + Tema) + todas as skills + persona carbon |
-| Apenas Ecossistema| `ecosystem-only` | Componentes principais (Engram + SDD + Skills + Context7 + Kortex CLI) + todas as skills + persona carbon |
-| Mínimo | `minimal` | Apenas skills de Engram + SDD |
+| Kortex Completo | `full-carbon` | Todos os componentes (Kortex-Engram + SDD + Skills + Context7 + Kortex CLI + Persona + Permissões + Tema) + todas as skills + persona carbon |
+| Apenas Ecossistema| `ecosystem-only` | Componentes principais (Kortex-Engram + SDD + Skills + Context7 + Kortex CLI) + todas as skills + persona carbon |
+| Mínimo | `minimal` | Apenas skills de Kortex-Engram + SDD |
 | Personalizado | `custom` | Você escolhe os componentes e skills manualmente, mantendo qualquer persona/configuração existente não gerenciada |

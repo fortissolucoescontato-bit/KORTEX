@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define the behavioral requirements for the Qwen Code agent adapter, including detection, installation, config paths, strategy assignments, permissions, SDD integration, engram setup, and test coverage.
+Define the behavioral requirements for the Qwen Code agent adapter, including detection, installation, config paths, strategy assignments, permissions, SDD integration, kortex-engram setup, and test coverage.
 
 ---
 
@@ -20,7 +20,7 @@ The system MUST define `AgentQwenCode` as a constant of type `model.AgentID` wit
 
 ### Requirement: Support Tier
 
-The Qwen Code adapter MUST report `model.TierFull`, indicating complete ecosystem support (SDD, skills, MCP, persona, permissions, engram).
+The Qwen Code adapter MUST report `model.TierFull`, indicating complete ecosystem support (SDD, skills, MCP, persona, permissions, kortex-engram).
 
 #### Scenario: Tier value
 
@@ -152,7 +152,7 @@ The adapter MUST return the correct npm install command based on platform profil
 
 ### Requirement: System Prompt Strategy
 
-`SystemPromptStrategy()` MUST return `model.StrategyFileReplace`. The system prompt file (`QWEN.md`) is managed via marker-based section injection, with persona content written as base and SDD/engram sections appended.
+`SystemPromptStrategy()` MUST return `model.StrategyFileReplace`. The system prompt file (`QWEN.md`) is managed via marker-based section injection, with persona content written as base and SDD/kortex-engram sections appended.
 
 ### Requirement: MCP Strategy
 
@@ -223,7 +223,7 @@ The permissions component MUST define `qwenCodeOverlayJSON` with `{"permissions"
 
 ---
 
-## 9. Engram Setup
+## 9. Kortex-Engram Setup
 
 ### Requirement: Agent Slug Mapping
 
@@ -307,7 +307,7 @@ The `internal/agents/qwen/` package MUST include:
 
 - `TestInjectQwenCodeWritesSDDOrchestratorAndSkills` in `internal/components/sdd/inject_test.go`
 - `TestSDDOrchestratorAssetSelection` includes `AgentQwenCode` case
-- Engram setup test includes `AgentQwenCode` case
+- Kortex-Engram setup test includes `AgentQwenCode` case
 
 ### Requirement: Registry and Config Tests
 

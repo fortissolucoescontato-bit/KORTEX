@@ -1,4 +1,4 @@
-package engram
+package kortexengram
 
 import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/installcmd"
@@ -7,5 +7,5 @@ import (
 )
 
 func InstallCommand(profile system.PlatformProfile) ([][]string, error) {
-	return installcmd.NewResolver().ResolveComponentInstall(profile, model.ComponentEngram)
+	return installcmd.NewResolver().ResolveComponentInstall(profile, model.ComponentKortexEngram)
 }

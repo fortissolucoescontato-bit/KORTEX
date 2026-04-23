@@ -11,24 +11,24 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/verify"
 )
 
-func TestEngramPathGuidanceFish(t *testing.T) {
-	msg := engramPathGuidance("/usr/bin/fish")
+func TestKortexEngramPathGuidanceFish(t *testing.T) {
+	msg := KortexEngramPathGuidance("/usr/bin/fish")
 	if want := "fish_user_paths"; !strings.Contains(msg, want) {
-		t.Fatalf("engramPathGuidance(fish) missing %q: %s", want, msg)
+		t.Fatalf("KortexEngramPathGuidance(fish) missing %q: %s", want, msg)
 	}
 }
 
-func TestEngramPathGuidanceZsh(t *testing.T) {
-	msg := engramPathGuidance("/bin/zsh")
+func TestKortexEngramPathGuidanceZsh(t *testing.T) {
+	msg := KortexEngramPathGuidance("/bin/zsh")
 	if want := ".zshrc"; !strings.Contains(msg, want) {
-		t.Fatalf("engramPathGuidance(zsh) missing %q: %s", want, msg)
+		t.Fatalf("KortexEngramPathGuidance(zsh) missing %q: %s", want, msg)
 	}
 }
 
-func TestEngramPathGuidanceDefault(t *testing.T) {
-	msg := engramPathGuidance("")
+func TestKortexEngramPathGuidanceDefault(t *testing.T) {
+	msg := KortexEngramPathGuidance("")
 	if want := "go/bin"; !strings.Contains(msg, want) {
-		t.Fatalf("engramPathGuidance(default) missing %q: %s", want, msg)
+		t.Fatalf("KortexEngramPathGuidance(default) missing %q: %s", want, msg)
 	}
 }
 
@@ -80,7 +80,7 @@ func TestWithGoInstallPathNoteAddsNoteWhenNotInPATH(t *testing.T) {
 
 	report := verify.Report{Ready: true, FinalNote: "You're ready."}
 	resolved := planner.ResolvedPlan{
-		OrderedComponents: []model.ComponentID{model.ComponentEngram},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram},
 		PlatformDecision:  planner.PlatformDecision{PackageManager: "apt"},
 	}
 
@@ -96,7 +96,7 @@ func TestWithGoInstallPathNoteAddsNoteWhenNotInPATH(t *testing.T) {
 func TestWithGoInstallPathNoteSkipsWhenBrew(t *testing.T) {
 	report := verify.Report{Ready: true, FinalNote: "You're ready."}
 	resolved := planner.ResolvedPlan{
-		OrderedComponents: []model.ComponentID{model.ComponentEngram},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram},
 		PlatformDecision:  planner.PlatformDecision{PackageManager: "brew"},
 	}
 
@@ -115,7 +115,7 @@ func TestWithGoInstallPathNoteSkipsWhenInPATH(t *testing.T) {
 
 	report := verify.Report{Ready: true, FinalNote: "You're ready."}
 	resolved := planner.ResolvedPlan{
-		OrderedComponents: []model.ComponentID{model.ComponentEngram},
+		OrderedComponents: []model.ComponentID{model.ComponentKortexEngram},
 		PlatformDecision:  planner.PlatformDecision{PackageManager: "apt"},
 	}
 
@@ -125,7 +125,7 @@ func TestWithGoInstallPathNoteSkipsWhenInPATH(t *testing.T) {
 	}
 }
 
-func TestWithGoInstallPathNoteSkipsWithoutEngram(t *testing.T) {
+func TestWithGoInstallPathNoteSkipsWithoutKortexEngram(t *testing.T) {
 	report := verify.Report{Ready: true, FinalNote: "You're ready."}
 	resolved := planner.ResolvedPlan{
 		OrderedComponents: []model.ComponentID{model.ComponentKortexCLI},
@@ -134,6 +134,6 @@ func TestWithGoInstallPathNoteSkipsWithoutEngram(t *testing.T) {
 
 	updated := withGoInstallPathNote(report, resolved)
 	if updated.FinalNote != report.FinalNote {
-		t.Fatalf("FinalNote should be unchanged without engram, got: %q", updated.FinalNote)
+		t.Fatalf("FinalNote should be unchanged without KortexEngram, got: %q", updated.FinalNote)
 	}
 }

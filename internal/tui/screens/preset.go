@@ -26,7 +26,7 @@ var presetLabels = map[model.PresetID]string{
 var presetDescriptions = map[model.PresetID]string{
 	model.PresetFullKortex:    "Completo: memória, SDD, skills, docs, persona e segurança",
 	model.PresetEcosystemOnly: "Apenas ferramentas core: memória, SDD, skills e docs (sem persona/segurança)",
-	model.PresetMinimal:       "Apenas memória persistente Engram",
+	model.PresetMinimal:       "Apenas memória persistente KortexEngram",
 	model.PresetCustom:        "Escolher componentes manualmente; mantém persona e configurações atuais",
 }
 
