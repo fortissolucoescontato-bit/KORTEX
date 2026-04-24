@@ -244,13 +244,13 @@ test_dry_run_full_preset_persona_before_sdd() {
     local order_str
     order_str=$(echo "$components_line" | sed 's/.*Ordem dos componentes: *//')
 
-    local persona_idx kortex_kortex-engram_idx sdd_idx
+    local persona_idx kortex_engram_idx sdd_idx
     persona_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^persona$' | cut -d: -f1)
-    kortex_kortex-engram_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^kortex-engram$' | cut -d: -f1)
+    kortex_engram_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^kortex-engram$' | cut -d: -f1)
     sdd_idx=$(echo "$order_str" | tr ',' '\n' | grep -n '^sdd$' | cut -d: -f1)
 
-    if [ -n "$persona_idx" ] && [ -n "$kortex_kortex-engram_idx" ] && [ "$persona_idx" -lt "$kortex_kortex-engram_idx" ]; then
-        log_pass "Persona ($persona_idx) before kortex-engram ($kortex_kortex-engram_idx)"
+    if [ -n "$persona_idx" ] && [ -n "$kortex_engram_idx" ] && [ "$persona_idx" -lt "$kortex_engram_idx" ]; then
+        log_pass "Persona ($persona_idx) before kortex-engram ($kortex_engram_idx)"
     else
         log_fail "Persona must appear before kortex-engram in component order: $order_str"
     fi

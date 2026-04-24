@@ -3,7 +3,6 @@ package system
 import (
 	"context"
 	"os"
-	"os/exec"
 	"runtime"
 	"strings"
 )
@@ -44,7 +43,7 @@ func IsSupportedOS(goos string) bool {
 }
 
 func Detect(ctx context.Context) (DetectionResult, error) {
-	homeDir, err := os.UserHomeDir()
+	homeDir, err := UserHomeDir()
 	if err != nil {
 		return DetectionResult{}, err
 	}
@@ -68,7 +67,7 @@ func Detect(ctx context.Context) (DetectionResult, error) {
 // detectNpmWritable checks if npm's global prefix is under the user's home
 // directory (nvm, fnm, volta, etc.), meaning sudo is not needed for global installs.
 func detectNpmWritable(homeDir string) bool {
-	out, err := exec.Command("npm", "config", "get", "prefix").Output()
+	out, err := Command("npm", "config", "get", "prefix").Output()
 	if err != nil {
 		return false
 	}
@@ -105,7 +104,7 @@ func osReleaseContent(goos string) (string, error) {
 		return "", nil
 	}
 
-	data, err := os.ReadFile("/etc/os-release")
+	data, err := ReadFile("/etc/os-release")
 	if err != nil {
 		return "", err
 	}

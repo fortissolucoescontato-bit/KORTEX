@@ -34,3 +34,9 @@ Este projeto utiliza o fluxo SDD para mudanças substanciais.
 - Siga o fluxo: Proposta -> Specs -> Design -> Tasks -> Apply -> Verify.
 - Priorize a persistência `hybrid` (arquivos + kortex-engram).
 <!-- /kortex:sdd-orchestrator -->
+
+<!-- kortex:testing-conventions -->
+## Testing Conventions (Local & CI)
+- **Permission Denied in Tests**: If `go test` fails with `fork/exec /tmp/go-build... permission denied`, it means the host `/tmp` directory is mounted with `noexec`. Workaround: `export GOTMPDIR=$PWD/.test_tmp` before running tests.
+- **System Isolation**: Always use `system.Command`, `system.ReadFile`, etc. instead of `os` and `exec` directly when building system-level features to allow for test mocking.
+<!-- /kortex:testing-conventions -->

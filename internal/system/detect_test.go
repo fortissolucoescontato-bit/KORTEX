@@ -1,6 +1,11 @@
 package system
 
-import "testing"
+import (
+	"context"
+	"errors"
+	"os/exec"
+	"testing"
+)
 
 func TestIsSupportedOS(t *testing.T) {
 	tests := []struct {
@@ -355,5 +360,43 @@ func TestDetectFromInputsProfileIsPopulatedInSystem(t *testing.T) {
 	// System.Supported should mirror profile
 	if result.System.Supported != result.System.Profile.Supported {
 		t.Fatalf("System.Supported (%v) != Profile.Supported (%v)", result.System.Supported, result.System.Profile.Supported)
+	}
+}
+func TestDetectWithOverrides(t *testing.T) {
+	// Salvando estado original
+	origHome := UserHomeDir
+	origReadFile := ReadFile
+	origLookPath := LookPath
+	origCommand := Command
+	t.Cleanup(func() {
+		UserHomeDir = origHome
+		ReadFile = origReadFile
+		LookPath = origLookPath
+		Command = origCommand
+	})
+
+	// Configurando mocks
+	UserHomeDir = func() (string, error) { return "/home/mockuser", nil }
+	ReadFile = func(name string) ([]byte, error) {
+		if name == "/etc/os-release" {
+			return []byte("ID=ubuntu\nID_LIKE=debian\n"), nil
+		}
+		return nil, errors.New("file not found")
+	}
+	LookPath = func(file string) (string, error) {
+		return "/usr/bin/" + file, nil
+	}
+	Command = func(name string, arg ...string) *exec.Cmd {
+		return exec.Command("echo", "mocked output")
+	}
+
+	ctx := context.Background()
+	result, err := Detect(ctx)
+	if err != nil {
+		t.Fatalf("Detect() error = %v", err)
+	}
+
+	if result.System.Profile.LinuxDistro != LinuxDistroUbuntu {
+		t.Fatalf("Expected ubuntu distro from mock, got %q", result.System.Profile.LinuxDistro)
 	}
 }

@@ -3,11 +3,10 @@ schema: spec-driven
 
 context: |
   Tech stack: Go 1.25, Bubbletea TUI (charmbracelet/bubbletea v1.3.10), lipgloss v1.1.x, SQLite (modernc.org/sqlite v1.49.1)
-  Architecture: cmd/ entrypoints, internal/ packages (agents, agentbuilder, tui, model, pipeline, catalog, system, planner, verify, update, opencode, installcmd, cli, app, components, state, backup, assets, storage)
+  Architecture: Clean Architecture, cmd/ entrypoints, internal/ packages (multi-agent orchestration, pipeline, state, system)
   Agents: multi-agent support (claude, opencode, cursor, codex, gemini, vscode, windsurf, antigravity)
-  Skills catalog: internal/catalog/skills.go — known skill registry; Agent builder: internal/agentbuilder/
-  Build: goreleaser (.goreleaser.yaml), CI: GitHub Actions (ci.yml, pr-check.yml, release.yml)
-  Style: gofmt, golangci-lint (.golangci.yml — gofmt, govet, errcheck, staticcheck, revive, gocyclo, goconst, misspell)
+  Branding: KORTEX, Language: PT-BR, Icon: 🧠
+  Style: gofmt, golangci-lint (.golangci.yml)
 
 strict_tdd: true
 
@@ -33,14 +32,14 @@ rules:
   verify:
     - Run: go test ./...
     - Run: go vet ./...
-    - Run: golangci-lint run (if available)
+    - Run: golangci-lint run
     - Compare implementation against every spec scenario
   archive:
     - Warn before merging destructive deltas (large removals)
 
 testing:
   strict_tdd: true
-  detected: "2026-04-23"
+  detected: "2026-04-24"
 
   runner:
     command: "go test ./..."
@@ -50,7 +49,6 @@ testing:
     unit:
       available: true
       tool: "go test"
-      note: "130 test files across internal/ packages"
     integration:
       available: true
       tool: "net/http/httptest (built-in)"
@@ -60,8 +58,7 @@ testing:
       note: "Dockerfile.ubuntu, Dockerfile.fedora, Dockerfile.arch — triggered by RUN_FULL_E2E=1"
     tui:
       available: true
-      tool: "bubbletea tea.KeyMsg simulation (no teatest — direct model.Update() testing)"
-      note: "TUI tests use direct Bubbletea model updates, not teatest library"
+      tool: "Bubbletea model.Update() testing"
 
   coverage:
     available: true
@@ -71,7 +68,6 @@ testing:
     linter:
       available: true
       command: "golangci-lint run"
-      note: ".golangci.yml configured with gofmt, govet, errcheck, staticcheck, revive, gocyclo, goconst, misspell"
     type_checker:
       available: true
       command: "go vet ./..."
