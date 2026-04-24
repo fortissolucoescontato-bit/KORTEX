@@ -201,12 +201,12 @@ func TestRunInstallMacOSKortexEngramStillUsesBrew(t *testing.T) {
 	commands := recorder.get()
 	foundBrew := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "brew install KortexEngram") {
+		if strings.Contains(cmd, "brew install kortex-engram") {
 			foundBrew = true
 		}
 	}
 	if !foundBrew {
-		t.Fatalf("expected brew install KortexEngram on macOS, got commands: %v", commands)
+		t.Fatalf("expected brew install kortex-engram on macOS, got commands: %v", commands)
 	}
 }
 

@@ -29,9 +29,7 @@ func UpsertCodexKortexEngramBlock(content, KortexEngramCmd string) string {
 	var kept []string
 	for i := 0; i < len(lines); {
 		trimmed := strings.TrimSpace(lines[i])
-		// Remove both old [mcp_servers.KortexEngram] and new [mcp_servers.KortexEngram]
-		// to ensure idempotency when renaming.
-		if trimmed == "[mcp_servers.KortexEngram]" || trimmed == "[mcp_servers.KortexEngram]" {
+		if trimmed == "[mcp_servers.KortexEngram]" {
 			// Skip the old block header and all its key-value lines.
 			i++
 			for i < len(lines) {

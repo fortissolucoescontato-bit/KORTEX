@@ -61,7 +61,7 @@ func DownloadLatestBinary(profile system.PlatformProfile) (string, error) {
 	localName := "kortex-engram"
 	if goos == "windows" {
 		searchName = KortexEngramName + ".exe"
-		localName = "kortexengram.exe"
+		localName = "kortex-engram.exe"
 	}
 	outPath := filepath.Join(installDir, localName)
 
@@ -219,7 +219,7 @@ func isWritableDir(dir string) bool {
 	if err != nil || !info.IsDir() {
 		return false
 	}
-	tmp, err := os.CreateTemp(dir, ".KortexEngram-write-test-*")
+	tmp, err := os.CreateTemp(dir, ".kortex-engram-write-test-*")
 	if err != nil {
 		return false
 	}
@@ -352,7 +352,7 @@ func writeExecutable(r io.Reader, outPath string) error {
 
 	// Write to a temp file in the same directory so Rename is always
 	// same-filesystem (atomic on POSIX).
-	tmp, err := os.CreateTemp(dir, ".KortexEngram-upgrade-*.tmp")
+	tmp, err := os.CreateTemp(dir, ".kortex-engram-upgrade-*.tmp")
 	if err != nil {
 		return fmt.Errorf("create temp file: %w", err)
 	}

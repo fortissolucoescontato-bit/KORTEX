@@ -437,7 +437,7 @@ func Inject(homeDir string, adapter agents.Adapter, sddMode model.SDDModeID, opt
 			sharedFiles := []string{
 				"SKILL.md",
 				"persistence-contract.md",
-				"KortexEngram-convention.md",
+				"kortex-engram-convention.md",
 				"kortex-convention.md",
 				"openspec-convention.md",
 				"sdd-phase-common.md",

@@ -550,7 +550,7 @@ func (s componentApplyStep) Run() error {
 					}
 					if err := runCommand(cmdToRun, "setup", slug); err != nil {
 						if setupStrict {
-							return fmt.Errorf("KortexEngram setup for %q: %w", adapter.Agent(), err)
+							return fmt.Errorf("kortex-engram setup for %q: %w", adapter.Agent(), err)
 						}
 						fmt.Printf("Aviso: falha no setup automático do KortexEngram para %q. Continuando...\n", adapter.Agent())
 					}
@@ -849,7 +849,7 @@ func componentPaths(homeDir string, selection model.Selection, adapters []agents
 				if p := adapter.MCPConfigPath(homeDir, "kortex-engram"); p != "" {
 					skillDir := adapter.SkillsDir(homeDir)
 					paths = append(paths,
-						filepath.Join(skillDir, "_shared", "KortexEngram-convention.md"),
+						filepath.Join(skillDir, "_shared", "kortex-engram-convention.md"),
 						filepath.Join(skillDir, "_shared", "kortex-convention.md"),
 					)
 				}
@@ -890,7 +890,7 @@ func componentPaths(homeDir string, selection model.Selection, adapters []agents
 				if skillDir != "" {
 					paths = append(paths,
 						filepath.Join(skillDir, "_shared", "persistence-contract.md"),
-						filepath.Join(skillDir, "_shared", "KortexEngram-convention.md"),
+						filepath.Join(skillDir, "_shared", "kortex-engram-convention.md"),
 						filepath.Join(skillDir, "_shared", "openspec-convention.md"),
 						filepath.Join(skillDir, "_shared", "sdd-phase-common.md"),
 						filepath.Join(skillDir, "_shared", "skill-resolver.md"),

@@ -255,14 +255,14 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		switch adapter.SystemPromptStrategy() {
 		case model.StrategyMarkdownSections:
 			promptPath := adapter.SystemPromptFile(homeDir)
-			protocolContent := assets.MustRead("claude/KortexEngram-protocol.md")
+			protocolContent := assets.MustRead("claude/kortex-engram-protocol.md")
 
 			existing, err := readFileOrEmpty(promptPath)
 			if err != nil {
 				return InjectionResult{}, err
 			}
 
-			updated := filemerge.InjectMarkdownSection(existing, "KortexEngram-protocol", protocolContent)
+			updated := filemerge.InjectMarkdownSection(existing, "kortex-engram-protocol", protocolContent)
 
 			mdWrite, err := filemerge.WriteFileAtomic(promptPath, []byte(updated), 0o644)
 			if err != nil {
@@ -280,10 +280,10 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 			}
 
 			// Write the KortexEngram protocol as a standalone Jinja include module.
-			// The static KIMI.md template references it via {% include "KortexEngram-protocol.md" %}.
+			// The static KIMI.md template references it via {% include "kortex-engram-protocol.md" %}.
 			configDir := adapter.GlobalConfigDir(homeDir)
-			protocolContent := assets.MustRead("claude/KortexEngram-protocol.md")
-			modulePath := filepath.Join(configDir, "KortexEngram-protocol.md")
+			protocolContent := assets.MustRead("claude/kortex-engram-protocol.md")
+			modulePath := filepath.Join(configDir, "kortex-engram-protocol.md")
 			mdWrite, err := filemerge.WriteFileAtomic(modulePath, []byte(protocolContent), 0o644)
 			if err != nil {
 				return InjectionResult{}, err
@@ -293,14 +293,14 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 
 		default:
 			promptPath := adapter.SystemPromptFile(homeDir)
-			protocolContent := assets.MustRead("claude/KortexEngram-protocol.md")
+			protocolContent := assets.MustRead("claude/kortex-engram-protocol.md")
 
 			existing, err := readFileOrEmpty(promptPath)
 			if err != nil {
 				return InjectionResult{}, err
 			}
 
-			updated := filemerge.InjectMarkdownSection(existing, "KortexEngram-protocol", protocolContent)
+			updated := filemerge.InjectMarkdownSection(existing, "kortex-engram-protocol", protocolContent)
 
 			mdWrite, err := filemerge.WriteFileAtomic(promptPath, []byte(updated), 0o644)
 			if err != nil {
@@ -316,7 +316,7 @@ func Inject(homeDir string, adapter agents.Adapter) (InjectionResult, error) {
 		skillDir := adapter.SkillsDir(homeDir)
 		if skillDir != "" {
 			sharedFiles := []string{
-				"KortexEngram-convention.md",
+				"kortex-engram-convention.md",
 				"kortex-convention.md",
 			}
 
@@ -382,17 +382,17 @@ func ensureAntigravitySettings(homeDir string, adapter agents.Adapter) (settings
 // files to ~/.codex/ and returns their paths.
 func writeCodexInstructionFiles(homeDir string) (instructionsPath, compactPath string, err error) {
 	codexDir := homeDir + "/.codex"
-	instructionsPath = codexDir + "/KortexEngram-instructions.md"
-	compactPath = codexDir + "/KortexEngram-compact-prompt.md"
+	instructionsPath = codexDir + "/kortex-engram-instructions.md"
+	compactPath = codexDir + "/kortex-engram-compact-prompt.md"
 
-	instrContent := assets.MustRead("codex/KortexEngram-instructions.md")
+	instrContent := assets.MustRead("codex/kortex-engram-instructions.md")
 	instrWrite, err := filemerge.WriteFileAtomic(instructionsPath, []byte(instrContent), 0o644)
 	if err != nil {
 		return "", "", fmt.Errorf("write codex KortexEngram-instructions.md: %w", err)
 	}
 	_ = instrWrite
 
-	compactContent := assets.MustRead("codex/KortexEngram-compact-prompt.md")
+	compactContent := assets.MustRead("codex/kortex-engram-compact-prompt.md")
 	compactWrite, err := filemerge.WriteFileAtomic(compactPath, []byte(compactContent), 0o644)
 	if err != nil {
 		return "", "", fmt.Errorf("write codex KortexEngram-compact-prompt.md: %w", err)
@@ -595,11 +595,12 @@ func iskortexEngramCommand(cmd string) bool {
 	}
 	base := filepath.Base(cmd)
 	if runtime.GOOS == "windows" {
-		return strings.EqualFold(base, "kortexengram.exe") || strings.EqualFold(base, "kortex-engram") ||
+		return strings.EqualFold(base, "kortex-engram.exe") || strings.EqualFold(base, "kortex-engram") ||
 			strings.EqualFold(base, "kortex.exe") || strings.EqualFold(base, "kortex") ||
-			strings.EqualFold(base, "kortexengram.exe") || strings.EqualFold(base, "kortex-engram")
+			strings.EqualFold(base, "KortexEngram.exe") || strings.EqualFold(base, "KortexEngram")
 	}
-	return base == "kortex-engram" || base == "kortex" || base == "kortex-engram"
+	// Also accept legacy PascalCase binary name for backward compatibility with old installations.
+	return base == "kortex-engram" || base == "kortex" || base == "KortexEngram"
 }
 
 // isAbsolutekortexEngramPath reports whether path is an absolute filesystem path

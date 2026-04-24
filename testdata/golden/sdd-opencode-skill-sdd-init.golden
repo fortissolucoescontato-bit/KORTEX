@@ -259,86 +259,86 @@ Persist project context following `skills/_shared/kortex-engram-convention.md` w
 
 Return:
 ```
-## SDD Initialized
+## SDD Inicializado
 
-**Project**: {project name}
+**Projeto**: {project name}
 **Stack**: {detected stack}
-**Persistence**: kortex-engram
-**Strict TDD Mode**: {enabled ✅ / disabled ❌ / unavailable (no test runner)}
+**Persistência**: kortex-engram
+**Modo TDD Estrito**: {ativado ✅ / desativado ❌ / indisponível (sem runner de testes)}
 
-### Testing Capabilities
-| Capability | Status |
+### Capacidades de Teste
+| Capacidade | Status |
 |------------|--------|
-| Test Runner | {tool} ✅ / ❌ Not found |
-| Unit Tests | ✅ / ❌ |
-| Integration Tests | {tool} ✅ / ❌ Not installed |
-| E2E Tests | {tool} ✅ / ❌ Not installed |
-| Coverage | ✅ / ❌ |
+| Executor de Testes | {tool} ✅ / ❌ Não encontrado |
+| Testes Unitários | ✅ / ❌ |
+| Testes de Integração | {tool} ✅ / ❌ Não instalado |
+| Testes E2E | {tool} ✅ / ❌ Não instalado |
+| Cobertura | ✅ / ❌ |
 | Linter | {tool} ✅ / ❌ |
-| Type Checker | {tool} ✅ / ❌ |
+| Verificador de Tipos | {tool} ✅ / ❌ |
 
-### Context Saved
-Project context persisted to Kortex-Engram.
+### Contexto Salvo
+O contexto do projeto foi persistido no Kortex-Engram.
 - **Kortex-Engram ID**: #{observation-id}
-- **Topic key**: sdd-init/{project-name}
-- **Capabilities ID**: #{capabilities-observation-id}
-- **Capabilities key**: sdd/{project-name}/testing-capabilities
+- **Chave do Tópico**: sdd-init/{project-name}
+- **ID de Capacidades**: #{capabilities-observation-id}
+- **Chave de Capacidades**: sdd/{project-name}/testing-capabilities
 
-No project files created.
+Nenhum arquivo de projeto foi criado.
 
-### ⚠️ Kortex-Engram Mode Limitations
-Kortex-Engram mode is ideal for **solo developers** doing fast iteration. Be aware:
-- **No iteration history**: re-running a phase (e.g., `sdd-spec`) overwrites the previous version. Only the latest artifact is retained.
-- **Not shareable**: kortex-engram is a local database — team members cannot see your SDD artifacts.
-- **Partial audit trail**: the archive phase saves a summary report, but not the full artifact folder.
+### ⚠️ Notas do Modo Kortex-Engram
+O modo Kortex-Engram é ideal para **desenvolvedores solo** que buscam iteração rápida. Esteja ciente:
+- **Sem histórico de iteração**: rodar uma fase novamente (ex: `sdd-spec`) sobrescreve a versão anterior. Apenas o artefato mais recente é mantido.
+- **Não compartilhável**: o kortex-engram é um banco de dados local — outros membros da equipe não verão seus artefatos SDD.
+- **Trilha de auditoria parcial**: a fase de arquivamento salva um relatório de resumo, mas não a pasta completa de artefatos.
 
-For **team projects** or work that needs a full audit trail, consider switching to `openspec` (file-based, git-friendly) or `hybrid` (files + kortex-engram recovery).
+Para **projetos em equipe** ou trabalhos que exigem trilha completa de auditoria, considere mudar para `openspec` (baseado em arquivos, amigável ao git) ou `hybrid` (arquivos + recuperação via kortex-engram).
 
-### Next Steps
-Ready for /sdd-explore <topic> or /sdd-new <change-name>.
+### Próximos Passos
+Pronto para /sdd-explore <tópico> ou /sdd-new <nome-da-mudança>.
 ```
 
 #### If mode is `openspec`:
 ```
-## SDD Initialized
+## SDD Inicializado
 
-**Project**: {project name}
+**Projeto**: {project name}
 **Stack**: {detected stack}
-**Persistence**: openspec
-**Strict TDD Mode**: {enabled ✅ / disabled ❌ / unavailable (no test runner)}
+**Persistência**: openspec
+**Modo TDD Estrito**: {ativado ✅ / desativado ❌ / indisponível (sem runner de testes)}
 
-### Testing Capabilities
-{same table as above}
+### Capacidades de Teste
+{mesma tabela acima}
 
-### Structure Created
-- openspec/config.yaml ← Project config with detected context + testing capabilities
-- openspec/specs/      ← Ready for specifications
-- openspec/changes/    ← Ready for change proposals
+### Estrutura Criada
+- openspec/config.yaml ← Configuração do projeto com contexto detectado + capacidades de teste
+- openspec/specs/      ← Pronto para especificações
+- openspec/changes/    ← Pronto para propostas de mudança
 
-### Next Steps
-Ready for /sdd-explore <topic> or /sdd-new <change-name>.
+### Próximos Passos
+Pronto para /sdd-explore <tópico> ou /sdd-new <nome-da-mudança>.
 ```
 
 #### If mode is `none`:
 ```
-## SDD Initialized
+## SDD Inicializado
 
-**Project**: {project name}
+**Projeto**: {project name}
 **Stack**: {detected stack}
-**Persistence**: none (ephemeral)
-**Strict TDD Mode**: {enabled ✅ / disabled ❌ / unavailable (no test runner)}
+**Persistência**: nenhuma (efêmera)
+**Modo TDD Estrito**: {ativado ✅ / desativado ❌ / indisponível (sem runner de testes)}
 
-### Testing Capabilities
-{same table as above}
+### Capacidades de Teste
+{mesma tabela acima}
 
-### Context Detected
-{summary of detected stack and conventions}
+### Contexto Detectado
+{resumo da stack e convenções detectadas}
 
-### Recommendation
-Enable `kortex-engram` or `openspec` for artifact persistence across sessions. Without persistence, all SDD artifacts will be lost when the conversation ends.
+### Recomendação
+Ative o `kortex-engram` ou `openspec` para persistência de artefatos entre sessões. Sem persistência, todos os artefatos SDD serão perdidos quando a conversa terminar.
 
-### Next Steps
-Ready for /sdd-explore <topic> or /sdd-new <change-name>.
+### Próximos Passos
+Pronto para /sdd-explore <tópico> ou /sdd-new <nome-da-mudança>.
 ```
 
 ## Rules

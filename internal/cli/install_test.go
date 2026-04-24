@@ -12,7 +12,7 @@ func TestParseInstallFlagsSupportsCSVAndRepeated(t *testing.T) {
 	flags, err := ParseInstallFlags([]string{
 		"--agent", "claude-code,opencode",
 		"--agent", "cursor",
-		"--component", "KortexEngram,sdd",
+		"--component", "kortex-engram,sdd",
 		"--component", "skills",
 		"--skill", "sdd-apply",
 		"--persona", "neutral",

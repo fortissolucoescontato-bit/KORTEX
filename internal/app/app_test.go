@@ -527,11 +527,11 @@ func TestHelpCommand(t *testing.T) {
 			if err != nil {
 				t.Fatalf("help should not fail: %v", err)
 			}
-			if !strings.Contains(buf.String(), "USAGE") {
-				t.Errorf("help output for %q should contain USAGE", arg)
+			if !strings.Contains(buf.String(), "USO") {
+				t.Errorf("help output for %q should contain USO", arg)
 			}
-			if !strings.Contains(buf.String(), "COMMANDS") {
-				t.Errorf("help output for %q should contain COMMANDS", arg)
+			if !strings.Contains(buf.String(), "COMANDOS") {
+				t.Errorf("help output for %q should contain COMANDOS", arg)
 			}
 		})
 	}

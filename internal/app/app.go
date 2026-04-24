@@ -388,7 +388,27 @@ func loadPersistedAssignments(homeDir string, selection *model.Selection) {
 	}
 	defer mgr.Close()
 
-	// For each agent in selection, load its assignments from DB
+	// Load legacy Claude model assignments into ClaudeModelAssignments map.
+	if claudeAssignments, err := mgr.GetAssignments("claude"); err == nil && len(claudeAssignments) > 0 {
+		if len(selection.ClaudeModelAssignments) == 0 {
+			selection.ClaudeModelAssignments = make(map[string]model.ClaudeModelAlias)
+			for phase, mState := range claudeAssignments {
+				selection.ClaudeModelAssignments[phase] = model.ClaudeModelAlias(mState.ModelID)
+			}
+		}
+	}
+
+	// Load legacy Kiro model assignments into KiroModelAssignments map.
+	if kiroAssignments, err := mgr.GetAssignments("kiro"); err == nil && len(kiroAssignments) > 0 {
+		if len(selection.KiroModelAssignments) == 0 {
+			selection.KiroModelAssignments = make(map[string]model.ClaudeModelAlias)
+			for phase, mState := range kiroAssignments {
+				selection.KiroModelAssignments[phase] = model.ClaudeModelAlias(mState.ModelID)
+			}
+		}
+	}
+
+	// Load generic model assignments from agents in selection.
 	for _, agent := range selection.Agents {
 		dbAssignments, err := mgr.GetAssignments(string(agent))
 		if err != nil || len(dbAssignments) == 0 {
@@ -399,9 +419,26 @@ func loadPersistedAssignments(homeDir string, selection *model.Selection) {
 			selection.ModelAssignments = make(map[string]model.ModelAssignment)
 		}
 		for phase, mState := range dbAssignments {
-			selection.ModelAssignments[phase] = model.ModelAssignment{
-				ProviderID: mState.ProviderID,
-				ModelID:    mState.ModelID,
+			if _, exists := selection.ModelAssignments[phase]; !exists {
+				selection.ModelAssignments[phase] = model.ModelAssignment{
+					ProviderID: mState.ProviderID,
+					ModelID:    mState.ModelID,
+				}
+			}
+		}
+	}
+
+	// Also load opencode assignments into ModelAssignments (legacy compat).
+	if opencodeAssignments, err := mgr.GetAssignments("opencode"); err == nil && len(opencodeAssignments) > 0 {
+		if selection.ModelAssignments == nil {
+			selection.ModelAssignments = make(map[string]model.ModelAssignment)
+		}
+		for phase, mState := range opencodeAssignments {
+			if _, exists := selection.ModelAssignments[phase]; !exists {
+				selection.ModelAssignments[phase] = model.ModelAssignment{
+					ProviderID: mState.ProviderID,
+					ModelID:    mState.ModelID,
+				}
 			}
 		}
 	}
@@ -417,6 +454,17 @@ func persistAssignments(homeDir string, selection model.Selection) {
 	}
 	defer mgr.Close()
 
+	// Persist legacy Claude model assignments.
+	for phase, alias := range selection.ClaudeModelAssignments {
+		_ = mgr.SetAssignment("claude", phase, "anthropic", string(alias))
+	}
+
+	// Persist legacy Kiro model assignments.
+	for phase, alias := range selection.KiroModelAssignments {
+		_ = mgr.SetAssignment("kiro", phase, "anthropic", string(alias))
+	}
+
+	// Persist generic model assignments for each agent in selection.
 	for phase, mState := range selection.ModelAssignments {
 		for _, a := range selection.Agents {
 			_ = mgr.SetAssignment(string(a), phase, mState.ProviderID, mState.ModelID)

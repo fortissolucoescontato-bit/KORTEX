@@ -5,7 +5,7 @@
         "mcp",
         "--tools=agent"
       ],
-      "command": "kortex"
+      "command": "kortex-engram"
     }
   }
 }

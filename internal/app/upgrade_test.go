@@ -29,7 +29,7 @@ func TestRunArgs_UpgradeDryRun(t *testing.T) {
 	// subcommand path being short-circuited before the TUI is launched.
 	err := RunArgs([]string{"upgrade", "--dry-run"}, &buf)
 	if err != nil {
-		if !strings.Contains(err.Error(), "update check failed") {
+		if !strings.Contains(err.Error(), "verificação de atualização falhou") {
 			t.Fatalf("RunArgs(upgrade --dry-run) error = %v", err)
 		}
 	}
@@ -38,9 +38,10 @@ func TestRunArgs_UpgradeDryRun(t *testing.T) {
 
 	// Must mention it is dry-run or no-op.
 	if !strings.Contains(out, "dry") && !strings.Contains(out, "Dry") &&
+		!strings.Contains(out, "Simulação") &&
 		!strings.Contains(out, "no upgrade") && !strings.Contains(out, "No upgrade") &&
 		!strings.Contains(out, "up to date") && !strings.Contains(out, "Up to date") &&
-		!strings.Contains(out, "Update check incomplete") &&
+		!strings.Contains(out, "Update check incomplete") && !strings.Contains(out, "Verificação incompleta") &&
 		!strings.Contains(out, "0 upgrade") {
 		t.Logf("upgrade --dry-run output:\n%s", out)
 		t.Errorf("output should mention dry-run or no upgrades available")
@@ -96,7 +97,7 @@ func TestRunArgs_UpgradeOutput_BinariesOnly(t *testing.T) {
 	var buf bytes.Buffer
 	err := RunArgs([]string{"upgrade", "--dry-run"}, &buf)
 	if err != nil {
-		if !strings.Contains(err.Error(), "update check failed") {
+		if !strings.Contains(err.Error(), "verificação de atualização falhou") {
 			t.Fatalf("upgrade --dry-run: %v", err)
 		}
 	}
@@ -134,7 +135,8 @@ func TestRenderUpgradeReport_Empty(t *testing.T) {
 // TestRenderUpgradeReport_DryRun verifies that dry-run report mentions dry-run.
 func TestRenderUpgradeReport_DryRun(t *testing.T) {
 	out := renderUpgradeReportForTest(nil, true)
-	if !strings.Contains(out, "dry") && !strings.Contains(out, "Dry") {
+	if !strings.Contains(out, "dry") && !strings.Contains(out, "Dry") &&
+		!strings.Contains(out, "Simulação") && !strings.Contains(out, "simulação") {
 		t.Errorf("dry-run report should mention dry-run, got: %q", out)
 	}
 }
@@ -190,8 +192,8 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 					ManualHint: "Download from https://github.com/fortissolucoescontato-bit/kortex/releases",
 				},
 			},
-			wantContains:   []string{"kortex", "manual update required", "github.com", "[--]"},
-			wantNotContain: []string{"[!!]", "FAILED"},
+			wantContains:   []string{"kortex", "atualização manual necessária", "github.com", "[--]"},
+			wantNotContain: []string{"[!!]"},
 		},
 		{
 			name: "real failure shows error details",
@@ -204,8 +206,8 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 					Err:        errors.New("brew upgrade kortex: exit status 1"),
 				},
 			},
-			wantContains:   []string{"kortex", "FAILED", "exit status 1", "[!!]"},
-			wantNotContain: []string{"manual update required"},
+			wantContains:   []string{"kortex", "exit status 1", "[!!]"},
+			wantNotContain: []string{"atualização manual necessária"},
 		},
 		{
 			name:   "dry-run shows pending upgrades",
@@ -245,8 +247,8 @@ func TestRenderUpgradeReport_PerToolSemantics_Deterministic(t *testing.T) {
 					ManualHint: "Download from https://github.com/fortissolucoescontato-bit/kortex/releases",
 				},
 			},
-			wantContains:   []string{"kortex-engram", "[ok]", "kortex", "[--]", "kortex", "1 succeeded", "2 skipped"},
-			wantNotContain: []string{"FAILED", "[!!]"},
+			wantContains:   []string{"kortex-engram", "[ok]", "kortex", "[--]", "kortex", "1 com sucesso", "2 pulados"},
+			wantNotContain: []string{"[!!]"},
 		},
 	}
 

@@ -299,10 +299,10 @@ func TestCheckAll(t *testing.T) {
 		path := r.URL.Path
 		var release githubRelease
 		switch {
-		case contains(path, "kortex"):
-			release = githubRelease{TagName: "v1.5.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/kortex/releases/tag/v1.5.0"}
 		case contains(path, "kortex-engram"):
 			release = githubRelease{TagName: "v0.4.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/KortexEngram/releases/tag/v0.4.0"}
+		case contains(path, "kortex"):
+			release = githubRelease{TagName: "v1.5.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/kortex/releases/tag/v1.5.0"}
 		case contains(path, "carbon-guardian-angel"):
 			release = githubRelease{TagName: "v2.0.0", HTMLURL: "https://github.com/fortissolucoescontato-bit/carbon-guardian-angel/releases/tag/v2.0.0"}
 		}

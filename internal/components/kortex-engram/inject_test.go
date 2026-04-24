@@ -53,7 +53,7 @@ func TestInjectClaudeWritesMCPConfig(t *testing.T) {
 	}
 
 	// Check MCP JSON file was created.
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
 	mcpContent, err := os.ReadFile(mcpPath)
 	if err != nil {
 		t.Fatalf("ReadFile(kortexengram.json) error = %v", err)
@@ -97,11 +97,11 @@ func TestInjectClaudeWritesProtocolSection(t *testing.T) {
 	}
 
 	text := string(content)
-	if !strings.Contains(text, "<!-- kortex:KortexEngram-protocol -->") {
-		t.Fatal("CLAUDE.md missing open marker for KortexEngram-protocol")
+	if !strings.Contains(text, "<!-- kortex:kortex-engram-protocol -->") {
+		t.Fatal("CLAUDE.md missing open marker for kortex-engram-protocol")
 	}
-	if !strings.Contains(text, "<!-- /kortex:KortexEngram-protocol -->") {
-		t.Fatal("CLAUDE.md missing close marker for KortexEngram-protocol")
+	if !strings.Contains(text, "<!-- /kortex:kortex-engram-protocol -->") {
+		t.Fatal("CLAUDE.md missing close marker for kortex-engram-protocol")
 	}
 	// Real content check.
 	if !strings.Contains(text, "mem_save") {
@@ -140,9 +140,9 @@ func TestInjectOpenCodeMergesKortexEngramToSettings(t *testing.T) {
 		t.Fatalf("Inject() changed = false")
 	}
 
-	// Should include opencode.json and AGENTS.md (fallback protocol injection).
-	if len(result.Files) != 2 {
-		t.Fatalf("Inject() files = %v, want exactly 2 (opencode.json + AGENTS.md)", result.Files)
+	// Should include opencode.json, AGENTS.md, and skill convention files.
+	if len(result.Files) < 2 {
+		t.Fatalf("Inject() files = %v, want at least 2 (opencode.json + AGENTS.md)", result.Files)
 	}
 
 	configPath := filepath.Join(home, ".config", "opencode", "opencode.json")
@@ -187,8 +187,8 @@ func TestInjectOpenCodeMergesKortexEngramToSettings(t *testing.T) {
 		t.Fatalf("ReadFile(AGENTS.md) error = %v", err)
 	}
 	agentsText := string(agentsContent)
-	if !strings.Contains(agentsText, "<!-- kortex:KortexEngram-protocol -->") {
-		t.Fatal("AGENTS.md missing KortexEngram protocol section marker")
+	if !strings.Contains(agentsText, "<!-- kortex:kortex-engram-protocol -->") {
+		t.Fatal("AGENTS.md missing kortex-engram protocol section marker")
 	}
 	if !strings.Contains(agentsText, "mem_save") {
 		t.Fatal("AGENTS.md missing KortexEngram protocol content (expected 'mem_save')")
@@ -537,7 +537,7 @@ func TestInjectCodexWritesInstructionFiles(t *testing.T) {
 		t.Fatalf("Inject(codex) error = %v", err)
 	}
 
-	instructionsPath := filepath.Join(home, ".codex", "KortexEngram-instructions.md")
+	instructionsPath := filepath.Join(home, ".codex", "kortex-engram-instructions.md")
 	content, err := os.ReadFile(instructionsPath)
 	if err != nil {
 		t.Fatalf("ReadFile(KortexEngram-instructions.md) error = %v", err)
@@ -546,13 +546,13 @@ func TestInjectCodexWritesInstructionFiles(t *testing.T) {
 		t.Fatal("KortexEngram-instructions.md missing expected content (mem_save)")
 	}
 
-	compactPath := filepath.Join(home, ".codex", "KortexEngram-compact-prompt.md")
+	compactPath := filepath.Join(home, ".codex", "kortex-engram-compact-prompt.md")
 	compactContent, err := os.ReadFile(compactPath)
 	if err != nil {
-		t.Fatalf("ReadFile(KortexEngram-compact-prompt.md) error = %v", err)
+		t.Fatalf("ReadFile(kortex-engram-compact-prompt.md) error = %v", err)
 	}
 	if !strings.Contains(string(compactContent), "FIRST ACTION REQUIRED") {
-		t.Fatal("KortexEngram-compact-prompt.md missing expected content (FIRST ACTION REQUIRED)")
+		t.Fatal("kortex-engram-compact-prompt.md missing expected content (FIRST ACTION REQUIRED)")
 	}
 }
 
@@ -571,7 +571,7 @@ func TestInjectCodexInjectsTOMLKeys(t *testing.T) {
 	}
 	text := string(content)
 
-	instructionsPath := filepath.Join(home, ".codex", "KortexEngram-instructions.md")
+	instructionsPath := filepath.Join(home, ".codex", "kortex-engram-instructions.md")
 	if !strings.Contains(text, `model_instructions_file`) {
 		t.Fatalf("config.toml missing model_instructions_file key; got:\n%s", text)
 	}
@@ -579,7 +579,7 @@ func TestInjectCodexInjectsTOMLKeys(t *testing.T) {
 		t.Fatalf("config.toml model_instructions_file does not reference %q; got:\n%s", instructionsPath, text)
 	}
 
-	compactPath := filepath.Join(home, ".codex", "KortexEngram-compact-prompt.md")
+	compactPath := filepath.Join(home, ".codex", "kortex-engram-compact-prompt.md")
 	if !strings.Contains(text, `experimental_compact_prompt_file`) {
 		t.Fatalf("config.toml missing experimental_compact_prompt_file key; got:\n%s", text)
 	}
@@ -592,7 +592,7 @@ func TestInjectCodexInjectsTOMLKeys(t *testing.T) {
 
 // TestInjectClaudePreservesAbsoluteCommandFromKortexEngramSetup verifies that when
 // `KortexEngram setup claude-code` has already written an absolute-path command to
-// ~/.claude/mcp/kortexengram.json (KortexEngram v1.10.3+ behaviour), a subsequent call to
+// ~/.claude/mcp/kortex-engram.json (KortexEngram v1.10.3+ behaviour), a subsequent call to
 // Inject() does NOT overwrite the absolute path with the relative "kortex-engram".
 func TestInjectClaudePreservesAbsoluteCommandFromKortexEngramSetup(t *testing.T) {
 	home := t.TempDir()
@@ -600,7 +600,7 @@ func TestInjectClaudePreservesAbsoluteCommandFromKortexEngramSetup(t *testing.T)
 	// Simulate what `KortexEngram setup claude-code` writes on v1.10.3+:
 	// an absolute path as the command value.
 	absPath := "/opt/homebrew/bin/KortexEngram"
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
 	if err := os.MkdirAll(filepath.Dir(mcpPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll error = %v", err)
 	}
@@ -639,7 +639,7 @@ func TestInjectClaudePreservesAbsoluteCommandIsIdempotent(t *testing.T) {
 	home := t.TempDir()
 
 	absPath := "/usr/local/bin/KortexEngram"
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
 	if err := os.MkdirAll(filepath.Dir(mcpPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll error = %v", err)
 	}
@@ -683,7 +683,7 @@ func TestInjectClaudeAddsToolsAgentWhenSetupWritesBareArgs(t *testing.T) {
 	home := t.TempDir()
 
 	absPath := "/home/user/go/bin/KortexEngram"
-	mcpPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
+	mcpPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
 	if err := os.MkdirAll(filepath.Dir(mcpPath), 0o755); err != nil {
 		t.Fatalf("MkdirAll error = %v", err)
 	}

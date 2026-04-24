@@ -567,12 +567,12 @@ func TestGoldenKortexEngram_Claude(t *testing.T) {
 	}
 
 	// MCP server JSON config.
-	mcpJSON := readTestFile(t, filepath.Join(home, ".claude", "mcp", "kortexengram.json"))
-	assertGolden(t, "KortexEngram-claude-mcp.golden", mcpJSON)
+	mcpJSON := readTestFile(t, filepath.Join(home, ".claude", "mcp", "kortex-engram.json"))
+	assertGolden(t, "kortexengram-claude-mcp.golden", mcpJSON)
 
 	// CLAUDE.md with KortexEngram-protocol section.
 	claudeMD := readTestFile(t, filepath.Join(home, ".claude", "CLAUDE.md"))
-	assertGolden(t, "KortexEngram-claude-claudemd.golden", claudeMD)
+	assertGolden(t, "kortexengram-claude-claudemd.golden", claudeMD)
 }
 
 func TestGoldenKortexEngram_OpenCode(t *testing.T) {
@@ -591,7 +591,7 @@ func TestGoldenKortexEngram_OpenCode(t *testing.T) {
 	}
 
 	configJSON := readTestFile(t, filepath.Join(home, ".config", "opencode", "opencode.json"))
-	assertGolden(t, "KortexEngram-opencode-settings.golden", configJSON)
+	assertGolden(t, "kortexengram-opencode-settings.golden", configJSON)
 }
 
 func TestGoldenKortexEngram_Windsurf(t *testing.T) {
@@ -608,7 +608,7 @@ func TestGoldenKortexEngram_Windsurf(t *testing.T) {
 	}
 
 	mcpJSON := readTestFile(t, filepath.Join(home, ".codeium", "windsurf", "mcp_config.json"))
-	assertGolden(t, "KortexEngram-windsurf-mcp.golden", mcpJSON)
+	assertGolden(t, "kortexengram-windsurf-mcp.golden", mcpJSON)
 }
 
 func TestGoldenKortexEngram_Kiro(t *testing.T) {
@@ -628,7 +628,7 @@ func TestGoldenKortexEngram_Kiro(t *testing.T) {
 
 	// Kiro reads MCP from ~/.kiro/settings/mcp.json (not from the app config dir)
 	mcpJSON := readTestFile(t, filepath.Join(home, ".kiro", "settings", "mcp.json"))
-	assertGolden(t, "KortexEngram-kiro-mcp.golden", mcpJSON)
+	assertGolden(t, "kortexengram-kiro-mcp.golden", mcpJSON)
 }
 
 // ---------------------------------------------------------------------------
@@ -837,11 +837,11 @@ func TestGoldenKortexEngram_Antigravity(t *testing.T) {
 
 	// MCP config written to ~/.gemini/antigravity/mcp_config.json.
 	mcpJSON := readTestFile(t, filepath.Join(home, ".gemini", "antigravity", "mcp_config.json"))
-	assertGolden(t, "KortexEngram-antigravity-mcp.golden", mcpJSON)
+	assertGolden(t, "kortexengram-antigravity-mcp.golden", mcpJSON)
 
 	// GEMINI.md must contain the KortexEngram-protocol section.
 	rulesFile := readTestFile(t, filepath.Join(home, ".gemini", "GEMINI.md"))
-	assertGolden(t, "KortexEngram-antigravity-rulesmd.golden", rulesFile)
+	assertGolden(t, "kortexengram-antigravity-rulesmd.golden", rulesFile)
 }
 
 // ---------------------------------------------------------------------------

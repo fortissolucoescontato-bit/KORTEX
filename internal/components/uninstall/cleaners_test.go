@@ -32,20 +32,20 @@ func TestRemoveMarkdownSections_RemovesOnlyManagedBlock(t *testing.T) {
 		"",
 		"Keep this.",
 		"",
-		"<!-- kortex:KortexEngram-protocol -->",
+		"<!-- kortex:kortex-engram-protocol -->",
 		"Managed content.",
-		"<!-- /kortex:KortexEngram-protocol -->",
+		"<!-- /kortex:kortex-engram-protocol -->",
 		"",
 		"# User Footer",
 		"",
 		"Must stay.",
 	}, "\n") + "\n"
 
-	updated, changed := removeMarkdownSections(input, "KortexEngram-protocol")
+	updated, changed := removeMarkdownSections(input, "kortex-engram-protocol")
 	if !changed {
 		t.Fatal("removeMarkdownSections() changed = false, want true")
 	}
-	if strings.Contains(updated, "kortex:KortexEngram-protocol") {
+	if strings.Contains(updated, "kortex:kortex-engram-protocol") {
 		t.Fatalf("managed marker block still present:\n%s", updated)
 	}
 	if !strings.Contains(updated, "# User Intro") || !strings.Contains(updated, "# User Footer") {
@@ -313,12 +313,12 @@ func TestRemoveTopLevelTOMLKeys_PreservesNestedKeys(t *testing.T) {
 
 func TestCleanCodexTOML_RemovesOnlyManagedEntries(t *testing.T) {
 	input := strings.Join([]string{
-		"model_instructions_file = \"/home/me/.codex/KortexEngram-instructions.md\"",
-		"experimental_compact_prompt_file = \"/home/me/.codex/KortexEngram-compact-prompt.md\"",
+		"model_instructions_file = \"/home/me/.codex/kortex-engram-instructions.md\"",
+		"experimental_compact_prompt_file = \"/home/me/.codex/kortex-engram-compact-prompt.md\"",
 		"custom_top = \"keep\"",
 		"",
-		"[mcp_servers.KortexEngram]",
-		"command = \"KortexEngram\"",
+		"[mcp_servers.kortex-engram]",
+		"command = \"kortex-engram\"",
 		"args = [\"mcp\", \"--tools=agent\"]",
 		"",
 		"[other]",
@@ -332,8 +332,8 @@ func TestCleanCodexTOML_RemovesOnlyManagedEntries(t *testing.T) {
 	if strings.Contains(updated, "model_instructions_file") || strings.Contains(updated, "experimental_compact_prompt_file") {
 		t.Fatalf("managed top-level keys were not removed:\n%s", updated)
 	}
-	if strings.Contains(updated, "[mcp_servers.KortexEngram]") {
-		t.Fatalf("managed KortexEngram TOML block was not removed:\n%s", updated)
+	if strings.Contains(updated, "[mcp_servers.kortex-engram]") {
+		t.Fatalf("managed kortex-engram TOML block was not removed:\n%s", updated)
 	}
 	if !strings.Contains(updated, "custom_top = \"keep\"") || !strings.Contains(updated, "[other]") {
 		t.Fatalf("user TOML content was lost:\n%s", updated)
@@ -348,9 +348,9 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 		"",
 		"Hand-written intro.",
 		"",
-		"<!-- kortex:KortexEngram-protocol -->",
+		"<!-- kortex:kortex-engram-protocol -->",
 		"Managed content.",
-		"<!-- /kortex:KortexEngram-protocol -->",
+		"<!-- /kortex:kortex-engram-protocol -->",
 		"",
 		"# Footer",
 	}, "\n") + "\n"
@@ -362,7 +362,7 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadFile(%q) error = %v", path, err)
 	}
-	updated, changed := removeMarkdownSections(string(raw), "KortexEngram-protocol")
+	updated, changed := removeMarkdownSections(string(raw), "kortex-engram-protocol")
 	if !changed {
 		t.Fatal("removeMarkdownSections() changed = false, want true")
 	}
@@ -375,7 +375,7 @@ func TestMarkdownCleanup_OnRealFileWithTempDir(t *testing.T) {
 		t.Fatalf("ReadFile(final) error = %v", err)
 	}
 	final := string(finalRaw)
-	if strings.Contains(final, "kortex:KortexEngram-protocol") {
+	if strings.Contains(final, "kortex:kortex-engram-protocol") {
 		t.Fatalf("managed markdown block still present in file:\n%s", final)
 	}
 	if !strings.Contains(final, "Hand-written intro.") || !strings.Contains(final, "# Footer") {

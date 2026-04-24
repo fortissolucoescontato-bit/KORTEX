@@ -1,6 +1,6 @@
 ---
-name: Kortex Persona
-description: Kortex persona with SDD orchestration and Kortex-Engram protocol
+name: Kortex Carbon Persona
+description: Kortex persona with SDD orchestration and KortexEngram protocol
 applyTo: "**"
 ---
 
@@ -239,7 +239,7 @@ Sub-agents retrieve full content via two steps:
 
 ### State and Conventions
 
-Convention files under the agent's global skills directory (global) or `.agent/skills/_shared/` (workspace): `kortex-engram-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
+Convention files under the agent's global skills directory (global) or `.agent/skills/_shared/` (workspace): `kortex-engram-convention.md`, `kortex-convention.md`, `persistence-contract.md`, `openspec-convention.md`.
 
 ### Recovery Rule
 

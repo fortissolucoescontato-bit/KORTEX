@@ -255,7 +255,7 @@ func TestBuildProgressLabelsFromResolvedPlan(t *testing.T) {
 		"prepare:backup-snapshot",
 		"apply:rollback-restore",
 		"agent:claude-code",
-		"component:KortexEngram",
+		"component:kortex-engram",
 		"component:sdd",
 	}
 
@@ -774,13 +774,13 @@ func TestWelcomeMenu_UpgradeNavigation(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenWelcome
 	m.UpdateCheckDone = true // Skip update-check-pending spinner.
-	m.Cursor = 1
+	m.Cursor = 2
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
 	if state.Screen != ScreenUpgrade {
-		t.Fatalf("cursor=1 (Upgrade): screen = %v, want %v", state.Screen, ScreenUpgrade)
+		t.Fatalf("cursor=2 (Upgrade): screen = %v, want %v", state.Screen, ScreenUpgrade)
 	}
 }
 
@@ -788,13 +788,13 @@ func TestWelcomeMenu_UpgradeNavigation(t *testing.T) {
 func TestWelcomeMenu_SyncNavigation(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenWelcome
-	m.Cursor = 2
+	m.Cursor = 3
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
 	if state.Screen != ScreenSync {
-		t.Fatalf("cursor=2 (Sync): screen = %v, want %v", state.Screen, ScreenSync)
+		t.Fatalf("cursor=3 (Sync): screen = %v, want %v", state.Screen, ScreenSync)
 	}
 }
 
@@ -803,13 +803,13 @@ func TestWelcomeMenu_UpgradeSyncNavigation(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenWelcome
 	m.UpdateCheckDone = true
-	m.Cursor = 3
+	m.Cursor = 4
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
 	if state.Screen != ScreenUpgradeSync {
-		t.Fatalf("cursor=3 (Upgrade+Sync): screen = %v, want %v", state.Screen, ScreenUpgradeSync)
+		t.Fatalf("cursor=4 (Upgrade+Sync): screen = %v, want %v", state.Screen, ScreenUpgradeSync)
 	}
 }
 
@@ -817,13 +817,13 @@ func TestWelcomeMenu_UpgradeSyncNavigation(t *testing.T) {
 func TestWelcomeMenu_ConfigureModelsNavigation(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenWelcome
-	m.Cursor = 4
+	m.Cursor = 5
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
 	if state.Screen != ScreenModelConfig {
-		t.Fatalf("cursor=4 (Configure Models): screen = %v, want %v", state.Screen, ScreenModelConfig)
+		t.Fatalf("cursor=5 (Configure Models): screen = %v, want %v", state.Screen, ScreenModelConfig)
 	}
 }
 
@@ -831,26 +831,26 @@ func TestWelcomeMenu_ConfigureModelsNavigation(t *testing.T) {
 func TestWelcomeMenu_BackupsNavigation(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenWelcome
-	m.Cursor = 6
+	m.Cursor = 7
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
 	if state.Screen != ScreenBackups {
-		t.Fatalf("cursor=6 (Backups): screen = %v, want %v", state.Screen, ScreenBackups)
+		t.Fatalf("cursor=7 (Backups): screen = %v, want %v", state.Screen, ScreenBackups)
 	}
 }
 
 func TestWelcomeMenu_UninstallNavigation_WithoutProfiles(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	m.Screen = ScreenWelcome
-	m.Cursor = 7
+	m.Cursor = 8
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
 	if state.Screen != ScreenUninstallMode {
-		t.Fatalf("cursor=7 (Managed uninstall): screen = %v, want %v", state.Screen, ScreenUninstallMode)
+		t.Fatalf("cursor=8 (Managed uninstall): screen = %v, want %v", state.Screen, ScreenUninstallMode)
 	}
 }
 
@@ -859,13 +859,13 @@ func TestWelcomeMenu_UninstallNavigation_WithProfiles(t *testing.T) {
 		Configs: []system.ConfigState{{Agent: string(model.AgentOpenCode), Exists: true}},
 	}, "dev")
 	m.Screen = ScreenWelcome
-	m.Cursor = 8
+	m.Cursor = 9
 
 	updated, _ := m.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	state := updated.(Model)
 
 	if state.Screen != ScreenUninstallMode {
-		t.Fatalf("cursor=8 (Managed uninstall with profiles): screen = %v, want %v", state.Screen, ScreenUninstallMode)
+		t.Fatalf("cursor=9 (Managed uninstall with profiles): screen = %v, want %v", state.Screen, ScreenUninstallMode)
 	}
 }
 
@@ -875,13 +875,13 @@ func TestWelcomeMenu_OptionCount(t *testing.T) {
 	m := NewModel(system.DetectionResult{}, "dev")
 	// Without OpenCode detected: 9 options (includes "Managed uninstall").
 	opts := screens.WelcomeOptions(m.UpdateResults, m.UpdateCheckDone, false, 0, true)
-	if len(opts) != 9 {
-		t.Fatalf("WelcomeOptions(showProfiles=false) len = %d, want 9; got %v", len(opts), opts)
+	if len(opts) != 10 {
+		t.Fatalf("WelcomeOptions(showProfiles=false) len = %d, want 11; got %v", len(opts), opts)
 	}
 	// With OpenCode detected: 10 options (adds "OpenCode SDD Profiles").
 	optsWithProfiles := screens.WelcomeOptions(m.UpdateResults, m.UpdateCheckDone, true, 0, true)
-	if len(optsWithProfiles) != 10 {
-		t.Fatalf("WelcomeOptions(showProfiles=true) len = %d, want 10; got %v", len(optsWithProfiles), optsWithProfiles)
+	if len(optsWithProfiles) != 11 {
+		t.Fatalf("WelcomeOptions(showProfiles=true) len = %d, want 11; got %v", len(optsWithProfiles), optsWithProfiles)
 	}
 }
 
@@ -3337,8 +3337,8 @@ func TestPinErrClearedOnScreenReentry(t *testing.T) {
 		t.Fatalf("Esc from ScreenBackups: screen = %v, want ScreenWelcome", afterEsc.Screen)
 	}
 
-	// Navigate back to ScreenBackups (cursor 6 on Welcome → enter).
-	afterEsc.Cursor = 6
+	// Navigate back to ScreenBackups (cursor 7 on Welcome → enter).
+	afterEsc.Cursor = 7
 	updated2, _ := afterEsc.Update(tea.KeyMsg{Type: tea.KeyEnter})
 	afterReturn := updated2.(Model)
 	if afterReturn.Screen != ScreenBackups {

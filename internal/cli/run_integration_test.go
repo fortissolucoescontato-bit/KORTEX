@@ -409,7 +409,7 @@ func TestRunInstallFedoraQwenKortexEngramSkipsUnsupportedSetupAndWritesSettings(
 	}
 
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "KortexEngram setup qwen-code") {
+		if strings.Contains(cmd, "kortex-engram setup qwen-code") {
 			t.Fatalf("unexpected unsupported setup command: %s", cmd)
 		}
 	}
@@ -605,7 +605,7 @@ func TestRunInstallMacOSStillResolvesBrewCommands(t *testing.T) {
 	commands := recorder.get()
 	foundBrew := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "brew install KortexEngram") {
+		if strings.Contains(cmd, "brew install kortex-engram") {
 			foundBrew = true
 			break
 		}
@@ -755,7 +755,7 @@ func TestRunInstallKortexEngramSkipsInstallWhenAlreadyOnPath(t *testing.T) {
 
 	// No brew/go install commands should have been recorded — only agent install.
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "brew install KortexEngram") || (strings.Contains(cmd, "go install") && strings.Contains(cmd, "kortex-engram")) {
+		if strings.Contains(cmd, "brew install kortex-engram") || (strings.Contains(cmd, "go install") && strings.Contains(cmd, "kortex-engram")) {
 			t.Fatalf("expected KortexEngram install to be skipped, but got command: %s", cmd)
 		}
 	}
@@ -793,7 +793,7 @@ func TestRunInstallKortexEngramAttemptsOpenCodeSetupWhenBinaryPresent(t *testing
 	commands := recorder.get()
 	foundSetup := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "KortexEngram setup opencode") {
+		if strings.Contains(cmd, "kortex-engram setup opencode") {
 			foundSetup = true
 			break
 		}
@@ -819,7 +819,7 @@ func TestRunInstallKortexEngramFallsBackToInjectWhenSetupFails(t *testing.T) {
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
+		if  (name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
 			return errors.New("setup failed")
 		}
 		return nil
@@ -864,7 +864,7 @@ func TestRunInstallKortexEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
+		if  (name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "opencode" {
 			return errors.New("setup failed")
 		}
 		return nil
@@ -877,7 +877,7 @@ func TestRunInstallKortexEngramSetupStrictFailsWhenSetupFails(t *testing.T) {
 	if err == nil {
 		t.Fatalf("RunInstall() expected error in strict setup mode")
 	}
-	if !strings.Contains(err.Error(), "KortexEngram setup for \"opencode\"") {
+	if !strings.Contains(err.Error(), "kortex-engram setup for \"opencode\"") {
 		t.Fatalf("RunInstall() error = %v, want setup error", err)
 	}
 }
@@ -914,7 +914,7 @@ func TestRunInstallKortexEngramDefaultModeAttemptsClaudeSetup(t *testing.T) {
 	commands := recorder.get()
 	foundSetup := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "KortexEngram setup claude-code") {
+		if strings.Contains(cmd, "kortex-engram setup claude-code") {
 			foundSetup = true
 			break
 		}
@@ -940,7 +940,7 @@ func TestRunInstallAntigravityCopiesGeminiSettingsAfterKortexEngramSetup(t *test
 		return "/usr/local/bin/" + name, nil
 	}
 	runCommand = func(name string, args ...string) error {
-		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
+		if  (name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
 			settingsPath := filepath.Join(home, ".gemini", "settings.json")
 			if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 				return err
@@ -992,7 +992,7 @@ func TestRunInstallDeduplicatesSharedKortexEngramSetupSlugs(t *testing.T) {
 		if err := recorder.record(name, args...); err != nil {
 			return err
 		}
-		if  (name == "kortex-engram" || name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
+		if  (name == "kortex-engram" || name == "kortex") && len(args) == 2 && args[0] == "setup" && args[1] == "gemini-cli" {
 			settingsPath := filepath.Join(home, ".gemini", "settings.json")
 			if err := os.MkdirAll(filepath.Dir(settingsPath), 0o755); err != nil {
 				return err
@@ -1015,12 +1015,12 @@ func TestRunInstallDeduplicatesSharedKortexEngramSetupSlugs(t *testing.T) {
 
 	var setupCount int
 	for _, cmd := range recorder.get() {
-		if strings.Contains(cmd, "KortexEngram setup gemini-cli") {
+		if strings.Contains(cmd, "kortex-engram setup gemini-cli") {
 			setupCount++
 		}
 	}
 	if setupCount != 1 {
-		t.Fatalf("KortexEngram setup gemini-cli count = %d, want 1", setupCount)
+		t.Fatalf("kortex-engram setup gemini-cli count = %d, want 1", setupCount)
 	}
 }
 
@@ -1275,12 +1275,12 @@ func TestRunInstallKortexEngramBrewSkipsGoCheck(t *testing.T) {
 
 	foundBrew := false
 	for _, cmd := range commands {
-		if strings.Contains(cmd, "brew install KortexEngram") {
+		if strings.Contains(cmd, "brew install kortex-engram") {
 			foundBrew = true
 		}
 	}
 	if !foundBrew {
-		t.Fatalf("expected brew install KortexEngram, got commands: %v", commands)
+		t.Fatalf("expected brew install kortex-engram, got commands: %v", commands)
 	}
 }
 
@@ -1508,7 +1508,7 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 
 	// Capture all relevant output files after the first run.
 	claudeMDPath := filepath.Join(home, ".claude", "CLAUDE.md")
-	KortexEngramMCPPath := filepath.Join(home, ".claude", "mcp", "kortexengram.json")
+	KortexEngramMCPPath := filepath.Join(home, ".claude", "mcp", "kortex-engram.json")
 
 	claudeMDAfterRun1, err := os.ReadFile(claudeMDPath)
 	if err != nil {
@@ -1560,7 +1560,7 @@ func TestRunInstallUpgradeIdempotency(t *testing.T) {
 
 	// 3. No duplicate kortex marker blocks — each section's open marker
 	// must appear exactly once.
-	for _, sectionID := range []string{"sdd-orchestrator", "KortexEngram-protocol"} {
+	for _, sectionID := range []string{"sdd-orchestrator", "kortex-engram-protocol"} {
 		openMarker := "<!-- kortex:" + sectionID + " -->"
 		count := strings.Count(content, openMarker)
 		if count != 1 {
@@ -1862,15 +1862,15 @@ func TestOpenCodePersonaBeforeSDDPreservesAllSections(t *testing.T) {
 	// the KortexEngram section. We verify persona + KortexEngram coexist.
 
 	// KortexEngram protocol section must be present
-	if !strings.Contains(text, "<!-- kortex:KortexEngram-protocol -->") {
+	if !strings.Contains(text, "<!-- kortex:kortex-engram-protocol -->") {
 		t.Error("AGENTS.md missing KortexEngram-protocol open marker (issue #121 regression: persona may have overwritten KortexEngram section)")
 	}
-	if !strings.Contains(text, "<!-- /kortex:KortexEngram-protocol -->") {
+	if !strings.Contains(text, "<!-- /kortex:kortex-engram-protocol -->") {
 		t.Error("AGENTS.md missing KortexEngram-protocol close marker")
 	}
 
 	// KortexEngram section must not be duplicated
-	marker := "<!-- kortex:KortexEngram-protocol -->"
+	marker := "<!-- kortex:kortex-engram-protocol -->"
 	if count := strings.Count(text, marker); count != 1 {
 		t.Errorf("AGENTS.md contains %d occurrences of %q, want exactly 1 (no duplicates)", count, marker)
 	}

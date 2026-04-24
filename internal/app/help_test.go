@@ -30,7 +30,7 @@ func TestHelpContainsVersion(t *testing.T) {
 func TestHelpCommandsHeadingIsAligned(t *testing.T) {
 	var buf bytes.Buffer
 	printHelp(&buf, "v1.2.3")
-	if !strings.Contains(buf.String(), "\nCOMMANDS\n  install") {
+	if !strings.Contains(buf.String(), "\nCOMANDOS\n  install") {
 		t.Fatalf("help output has inconsistent command indentation:\n%s", buf.String())
 	}
 }

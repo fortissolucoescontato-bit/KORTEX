@@ -470,7 +470,7 @@ func (s *Service) componentOperations(adapter agents.Adapter, componentID model.
 			path := adapter.SystemPromptFile(homeDir)
 			targets = append(targets, path)
 			ops = append(ops, rewriteMarkdownFile(path, func(content string) (string, bool) {
-				return removeMarkdownSections(content, "KortexEngram-protocol")
+				return removeMarkdownSections(content, "kortex-engram-protocol")
 			}))
 		}
 	case model.ComponentPermission:

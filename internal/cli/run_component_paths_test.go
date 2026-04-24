@@ -77,7 +77,7 @@ func TestComponentPathsSDDIncludesSkillsAndSharedConventions(t *testing.T) {
 	// Verify all four shared convention files are reported.
 	for _, sharedFile := range []string{
 		"persistence-contract.md",
-		"KortexEngram-convention.md",
+		"kortex-engram-convention.md",
 		"openspec-convention.md",
 		"sdd-phase-common.md",
 		"skill-resolver.md",
@@ -109,7 +109,7 @@ func TestComponentPathsSDDKimiIncludesAgentFilesAndGlobalSkills(t *testing.T) {
 		filepath.Join(home, ".kimi", "agents", "sdd-verify.md"),
 		filepath.Join(home, ".kimi", "agents", "sdd-archive.yaml"),
 		filepath.Join(home, ".config", "agents", "skills", "sdd-init", "SKILL.md"),
-		filepath.Join(home, ".config", "agents", "skills", "_shared", "KortexEngram-convention.md"),
+		filepath.Join(home, ".config", "agents", "skills", "_shared", "kortex-engram-convention.md"),
 	} {
 		if !containsPath(paths, want) {
 			t.Fatalf("componentPaths(sdd,kimi) missing %q\npaths=%v", want, paths)

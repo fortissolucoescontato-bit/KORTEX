@@ -123,7 +123,7 @@ func TestExecute_VersionUnknownIsSurfacedAsSkipped(t *testing.T) {
 	if report.Results[0].ManualHint == "" {
 		t.Fatal("ManualHint must be populated for version-unknown tools")
 	}
-	if !strings.Contains(report.Results[0].ManualHint, "`KortexEngram version`") {
+	if !strings.Contains(report.Results[0].ManualHint, "`kortex-engram version`") {
 		t.Fatalf("ManualHint = %q, want detect command hint", report.Results[0].ManualHint)
 	}
 	if report.BackupID != "" {

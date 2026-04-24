@@ -39,10 +39,10 @@ func makeServerWithFakeTarGz(t *testing.T, version string) *httptest.Server {
 }
 
 // makeServerWithFakeZip returns a server that serves a zip archive containing
-// "kortexengram.exe" (Windows).
+// "kortex-engram.exe" (Windows).
 func makeServerWithFakeZip(t *testing.T, version string) *httptest.Server {
 	t.Helper()
-	zipContent := buildFakeZip(t, "kortexengram.exe")
+	zipContent := buildFakeZip(t, "kortex-engram.exe")
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "releases/latest") {
 			payload := map[string]string{"tag_name": "v" + version}

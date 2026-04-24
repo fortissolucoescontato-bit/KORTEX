@@ -689,7 +689,7 @@ func TestInjectVSCodeWritesSDDOrchestratorAndSkills(t *testing.T) {
 		t.Fatalf("expected SDD skill file %q: %v", skillPath, err)
 	}
 
-	sharedPath := filepath.Join(home, ".copilot", "skills", "_shared", "KortexEngram-convention.md")
+	sharedPath := filepath.Join(home, ".copilot", "skills", "_shared", "kortex-engram-convention.md")
 	if _, err := os.Stat(sharedPath); err != nil {
 		t.Fatalf("expected shared SDD convention file %q: %v", sharedPath, err)
 	}
@@ -1829,7 +1829,7 @@ func TestInjectWritesAllFourSharedFilesToDisk(t *testing.T) {
 	sharedDir := filepath.Join(home, ".config", "opencode", "skills", "_shared")
 	expectedFiles := []string{
 		"persistence-contract.md",
-		"KortexEngram-convention.md",
+		"kortex-engram-convention.md",
 		"kortex-convention.md",
 		"openspec-convention.md",
 		"sdd-phase-common.md",
@@ -1886,7 +1886,7 @@ func TestInjectSharedDirCreatedWithAllFiles(t *testing.T) {
 		names[e.Name()] = true
 	}
 
-	for _, want := range []string{"persistence-contract.md", "KortexEngram-convention.md", "kortex-convention.md", "openspec-convention.md", "sdd-phase-common.md", "skill-resolver.md"} {
+	for _, want := range []string{"persistence-contract.md", "kortex-engram-convention.md", "kortex-convention.md", "openspec-convention.md", "sdd-phase-common.md", "skill-resolver.md"} {
 		if !names[want] {
 			t.Errorf("_shared directory missing %q after Inject()", want)
 		}
@@ -2803,7 +2803,7 @@ func TestInjectCodexWritesSDDOrchestratorAndSkills(t *testing.T) {
 	}
 
 	// Shared files should also be written.
-	sharedPath := filepath.Join(home, ".codex", "skills", "_shared", "KortexEngram-convention.md")
+	sharedPath := filepath.Join(home, ".codex", "skills", "_shared", "kortex-engram-convention.md")
 	if _, err := os.Stat(sharedPath); err != nil {
 		t.Fatalf("expected shared SDD convention file %q: %v", sharedPath, err)
 	}

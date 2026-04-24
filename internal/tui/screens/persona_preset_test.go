@@ -10,7 +10,7 @@ import (
 func TestRenderPersonaClarifiesCustomKeepsExistingPersona(t *testing.T) {
 	out := RenderPersona(model.PersonaCustom, 2)
 
-	if !strings.Contains(out, "custom") {
+	if !strings.Contains(out, "Custom") && !strings.Contains(out, "custom") {
 		t.Fatalf("RenderPersona missing custom option; output:\n%s", out)
 	}
 	if !strings.Contains(out, "Mantém sua persona atual") {

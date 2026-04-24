@@ -17,12 +17,12 @@ func TestManifestSourceLabel(t *testing.T) {
 		source BackupSource
 		want   string
 	}{
-		{BackupSourceInstall, "install"},
-		{BackupSourceSync, "sync"},
+		{BackupSourceInstall, "instalação"},
+		{BackupSourceSync, "sincronização"},
 		{BackupSourceUpgrade, "upgrade"},
-		{BackupSourceUninstall, "uninstall"},
-		{BackupSource(""), "unknown source"},
-		{BackupSource("other"), "unknown source"},
+		{BackupSourceUninstall, "desinstalação"},
+		{BackupSource(""), "origem desconhecida"},
+		{BackupSource("other"), "origem desconhecida"},
 	}
 
 	for _, tt := range tests {
@@ -53,7 +53,7 @@ func TestManifestDisplayLabel(t *testing.T) {
 				CreatedAt: ts,
 				Source:    BackupSourceInstall,
 			},
-			contains: "install",
+			contains: "instalação",
 		},
 		{
 			name: "sync source shows sync label",
@@ -62,7 +62,7 @@ func TestManifestDisplayLabel(t *testing.T) {
 				CreatedAt: ts,
 				Source:    BackupSourceSync,
 			},
-			contains: "sync",
+			contains: "sincronização",
 		},
 		{
 			name: "upgrade source shows upgrade label",
@@ -80,7 +80,7 @@ func TestManifestDisplayLabel(t *testing.T) {
 				CreatedAt: ts,
 				Source:    BackupSourceUninstall,
 			},
-			contains: "uninstall",
+			contains: "desinstalação",
 		},
 		{
 			name: "no source falls back to unknown",
@@ -88,7 +88,7 @@ func TestManifestDisplayLabel(t *testing.T) {
 				ID:        "20260322150405.000000000",
 				CreatedAt: ts,
 			},
-			contains: "unknown source",
+			contains: "origem desconhecida",
 		},
 	}
 
@@ -164,8 +164,8 @@ func TestOldManifestRemainsReadable(t *testing.T) {
 
 	// Fallback label must work without panicking.
 	label := manifest.DisplayLabel()
-	if !strings.Contains(label, "unknown source") {
-		t.Errorf("DisplayLabel() = %q, want string containing 'unknown source'", label)
+	if !strings.Contains(label, "origem desconhecida") {
+		t.Errorf("DisplayLabel() = %q, want string containing 'origem desconhecida'", label)
 	}
 }
 
@@ -551,7 +551,7 @@ func TestDisplayLabelPin(t *testing.T) {
 				FileCount: 5,
 				Pinned:    true,
 			},
-			wantPrefix: "[pinned]",
+			wantPrefix: "[fixado]",
 		},
 		{
 			name: "unpinned shows no pin indicator",
@@ -562,7 +562,7 @@ func TestDisplayLabelPin(t *testing.T) {
 				FileCount: 5,
 				Pinned:    false,
 			},
-			wantAbsent: "[pinned]",
+			wantAbsent: "[fixado]",
 		},
 		{
 			name: "pinned with zero FileCount still shows [pinned]",
@@ -573,7 +573,7 @@ func TestDisplayLabelPin(t *testing.T) {
 				FileCount: 0,
 				Pinned:    true,
 			},
-			wantPrefix: "[pinned]",
+			wantPrefix: "[fixado]",
 			wantAbsent: "files",
 		},
 		{
@@ -584,7 +584,7 @@ func TestDisplayLabelPin(t *testing.T) {
 				Source:    BackupSourceUpgrade,
 				Pinned:    true,
 			},
-			wantPrefix: "[pinned]",
+			wantPrefix: "[fixado]",
 		},
 	}
 

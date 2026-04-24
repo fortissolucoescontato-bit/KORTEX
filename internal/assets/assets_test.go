@@ -12,7 +12,7 @@ import (
 func TestAllEmbeddedAssetsAreReadable(t *testing.T) {
 	expectedFiles := []string{
 		// Claude agent files
-		"claude/KortexEngram-protocol.md",
+		"claude/kortex-engram-protocol.md",
 		"claude/persona-carbon.md",
 		"claude/sdd-orchestrator.md",
 		"claude/commands/sdd-apply.md",
@@ -98,7 +98,7 @@ func TestAllEmbeddedAssetsAreReadable(t *testing.T) {
 		"skills/sdd-verify/SKILL.md",
 		"skills/skill-registry/SKILL.md",
 		"skills/_shared/persistence-contract.md",
-		"skills/_shared/KortexEngram-convention.md",
+		"skills/_shared/kortex-engram-convention.md",
 		"skills/_shared/openspec-convention.md",
 		"skills/_shared/sdd-phase-common.md",
 
@@ -174,7 +174,7 @@ func TestClaudeEmbeddedAssetLayout(t *testing.T) {
 		seen[entry.Name()] = true
 	}
 
-	for _, name := range []string{"commands", "KortexEngram-protocol.md", "persona-carbon.md", "sdd-orchestrator.md"} {
+	for _, name := range []string{"commands", "kortex-engram-protocol.md", "persona-carbon.md", "sdd-orchestrator.md"} {
 		if !seen[name] {
 			t.Fatalf("claude embedded assets missing %q", name)
 		}
@@ -294,7 +294,7 @@ func TestEmbeddedAssetCount(t *testing.T) {
 			continue
 		}
 		if entry.Name() == "_shared" {
-			for _, sharedFile := range []string{"persistence-contract.md", "KortexEngram-convention.md", "kortex-convention.md", "openspec-convention.md", "sdd-phase-common.md", "skill-resolver.md"} {
+			for _, sharedFile := range []string{"persistence-contract.md", "kortex-engram-convention.md", "kortex-convention.md", "openspec-convention.md", "sdd-phase-common.md", "skill-resolver.md"} {
 				sharedPath := "skills/_shared/" + sharedFile
 				if _, err := Read(sharedPath); err != nil {
 					t.Fatalf("shared directory missing %q: %v", sharedFile, err)

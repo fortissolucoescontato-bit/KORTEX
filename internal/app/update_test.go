@@ -30,15 +30,15 @@ func TestRunUpdate_ReturnsErrorWhenChecksFail(t *testing.T) {
 	if err == nil {
 		t.Fatal("runUpdate() error = nil, want non-nil")
 	}
-	if !strings.Contains(err.Error(), "update check failed for: KortexEngram") {
+	if !strings.Contains(err.Error(), "verificação de atualização falhou para: kortex-engram") {
 		t.Fatalf("runUpdate() error = %v, want update check failure", err)
 	}
 
 	out := buf.String()
-	if strings.Contains(out, "All tools are up to date!") {
+	if strings.Contains(out, "Todas as ferramentas estão atualizadas!") {
 		t.Fatalf("runUpdate() output incorrectly claimed tools are up to date:\n%s", out)
 	}
-	if !strings.Contains(out, "Update check incomplete") {
+	if !strings.Contains(out, "Verificação incompleta") {
 		t.Fatalf("runUpdate() output missing incomplete check warning:\n%s", out)
 	}
 }
@@ -76,7 +76,7 @@ func TestRunUpgrade_ReturnsErrorBeforeExecutingWhenChecksFail(t *testing.T) {
 	if err == nil {
 		t.Fatal("runUpgrade() error = nil, want non-nil")
 	}
-	if !strings.Contains(err.Error(), "update check failed for: KortexEngram") {
+	if !strings.Contains(err.Error(), "verificação de atualização falhou para: kortex-engram") {
 		t.Fatalf("runUpgrade() error = %v, want update check failure", err)
 	}
 	if called {
@@ -84,10 +84,10 @@ func TestRunUpgrade_ReturnsErrorBeforeExecutingWhenChecksFail(t *testing.T) {
 	}
 
 	out := buf.String()
-	if !strings.Contains(out, "Update Check") {
+	if !strings.Contains(out, "Verificação de Atualização") {
 		t.Fatalf("runUpgrade() output missing check report:\n%s", out)
 	}
-	if strings.Contains(out, "All tools are up to date!") {
+	if strings.Contains(out, "Todas as ferramentas estão atualizadas!") {
 		t.Fatalf("runUpgrade() output incorrectly claimed tools are up to date:\n%s", out)
 	}
 	if strings.Contains(out, "Upgrade\n") {

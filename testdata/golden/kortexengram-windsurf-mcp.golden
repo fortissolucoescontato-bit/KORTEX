@@ -5,7 +5,7 @@
         "mcp",
         "--tools=agent"
       ],
-      "command": "/opt/homebrew/bin/kortex-engram"
+      "command": "/opt/homebrew/bin/KortexEngram"
     }
   }
 }

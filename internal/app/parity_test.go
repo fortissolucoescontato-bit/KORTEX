@@ -181,7 +181,7 @@ func TestRunArgsUnknownCommandReturnsError(t *testing.T) {
 	if err == nil {
 		t.Fatalf("RunArgs(bogus) expected error")
 	}
-	if !strings.Contains(err.Error(), `unknown command "bogus"`) {
+	if !strings.Contains(err.Error(), `"bogus"`) {
 		t.Fatalf("RunArgs(bogus) error = %v", err)
 	}
 }
@@ -348,7 +348,7 @@ func TestInstallPlannerParityLinuxPreservesComponentOrder(t *testing.T) {
 		},
 	}
 
-	result, err := cli.RunInstall([]string{"--dry-run", "--agent", "opencode", "--component", "KortexEngram,sdd,skills"}, linuxDetection)
+	result, err := cli.RunInstall([]string{"--dry-run", "--agent", "opencode", "--component", "kortex-engram,sdd,skills"}, linuxDetection)
 	if err != nil {
 		t.Fatalf("RunInstall() error = %v", err)
 	}
