@@ -1038,7 +1038,10 @@ func runPostApplyVerification(homeDir string, selection model.Selection, resolve
 	}
 	checks = append(checks, antigravityCollisionCheck(resolved.Agents)...)
 
-	return verify.BuildReport(verify.RunChecks(context.Background(), checks))
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	return verify.BuildReport(verify.RunChecks(ctx, checks))
 }
 
 func hasComponent(components []model.ComponentID, target model.ComponentID) bool {

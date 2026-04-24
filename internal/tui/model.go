@@ -3389,7 +3389,6 @@ func (m Model) startInstallation() (tea.Model, tea.Cmd) {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 		defer cancel()
-		_ = ctx // timeout enforced; Install itself is synchronous
 
 		// Resolve agent name, applying conflict suffix if needed.
 		installAgent := agent
@@ -3400,7 +3399,7 @@ func (m Model) startInstallation() (tea.Model, tea.Cmd) {
 			installAgent = &copy
 		}
 
-		results, err := agentbuilder.Install(installAgent, adapters, "")
+		results, err := agentbuilder.Install(ctx, installAgent, adapters, "")
 		if err != nil {
 			return AgentBuilderInstallDoneMsg{Results: results, Err: err}
 		}

@@ -13,8 +13,13 @@ var (
 	reCodeFenceClose = regexp.MustCompile("(?m)^```\\s*$")
 	// reH1 matches a Markdown H1 line
 	reH1 = regexp.MustCompile(`(?m)^#\s+(.+)$`)
-	// reH2Section extracts content from a ## section until the next ## or EOF
-	reH2Section = regexp.MustCompile(`(?ms)^##\s+%s\s*\n(.*?)(?:^##\s|\z)`)
+
+	// sectionRegexCache pre-compiles regex for common sections to avoid runtime compilation.
+	sectionRegexCache = map[string]*regexp.Regexp{
+		"Description":  regexp.MustCompile(`(?ms)^##\s+Description\s*\n(.*?)(?:^##\s|\z)`),
+		"Trigger":      regexp.MustCompile(`(?ms)^##\s+Trigger\s*\n(.*?)(?:^##\s|\z)`),
+		"Instructions": regexp.MustCompile(`(?ms)^##\s+Instructions\s*\n(.*?)(?:^##\s|\z)`),
+	}
 )
 
 // Parse converts raw AI output into a GeneratedAgent.
@@ -101,7 +106,12 @@ func extractTitle(content string) (string, error) {
 // extractSection returns the body of the named ## section.
 // It returns an error when the section is absent or empty.
 func extractSection(content, name string) (string, error) {
-	pattern := regexp.MustCompile(`(?ms)^##\s+` + regexp.QuoteMeta(name) + `\s*\n(.*?)(?:^##\s|\z)`)
+	pattern, ok := sectionRegexCache[name]
+	if !ok {
+		// Fallback for dynamic sections not in cache.
+		pattern = regexp.MustCompile(`(?ms)^##\s+` + regexp.QuoteMeta(name) + `\s*\n(.*?)(?:^##\s|\z)`)
+	}
+
 	m := pattern.FindStringSubmatch(content)
 	if m == nil {
 		return "", errors.New("parse: missing '## " + name + "' section")

@@ -45,6 +45,9 @@ func (m *Manager) GetInstalledAgents() ([]string, error) {
 		}
 		agents = append(agents, id)
 	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 	return agents, nil
 }
 
@@ -87,6 +90,9 @@ func (m *Manager) GetAssignments(agentID string) (map[string]ModelAssignmentStat
 			ProviderID: provider,
 			ModelID:    model,
 		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 	return assignments, nil
 }

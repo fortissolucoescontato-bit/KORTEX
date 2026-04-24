@@ -3,7 +3,6 @@ package backup
 import (
 	"crypto/sha256"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -78,9 +77,7 @@ func (s Snapshotter) Create(snapshotDir string, paths []string) (Manifest, error
 		var csErr error
 		checksum, csErr = ComputeChecksum(existingPaths)
 		if csErr != nil {
-			// Non-fatal: skip checksum rather than failing the entire backup.
-			log.Printf("backup: falha ao calcular checksum: %v", csErr)
-			checksum = ""
+			return Manifest{}, fmt.Errorf("compute checksum: %w", csErr)
 		}
 	}
 	manifest.Checksum = checksum

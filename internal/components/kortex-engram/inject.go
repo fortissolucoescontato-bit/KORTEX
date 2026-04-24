@@ -59,16 +59,12 @@ func SetLookPathForTest(t interface {
 // an absolute path survives across environments where PATH is not fully
 // inherited (e.g. Windsurf, IDEs that launch without a login shell).
 func resolveKortexEngramCommand() (string, bool) {
-	// Try 'KortexEngram' first (new dedicated server name)
+	// Try 'kortex-engram' (canonical server name)
 	if p, err := kortexEngramLookPath("kortex-engram"); err == nil && p != "" {
 		return p, true
 	}
 	// Fallback to 'kortex' (previous rebranding attempt)
 	if p, err := kortexEngramLookPath("kortex"); err == nil && p != "" {
-		return p, true
-	}
-	// Fallback to 'KortexEngram' (legacy)
-	if p, err := kortexEngramLookPath("kortex-engram"); err == nil && p != "" {
 		return p, true
 	}
 	return "kortex-engram", false
@@ -381,9 +377,9 @@ func ensureAntigravitySettings(homeDir string, adapter agents.Adapter) (settings
 // writeCodexInstructionFiles writes the KortexEngram memory protocol and compact prompt
 // files to ~/.codex/ and returns their paths.
 func writeCodexInstructionFiles(homeDir string) (instructionsPath, compactPath string, err error) {
-	codexDir := homeDir + "/.codex"
-	instructionsPath = codexDir + "/kortex-engram-instructions.md"
-	compactPath = codexDir + "/kortex-engram-compact-prompt.md"
+	codexDir := filepath.Join(homeDir, ".codex")
+	instructionsPath = filepath.Join(codexDir, "kortex-engram-instructions.md")
+	compactPath = filepath.Join(codexDir, "kortex-engram-compact-prompt.md")
 
 	instrContent := assets.MustRead("codex/kortex-engram-instructions.md")
 	instrWrite, err := filemerge.WriteFileAtomic(instructionsPath, []byte(instrContent), 0o644)
@@ -478,27 +474,18 @@ func existingMergedKortexEngramCommand(raw []byte, agentID model.AgentID) (strin
 			return "", false
 		}
 		server = mcp["kortex-engram"]
-		if server == nil {
-			server = mcp["kortex-engram"] // Fallback
-		}
 	case model.AgentVSCodeCopilot:
 		servers, ok := root["servers"].(map[string]any)
 		if !ok {
 			return "", false
 		}
 		server = servers["kortex-engram"]
-		if server == nil {
-			server = servers["kortex-engram"] // Fallback
-		}
 	default:
 		mcpServers, ok := root["mcpServers"].(map[string]any)
 		if !ok {
 			return "", false
 		}
 		server = mcpServers["kortex-engram"]
-		if server == nil {
-			server = mcpServers["kortex-engram"] // Fallback
-		}
 	}
 
 	serverMap, ok := server.(map[string]any)
@@ -532,7 +519,7 @@ func executableFromCommandValue(command any) (string, bool) {
 
 func isStandardAgent(id model.AgentID) bool {
 	switch id {
-	case model.AgentOpenCode, model.AgentQwenCode, model.AgentCodex, model.AgentGeminiCLI, model.AgentAntigravity, model.AgentClaudeCode:
+	case model.AgentOpenCode, model.AgentQwenCode, model.AgentCodex, model.AgentGeminiCLI, model.AgentAntigravity, model.AgentClaudeCode, model.AgentKimi:
 		return true
 	default:
 		return false
@@ -603,8 +590,3 @@ func iskortexEngramCommand(cmd string) bool {
 	return base == "kortex-engram" || base == "kortex" || base == "KortexEngram"
 }
 
-// isAbsolutekortexEngramPath reports whether path is an absolute filesystem path
-// that points to an KortexEngram binary.
-func isAbsolutekortexEngramPath(path string) bool {
-	return filepath.IsAbs(path) && iskortexEngramCommand(path)
-}

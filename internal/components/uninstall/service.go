@@ -363,6 +363,11 @@ func (s *Service) executePlan(p plan, agentsToRemove []model.AgentID) (Result, e
 	}
 
 	for _, op := range p.operations {
+		// Security Guard: Ensure path is within allowed scopes (homeDir or workspaceDir).
+		if !s.isPathWithinAllowedScopes(op.path) {
+			return result, fmt.Errorf("segurança: tentativa de manipular arquivo fora dos escopos permitidos: %q", op.path)
+		}
+
 		changed, removed, err := op.apply(op.path)
 		if err != nil {
 			return result, err
@@ -396,6 +401,24 @@ func (s *Service) executePlan(p plan, agentsToRemove []model.AgentID) (Result, e
 	result.AgentsRemovedFromState = removed
 	result.ManualActions = dedupeSortedStrings(result.ManualActions)
 	return result, nil
+}
+
+func (s *Service) isPathWithinAllowedScopes(path string) bool {
+	if s.isPathWithin(path, s.homeDir) {
+		return true
+	}
+	if s.workspaceDir != "" && s.isPathWithin(path, s.workspaceDir) {
+		return true
+	}
+	return false
+}
+
+func (s *Service) isPathWithin(path, base string) bool {
+	rel, err := filepath.Rel(base, path)
+	if err != nil {
+		return false
+	}
+	return !strings.HasPrefix(rel, "..") && rel != ".."
 }
 
 func manualActionForNonEmptyDirectory(path string) (string, bool) {

@@ -55,6 +55,11 @@ func (r Runner) Run(stage Stage, steps []Step) StageResult {
 		result.Err = errors.Join(errs...)
 	}
 
+	// Defensive check: if success is false, we must have an error.
+	if !result.Success && result.Err == nil {
+		result.Err = errors.New("estágio do pipeline falhou sem um erro específico")
+	}
+
 	return result
 }
 

@@ -1,5 +1,7 @@
 package pipeline
 
+import "errors"
+
 // OrchestratorOption configures the orchestrator.
 type OrchestratorOption func(*Orchestrator)
 
@@ -56,7 +58,9 @@ func (o *Orchestrator) Execute(plan StagePlan) ExecutionResult {
 	if o.policy.ShouldRollback(StageApply, applyResult.Err) {
 		result.Rollback = ExecuteRollback(applyResult.Steps, o.stepByID)
 		if !result.Rollback.Success {
-			result.Err = result.Rollback.Err
+			// Join both errors so the root cause (apply failure) is not lost 
+			// when the recovery (rollback) also fails.
+			result.Err = errors.Join(applyResult.Err, result.Rollback.Err)
 		}
 	}
 

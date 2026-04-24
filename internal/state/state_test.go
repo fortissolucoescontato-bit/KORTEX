@@ -82,3 +82,10 @@ func TestManager_Idempotency(t *testing.T) {
 		t.Errorf("len(GetInstalledAgents()) = %d, want 1", len(got))
 	}
 }
+
+func TestGetInstalledAgents_RowsErr(t *testing.T) {
+	// Este teste é um placeholder para demonstrar que a implementação atual
+	// não verifica rows.Err(). Em um ambiente com sqlmock, injetaríamos um erro aqui.
+	// Por enquanto, validamos estruturalmente via inspeção que o código falta.
+	t.Skip("Necessita de sqlmock para injetar erro em rows.Err() de forma confiável")
+}

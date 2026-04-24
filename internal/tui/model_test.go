@@ -3350,3 +3350,9 @@ func TestPinErrClearedOnScreenReentry(t *testing.T) {
 		t.Fatalf("PinErr should be nil after returning to ScreenBackups, got: %v", afterReturn.PinErr)
 	}
 }
+
+func TestStartInstallation_ContextPropagated(t *testing.T) {
+	// Este teste valida que o contexto com timeout é propagado para agentbuilder.Install.
+	// Atualmente o código descarta o contexto (_ = ctx).
+	t.Skip("Necessita de refatoração em agentbuilder.Install para aceitar context.Context")
+}

@@ -845,5 +845,8 @@ func runPostSyncVerification(homeDir string, selection model.Selection) verify.R
 		}
 	}
 
-	return verify.BuildReport(verify.RunChecks(context.Background(), checks))
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	return verify.BuildReport(verify.RunChecks(ctx, checks))
 }
