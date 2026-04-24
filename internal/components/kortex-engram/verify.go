@@ -12,9 +12,18 @@ import (
 var (
 	lookPath    = exec.LookPath
 	execCommand = exec.Command
+
+	// Overrides para testes de isolamento (injetáveis via cli_test)
+	VerifyInstalledOverride func() error
+	VerifyVersionOverride   func() (string, error)
+	VerifyHealthOverride    func(context.Context, string) error
 )
 
 func VerifyInstalled() error {
+	if VerifyInstalledOverride != nil {
+		return VerifyInstalledOverride()
+	}
+
 	if _, err := lookPath("kortex-engram"); err == nil {
 		return nil
 	}
@@ -31,6 +40,10 @@ func VerifyInstalled() error {
 // VerifyVersion runs "KortexEngram version" and returns the trimmed output.
 // Returns an error if the command fails or produces no output.
 func VerifyVersion() (string, error) {
+	if VerifyVersionOverride != nil {
+		return VerifyVersionOverride()
+	}
+
 	cmdName := "kortex-engram"
 	if _, err := lookPath(cmdName); err != nil {
 		cmdName = "kortex"
@@ -54,6 +67,10 @@ func VerifyVersion() (string, error) {
 }
 
 func VerifyHealth(ctx context.Context, baseURL string) error {
+	if VerifyHealthOverride != nil {
+		return VerifyHealthOverride(ctx, baseURL)
+	}
+
 	if strings.TrimSpace(baseURL) == "" {
 		baseURL = "http://127.0.0.1:7437"
 	}

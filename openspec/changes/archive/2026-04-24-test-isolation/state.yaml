@@ -1,0 +1,4 @@
+change: test-isolation
+current_phase: verify
+next_phase: archive
+status: pending_approval

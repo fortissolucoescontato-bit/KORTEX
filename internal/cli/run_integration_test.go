@@ -14,9 +14,11 @@ import (
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents/kimi"
 	"github.com/fortissolucoescontato-bit/kortex/internal/agents/opencode"
 	"github.com/fortissolucoescontato-bit/kortex/internal/backup"
+	kortexengram "github.com/fortissolucoescontato-bit/kortex/internal/components/kortex-engram"
 	"github.com/fortissolucoescontato-bit/kortex/internal/installcmd"
 	"github.com/fortissolucoescontato-bit/kortex/internal/model"
 	"github.com/fortissolucoescontato-bit/kortex/internal/system"
+	"context"
 )
 
 // missingBinaryLookPath simulates all installable binaries (KortexEngram, kortex) as
@@ -24,6 +26,13 @@ import (
 // (pre-built binaries are downloaded directly from GitHub Releases).
 func missingBinaryLookPath(name string) (string, error) {
 	return "", exec.ErrNotFound
+}
+
+func init() {
+	// Isola os testes de integração contra test pollution da máquina do desenvolvedor (onde o binário global pode faltar ou estar presente)
+	kortexengram.VerifyInstalledOverride = func() error { return nil }
+	kortexengram.VerifyVersionOverride = func() (string, error) { return "1.0.0-mock", nil }
+	kortexengram.VerifyHealthOverride = func(ctx context.Context, baseURL string) error { return nil }
 }
 
 func TestRunInstallAppliesFilesystemChanges(t *testing.T) {
