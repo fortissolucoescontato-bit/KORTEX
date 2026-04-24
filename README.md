@@ -1,37 +1,41 @@
-# Kortex ⚡
+# Kortex 🧠
 
-> **Poder de Elite para Todos: Programação com IA Acessível e Profissional**
+O Orquestrador de Agentes de IA da Nexo-Fortis.
 
-O Kortex é um orquestrador **open-source** projetado pela **Nexo-Fortis**. Nossa missão é democratizar a engenharia de IA, permitindo que **qualquer pessoa** — mesmo quem nunca programou ou tem pouco tempo — consiga utilizar agentes de elite para construir software de alta qualidade.
+O **Kortex** é o coração de um ecossistema projetado para transformar a maneira como desenvolvemos software com inteligência artificial. Ele gerencia o ciclo de vida das tarefas, coordena diferentes modelos de IA e garante que o contexto do seu projeto seja sempre preservado.
 
-## 🌟 Missão e Valores
+## 🚀 Funcionalidades Principais
 
-- **Democratização**: Criado para que qualquer um possa programar com IA, removendo barreiras técnicas complexas.
-- **Análise 360**: Mesmo com simplicidade, o sistema mantém uma análise profunda para garantir o panorama completo das soluções.
-- **Engenharia Brasileira Open-Source**: Orgulhosamente brasileiro, polido e inteligente, disponível para toda a comunidade.
-- **Ecossistema Aberto**: Injeção de componentes SDD, Skills e Personas em qualquer agente (Claude, OpenCode, Kimi, etc.).
+- **Orquestração de Agentes**: Gerencia múltiplas ferramentas de IA (Gemini, Claude, etc) em um fluxo de trabalho unificado.
+- **Pipeline SDD (Specification Driven Development)**: Implementa um fluxo rigoroso de Especificação -> Design -> Implementação -> Verificação.
+- **Gestão de Ferramentas**: Instala, atualiza e configura automaticamente dependências do ecossistema.
+- **Foco em Qualidade**: Integração nativa com verificações de integridade e testes.
 
-## 🚀 Começando
+## 📦 Instalação
 
-**🚨 NUNCA PROGRAMOU NA VIDA? [Comece por aqui! Leia o nosso Tutorial Zero-to-Hero para Iniciantes.](docs/TUTORIAL-INICIANTE.md)**
-
-
-Para instalar e configurar seu ambiente de elite:
+O Kortex é distribuído via Homebrew para macOS e Linux:
 
 ```bash
-go build -o kortex ./cmd/kortex
-./kortex install
+brew tap fortissolucoescontato-bit/homebrew-tap
+brew install kortex
 ```
 
-## 🛠️ Funcionalidades
+Após instalar, inicialize o ambiente:
+```bash
+kortex install
+```
 
-- **Sincronização Inteligente**: Garante que seus agentes compartilhem o mesmo contexto e regras.
-- **Gerenciador de Backups**: Proteção total contra regressões de configuração.
-- **Arquiteto de Agentes**: Crie agentes personalizados com análise completa de cenário.
+## 🏗️ Arquitetura do Ecossistema
 
-## 📄 Licença
+O Kortex não trabalha sozinho. Ele faz parte de uma tríade:
+1. **Kortex** (Este repositório): O cérebro e orquestrador.
+2. [**Kortex-Engram**](https://github.com/fortissolucoescontato-bit/kortex-engram): A memória persistente de longo prazo.
+3. [**Carbon Guardian Angel**](https://github.com/fortissolucoescontato-bit/carbon-guardian-angel): O guardião das diretrizes e da persona.
 
-Este projeto está licenciado sob a Licença MIT - consulte o arquivo [LICENSE](LICENSE) para detalhes.
+## 🤝 Contribuição
 
----
-© 2025 Nexo-Fortis. Todos os direitos reservados.
+Este é um projeto **Open Source**. Pull Requests são bem-vindos! Para grandes mudanças, por favor, abra uma issue primeiro para discutir o que você gostaria de mudar.
+
+## 📜 Licença
+
+MIT © 2025 Nexo-Fortis.
